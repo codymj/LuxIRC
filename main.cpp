@@ -5,7 +5,7 @@
  * Created on March 15, 2015, 11:00 PM
  */
 
-#include <QtWidgets/QApplication>
+#include <QApplication>
 #include "MainWindow.h"
 
 int main(int argc, char *argv[]) {

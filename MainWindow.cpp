@@ -36,7 +36,7 @@ void MainWindow::changeNick() {
 	changeNickDlg.activateWindow();
 
 	if (changeNickDlg.exec()) {
-		// Handle blank line edit...
+		// TODO: Handle blank line edit...
 		nickName = changeNickDlg.newNickLineEdit->text();
 		changeNickBtn->setText(nickName);
 	}
