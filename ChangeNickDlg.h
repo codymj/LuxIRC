@@ -1,14 +1,13 @@
 /* 
- * File:   ChangeNickDlg.h
- * Author: br0d1n
+ * ChangeNickDlg.h
  *
- * Created on March 15, 2015, 11:11 PM
+ * 	Created on Mar 15, 2015
+ * 		Author: br0d1n
  */
 
 #ifndef _CHANGENICKDLG_H
 #define	_CHANGENICKDLG_H
 
-#include <QDialog>
 #include "ui_ChangeNickDlg.h"
 
 class ChangeNickDlg : public QDialog, public Ui::ChangeNickDlg {

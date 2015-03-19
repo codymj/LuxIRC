@@ -1,15 +1,17 @@
 /* 
- * File:   MainWindow.h
- * Author: br0d1n
+ * MainWindow.h
  *
- * Created on March 15, 2015, 11:09 PM
+ * 	Created on Mar 15, 2015
+ * 		Author: br0d1n
  */
 
 #ifndef _MAINWINDOW_H
 #define	_MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QString>
+#include <QList>
 #include "ChangeNickDlg.h"
+#include "NetworkDlg.h"
 #include "ui_MainWindow.h"
 
 class MainWindow : public QMainWindow, public Ui::MainWindow {
@@ -23,12 +25,12 @@ public slots:
 
     
 private:
-//	ChangeNickDlg *changeNickDlg;
 	QString nickName;
+	void connectActions();
     
 private slots:
     void changeNick();
-    
+    void openNetworkDlg();
 };
 
 #endif	/* _MAINWINDOW_H */

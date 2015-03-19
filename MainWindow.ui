@@ -95,9 +95,9 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionNetworkList"/>
+    <addaction name="openNetworkDlgAction"/>
     <addaction name="separator"/>
-    <addaction name="actionExit"/>
+    <addaction name="exitAction"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -108,23 +108,23 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionAbout"/>
+    <addaction name="aboutAction"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="actionNetworkList">
+  <action name="openNetworkDlgAction">
    <property name="text">
     <string>&amp;Network List</string>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="exitAction">
    <property name="text">
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionAbout">
+  <action name="aboutAction">
    <property name="text">
     <string>About</string>
    </property>

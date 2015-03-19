@@ -1,18 +1,14 @@
 /*
- * File:   ChangeNickDlg.cpp
- * Author: br0d1n
+ * ChangeNickDlg.cpp
  *
- * Created on March 15, 2015, 11:11 PM
+ * 	Created on Mar 15, 2015
+ * 		Author: br0d1n
  */
 
-#include "MainWindow.h"
 #include "ChangeNickDlg.h"
 
 ChangeNickDlg::ChangeNickDlg() {
 	setupUi(this);
-
-	connect(okButton, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 ChangeNickDlg::~ChangeNickDlg() {

@@ -1,17 +1,18 @@
 /*
- * File:   MainWindow.cpp
- * Author: br0d1n
+ * MainWindow.cpp
  *
- * Created on March 15, 2015, 11:09 PM
+ * 	Created on Mar 15, 2015
+ * 		Author: br0d1n
  */
 
-#include <QString>
-#include <QList>
 #include "MainWindow.h"
 
 MainWindow::MainWindow() {
 	setupUi(this);
 
+	connectActions();
+
+	// I'll create a method to handle initial data settings later.
 	nickName = changeNickBtn->text();
 
 	// Resize the splitter so the widgets look more aesthetic.
@@ -19,27 +20,38 @@ MainWindow::MainWindow() {
 	QList<int> sizeList;
 	sizeList << 150 << 450 << 150;
 	splitter->setSizes(sizeList);
-
-	connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
 }
 
 MainWindow::~MainWindow() {
 }
 
-/*** SLOT .:. Change nickname ***/
-void MainWindow::changeNick() {
-	ChangeNickDlg changeNickDlg;
-	changeNickDlg.newNickLineEdit->setText(nickName);
-	changeNickDlg.newNickLineEdit->selectAll();
-	changeNickDlg.show();
-	changeNickDlg.raise();
-	changeNickDlg.activateWindow();
+/*** SLOT - Create menu actions ***/
+void MainWindow::connectActions() {
+	connect(openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg()));
+	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+	connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
+}
 
-	if (changeNickDlg.exec()) {
+/*** SLOT - Change nickname ***/
+void MainWindow::changeNick() {
+	ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
+	changeNickDlg->newNickLineEdit->setText(nickName);
+	changeNickDlg->newNickLineEdit->selectAll();
+
+	if (changeNickDlg->exec()) {
 		// TODO: Handle blank line edit...
-		nickName = changeNickDlg.newNickLineEdit->text();
+		nickName = changeNickDlg->newNickLineEdit->text();
 		changeNickBtn->setText(nickName);
 	}
 
 	// TODO:  Handle method to change nick via IRC protocol.
+}
+
+/*** SLOT - Open the Network Dialog ***/
+void MainWindow::openNetworkDlg() {
+	NetworkDlg *networkDlg = new NetworkDlg();
+
+	if (networkDlg->exec()) {
+		// TODO: Handle saving of networks (should I do this in MainWindow or NetworkDlg?)
+	}
 }

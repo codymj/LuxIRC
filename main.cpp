@@ -1,11 +1,10 @@
 /*
- * File:   main.cpp
- * Author: br0d1n
+ * main.cpp
  *
- * Created on March 15, 2015, 11:00 PM
+ * 	Created on Mar 15, 2015
+ * 		Author: br0d1n
  */
 
-#include <QApplication>
 #include "MainWindow.h"
 
 int main(int argc, char *argv[]) {

@@ -50,13 +50,17 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ChangeNickDlg.cpp \
 		main.cpp \
-		MainWindow.cpp moc_ChangeNickDlg.cpp \
-		moc_MainWindow.cpp
+		MainWindow.cpp \
+		NetworkDlg.cpp moc_ChangeNickDlg.cpp \
+		moc_MainWindow.cpp \
+		moc_NetworkDlg.cpp
 OBJECTS       = ChangeNickDlg.o \
 		main.o \
 		MainWindow.o \
+		NetworkDlg.o \
 		moc_ChangeNickDlg.o \
-		moc_MainWindow.o
+		moc_MainWindow.o \
+		moc_NetworkDlg.o
 DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/shell-unix.conf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
@@ -177,9 +181,11 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/yacc.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
 		LuxIRC.pro ChangeNickDlg.h \
-		MainWindow.h ChangeNickDlg.cpp \
+		MainWindow.h \
+		NetworkDlg.h ChangeNickDlg.cpp \
 		main.cpp \
-		MainWindow.cpp
+		MainWindow.cpp \
+		NetworkDlg.cpp
 QMAKE_TARGET  = LuxIRC
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = LuxIRC
@@ -207,7 +213,7 @@ first: all
 
 ####### Build rules
 
-$(TARGET): ui_ChangeNickDlg.h ui_MainWindow.h $(OBJECTS)  
+$(TARGET): ui_ChangeNickDlg.h ui_MainWindow.h ui_NetworkDlg.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspecs/features/spec_pre.prf \
@@ -471,9 +477,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ChangeNickDlg.h MainWindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ChangeNickDlg.cpp main.cpp MainWindow.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ChangeNickDlg.ui MainWindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ChangeNickDlg.h MainWindow.h NetworkDlg.h $(DISTDIR)/
+	$(COPY_FILE) --parents ChangeNickDlg.cpp main.cpp MainWindow.cpp NetworkDlg.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ChangeNickDlg.ui MainWindow.ui NetworkDlg.ui $(DISTDIR)/
 
 
 clean:compiler_clean 
@@ -496,29 +502,38 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_ChangeNickDlg.cpp moc_MainWindow.cpp
+compiler_moc_header_make_all: moc_ChangeNickDlg.cpp moc_MainWindow.cpp moc_NetworkDlg.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_ChangeNickDlg.cpp moc_MainWindow.cpp
+	-$(DEL_FILE) moc_ChangeNickDlg.cpp moc_MainWindow.cpp moc_NetworkDlg.cpp
 moc_ChangeNickDlg.cpp: ui_ChangeNickDlg.h \
 		ChangeNickDlg.h
 	/usr/lib/qt/bin/moc $(DEFINES) -I/usr/lib/qt/mkspecs/linux-g++ -I/home/br0d1n/Documents/Projects/LuxIRC -I/home/br0d1n/Documents/Projects/LuxIRC -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/4.9.2 -I/usr/include/c++/4.9.2/x86_64-unknown-linux-gnu -I/usr/include/c++/4.9.2/backward -I/usr/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include -I/usr/local/include -I/usr/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include-fixed -I/usr/include ChangeNickDlg.h -o moc_ChangeNickDlg.cpp
 
 moc_MainWindow.cpp: ChangeNickDlg.h \
 		ui_ChangeNickDlg.h \
+		NetworkDlg.h \
+		ui_NetworkDlg.h \
 		ui_MainWindow.h \
 		MainWindow.h
 	/usr/lib/qt/bin/moc $(DEFINES) -I/usr/lib/qt/mkspecs/linux-g++ -I/home/br0d1n/Documents/Projects/LuxIRC -I/home/br0d1n/Documents/Projects/LuxIRC -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/4.9.2 -I/usr/include/c++/4.9.2/x86_64-unknown-linux-gnu -I/usr/include/c++/4.9.2/backward -I/usr/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include -I/usr/local/include -I/usr/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include-fixed -I/usr/include MainWindow.h -o moc_MainWindow.cpp
 
+moc_NetworkDlg.cpp: ui_NetworkDlg.h \
+		NetworkDlg.h
+	/usr/lib/qt/bin/moc $(DEFINES) -I/usr/lib/qt/mkspecs/linux-g++ -I/home/br0d1n/Documents/Projects/LuxIRC -I/home/br0d1n/Documents/Projects/LuxIRC -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/4.9.2 -I/usr/include/c++/4.9.2/x86_64-unknown-linux-gnu -I/usr/include/c++/4.9.2/backward -I/usr/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include -I/usr/local/include -I/usr/lib/gcc/x86_64-unknown-linux-gnu/4.9.2/include-fixed -I/usr/include NetworkDlg.h -o moc_NetworkDlg.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_ChangeNickDlg.h ui_MainWindow.h
+compiler_uic_make_all: ui_ChangeNickDlg.h ui_MainWindow.h ui_NetworkDlg.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_ChangeNickDlg.h ui_MainWindow.h
+	-$(DEL_FILE) ui_ChangeNickDlg.h ui_MainWindow.h ui_NetworkDlg.h
 ui_ChangeNickDlg.h: ChangeNickDlg.ui
 	/usr/lib/qt/bin/uic ChangeNickDlg.ui -o ui_ChangeNickDlg.h
 
 ui_MainWindow.h: MainWindow.ui
 	/usr/lib/qt/bin/uic MainWindow.ui -o ui_MainWindow.h
+
+ui_NetworkDlg.h: NetworkDlg.ui
+	/usr/lib/qt/bin/uic NetworkDlg.ui -o ui_NetworkDlg.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -530,29 +545,38 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 
 ####### Compile
 
-ChangeNickDlg.o: ChangeNickDlg.cpp MainWindow.h \
-		ChangeNickDlg.h \
-		ui_ChangeNickDlg.h \
-		ui_MainWindow.h
+ChangeNickDlg.o: ChangeNickDlg.cpp ChangeNickDlg.h \
+		ui_ChangeNickDlg.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ChangeNickDlg.o ChangeNickDlg.cpp
 
 main.o: main.cpp MainWindow.h \
 		ChangeNickDlg.h \
 		ui_ChangeNickDlg.h \
+		NetworkDlg.h \
+		ui_NetworkDlg.h \
 		ui_MainWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 MainWindow.o: MainWindow.cpp MainWindow.h \
 		ChangeNickDlg.h \
 		ui_ChangeNickDlg.h \
+		NetworkDlg.h \
+		ui_NetworkDlg.h \
 		ui_MainWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
+
+NetworkDlg.o: NetworkDlg.cpp NetworkDlg.h \
+		ui_NetworkDlg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o NetworkDlg.o NetworkDlg.cpp
 
 moc_ChangeNickDlg.o: moc_ChangeNickDlg.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_ChangeNickDlg.o moc_ChangeNickDlg.cpp
 
 moc_MainWindow.o: moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindow.o moc_MainWindow.cpp
+
+moc_NetworkDlg.o: moc_NetworkDlg.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_NetworkDlg.o moc_NetworkDlg.cpp
 
 ####### Install
 
