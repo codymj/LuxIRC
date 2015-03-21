@@ -24,4 +24,6 @@ void NetworkDlg::openAddNetworkDlg() {
 	if (addNetworkDlg->exec()) {
 		// TODO: Handle the addition of networks into a file.
 	}
+
+	delete addNetworkDlg;
 }
