@@ -24,7 +24,7 @@ private:
 
 
 private slots:
-
+	void openAddNetworkDlg();
 
 };
 

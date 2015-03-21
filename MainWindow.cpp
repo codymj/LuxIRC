@@ -25,7 +25,7 @@ MainWindow::MainWindow() {
 MainWindow::~MainWindow() {
 }
 
-/*** SLOT - Create menu actions ***/
+/*** Create menu actions ***/
 void MainWindow::connectActions() {
 	connect(openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg()));
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -45,6 +45,8 @@ void MainWindow::changeNick() {
 	}
 
 	// TODO:  Handle method to change nick via IRC protocol.
+
+	delete changeNickDlg;
 }
 
 /*** SLOT - Open the Network Dialog ***/
@@ -54,4 +56,6 @@ void MainWindow::openNetworkDlg() {
 	if (networkDlg->exec()) {
 		// TODO: Handle saving of networks (should I do this in MainWindow or NetworkDlg?)
 	}
+
+	delete networkDlg;
 }

@@ -6,10 +6,22 @@
  */
 
 #include "NetworkDlg.h"
+#include "AddNetworkDlg.h"
 
 NetworkDlg::NetworkDlg() {
 	setupUi(this);
+
+	connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
 }
 
 NetworkDlg::~NetworkDlg() {
+}
+
+/*** SLOT - Open the AddNetworkDlg ***/
+void NetworkDlg::openAddNetworkDlg() {
+	AddNetworkDlg *addNetworkDlg = new AddNetworkDlg();
+
+	if (addNetworkDlg->exec()) {
+		// TODO: Handle the addition of networks into a file.
+	}
 }
