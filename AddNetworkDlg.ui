@@ -6,46 +6,46 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
+    <width>572</width>
     <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Add Network</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>70</y>
+     <y>100</y>
      <width>207</width>
      <height>100</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QCheckBox" name="checkBox">
+     <widget class="QCheckBox" name="connectCkb">
       <property name="text">
        <string>Connect at Start-Up</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="checkBox_2">
+     <widget class="QCheckBox" name="sslCkb">
       <property name="text">
        <string>Use SSL Encryption</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="checkBox_3">
+     <widget class="QCheckBox" name="invalidCertCkb">
       <property name="text">
        <string>Accept Invalid SSL Certificate</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="checkBox_4">
+     <widget class="QCheckBox" name="globalInfoCkb">
       <property name="text">
        <string>Use Global Information</string>
       </property>
@@ -53,12 +53,12 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>240</x>
      <y>10</y>
-     <width>221</width>
+     <width>321</width>
      <height>171</height>
     </rect>
    </property>
@@ -71,7 +71,7 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="nickLineEdit"/>
+     <widget class="QLineEdit" name="nickLE"/>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_4">
@@ -81,7 +81,7 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="nick2LineEdit"/>
+     <widget class="QLineEdit" name="nick2LE"/>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_5">
@@ -91,7 +91,7 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="usernameLineEdit"/>
+     <widget class="QLineEdit" name="usernameLE"/>
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_6">
@@ -101,7 +101,7 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="realNameLineEdit"/>
+     <widget class="QLineEdit" name="realNameLE"/>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_7">
@@ -111,7 +111,23 @@
      </widget>
     </item>
     <item row="4" column="1">
-     <widget class="QComboBox" name="loginMethodCbo"/>
+     <widget class="QComboBox" name="loginMethodCbo">
+      <item>
+       <property name="text">
+        <string>Default</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Server Password (/SERVER &lt;PASS&gt;)</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>NickServ (/msg NickServ Identify &lt;PASS&gt;)</string>
+       </property>
+      </item>
+     </widget>
     </item>
     <item row="5" column="0">
      <widget class="QLabel" name="label_8">
@@ -121,7 +137,7 @@
      </widget>
     </item>
     <item row="5" column="1">
-     <widget class="QLineEdit" name="passwordLineEdit">
+     <widget class="QLineEdit" name="passwordLE">
       <property name="echoMode">
        <enum>QLineEdit::Password</enum>
       </property>
@@ -129,10 +145,10 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>280</x>
+     <x>390</x>
      <y>200</y>
      <width>168</width>
      <height>24</height>
@@ -140,14 +156,14 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="cancelBtn">
       <property name="text">
        <string>&amp;Cancel</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="okBtn">
       <property name="text">
        <string>&amp;Ok</string>
       </property>
@@ -158,32 +174,42 @@
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>11</x>
-     <y>11</y>
-     <width>201</width>
-     <height>52</height>
+     <x>10</x>
+     <y>10</y>
+     <width>211</width>
+     <height>80</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="0">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Network:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="networkLE"/>
+    </item>
+    <item row="1" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Server:</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="serverLineEdit"/>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="serverLE"/>
     </item>
-    <item row="1" column="0">
+    <item row="2" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>Port:</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="portLineEdit">
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="portLE">
       <property name="maximumSize">
        <size>
         <width>60</width>
@@ -198,7 +224,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>okBtn</sender>
    <signal>clicked()</signal>
    <receiver>AddNetworkDlg</receiver>
    <slot>accept()</slot>
@@ -214,7 +240,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_2</sender>
+   <sender>cancelBtn</sender>
    <signal>clicked()</signal>
    <receiver>AddNetworkDlg</receiver>
    <slot>reject()</slot>

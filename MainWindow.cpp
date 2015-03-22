@@ -35,12 +35,12 @@ void MainWindow::connectActions() {
 /*** SLOT - Change nickname ***/
 void MainWindow::changeNick() {
 	ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
-	changeNickDlg->newNickLineEdit->setText(nickName);
-	changeNickDlg->newNickLineEdit->selectAll();
+	changeNickDlg->newNickLE->setText(nickName);
+	changeNickDlg->newNickLE->selectAll();
 
 	if (changeNickDlg->exec()) {
 		// TODO: Handle blank line edit...
-		nickName = changeNickDlg->newNickLineEdit->text();
+		nickName = changeNickDlg->newNickLE->text();
 		changeNickBtn->setText(nickName);
 	}
 

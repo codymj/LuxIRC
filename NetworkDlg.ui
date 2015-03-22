@@ -25,66 +25,6 @@
   <property name="windowTitle">
    <string>Networks</string>
   </property>
-  <widget class="QGroupBox" name="networkGbx">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>130</y>
-     <width>301</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Networks</string>
-   </property>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>281</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QListWidget" name="networkView"/>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPushButton" name="addBtn">
-         <property name="text">
-          <string>&amp;Add</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="removeBtn">
-         <property name="text">
-          <string>Remove</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="editBtn">
-         <property name="text">
-          <string>&amp;Edit</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="sortBtn">
-         <property name="text">
-          <string>Sort</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
@@ -96,14 +36,14 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="cancelBtn">
       <property name="text">
        <string>&amp;Cancel</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="okBtn">
       <property name="text">
        <string>&amp;Ok</string>
       </property>
@@ -122,7 +62,7 @@
    </property>
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="1">
-     <widget class="QLineEdit" name="nickLineEdit"/>
+     <widget class="QLineEdit" name="nickLE"/>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
@@ -130,12 +70,12 @@
        <string>&amp;Second Nickname:</string>
       </property>
       <property name="buddy">
-       <cstring>nick2LineEdit</cstring>
+       <cstring>nick2LE</cstring>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="nick2LineEdit"/>
+     <widget class="QLineEdit" name="nick2LE"/>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_3">
@@ -143,12 +83,12 @@
        <string>&amp;Username:</string>
       </property>
       <property name="buddy">
-       <cstring>usernameLineEdit</cstring>
+       <cstring>usernameLE</cstring>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="usernameLineEdit"/>
+     <widget class="QLineEdit" name="usernameLE"/>
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_4">
@@ -156,12 +96,12 @@
        <string>&amp;Real Name:</string>
       </property>
       <property name="buddy">
-       <cstring>realNameLineEdit</cstring>
+       <cstring>realNameLE</cstring>
       </property>
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="realNameLineEdit"/>
+     <widget class="QLineEdit" name="realNameLE"/>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label">
@@ -169,37 +109,102 @@
        <string>&amp;Nickname:</string>
       </property>
       <property name="buddy">
-       <cstring>nickLineEdit</cstring>
+       <cstring>nickLE</cstring>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>160</y>
+     <width>301</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QListWidget" name="networkList"/>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="addBtn">
+        <property name="text">
+         <string>&amp;Add</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="removeBtn">
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="editBtn">
+        <property name="text">
+         <string>&amp;Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="sortBtn">
+        <property name="text">
+         <string>Sort</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Networks:</string>
+   </property>
+  </widget>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>networkList</zorder>
+  <zorder>label_5</zorder>
  </widget>
  <tabstops>
-  <tabstop>nickLineEdit</tabstop>
-  <tabstop>nick2LineEdit</tabstop>
-  <tabstop>usernameLineEdit</tabstop>
-  <tabstop>realNameLineEdit</tabstop>
+  <tabstop>nickLE</tabstop>
+  <tabstop>nick2LE</tabstop>
+  <tabstop>usernameLE</tabstop>
+  <tabstop>realNameLE</tabstop>
   <tabstop>addBtn</tabstop>
   <tabstop>removeBtn</tabstop>
   <tabstop>editBtn</tabstop>
   <tabstop>sortBtn</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>networkView</tabstop>
+  <tabstop>cancelBtn</tabstop>
+  <tabstop>okBtn</tabstop>
+  <tabstop>networkList</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>okBtn</sender>
    <signal>clicked()</signal>
    <receiver>NetworkDlg</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>338</x>
-     <y>334</y>
+     <x>306</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>381</x>
@@ -208,14 +213,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_2</sender>
+   <sender>cancelBtn</sender>
    <signal>clicked()</signal>
    <receiver>NetworkDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>251</x>
-     <y>331</y>
+     <x>220</x>
+     <y>332</y>
     </hint>
     <hint type="destinationlabel">
      <x>188</x>

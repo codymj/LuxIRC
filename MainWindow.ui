@@ -71,7 +71,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="textInput"/>
+           <widget class="QLineEdit" name="inputLE"/>
           </item>
          </layout>
         </item>
