@@ -25,7 +25,6 @@ private:
 
 private slots:
 
-
 };
 
 #endif /* ADDNETWORKDLG_H_ */
