@@ -32,7 +32,7 @@
       <widget class="QWidget" name="">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QTreeWidget" name="chanView">
+         <widget class="QTreeWidget" name="servChanTree">
           <attribute name="headerVisible">
            <bool>false</bool>
           </attribute>
@@ -132,7 +132,7 @@
       <widget class="QWidget" name="">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QListWidget" name="nickView"/>
+         <widget class="QListWidget" name="nickList"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
