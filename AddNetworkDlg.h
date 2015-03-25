@@ -25,7 +25,7 @@ private:
 
 private slots:
     void updateWidget();
-    void toggleServerInfo();
+    void toggleUserInfo();
 
 };
 
