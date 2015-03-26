@@ -28,12 +28,21 @@ NetworkDlg::NetworkDlg() {
 NetworkDlg::~NetworkDlg() {
 }
 
+/*** SLOT - Open the AddNetworkDlg ***/
+void NetworkDlg::openAddNetworkDlg() {
+    AddNetworkDlg *addNetworkDlg = new AddNetworkDlg();
+    
+    if (addNetworkDlg->exec()) {
+    }
+
+    delete addNetworkDlg;
+}
+
 /*** SLOT - Open the EditNetworkDlg ***/
 void NetworkDlg::openEditNetworkDlg() {
     EditNetworkDlg *editNetworkDlg = new EditNetworkDlg(selectedNetwork);
     
     if (editNetworkDlg->exec()) {
-        // TODO: Handle the addition of networks into a file.
     }
 
     delete editNetworkDlg;

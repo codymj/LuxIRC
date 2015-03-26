@@ -47,7 +47,6 @@ void EditNetworkDlg::readData(QString &networkName) {
         line = file.readLine();
         line = line.trimmed();
         if (line.mid(2) == networkName) {
-            qDebug() << networkName;
             // Network found. Parse info until the next blank line
             while (line != "\n") {
                 populateData(line);
