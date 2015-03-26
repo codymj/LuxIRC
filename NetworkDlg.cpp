@@ -5,25 +5,62 @@
  *      Author: br0d1n
  */
 
+#include <QDebug>
+#include <QFile>
+#include <QListWidgetItem>
+#include <QString>
 #include "NetworkDlg.h"
 #include "AddNetworkDlg.h"
+#include "EditNetworkDlg.h"
 
 NetworkDlg::NetworkDlg() {
-	setupUi(this);
-
-	connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
+    setupUi(this);
+    
+    readData();
+    
+    connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
+    connect(editBtn, SIGNAL(clicked()), this, SLOT(openEditNetworkDlg()));
+    connect(networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork()));
+    
+    networkList->setCurrentRow(0);
 }
 
 NetworkDlg::~NetworkDlg() {
 }
 
-/*** SLOT - Open the AddNetworkDlg ***/
-void NetworkDlg::openAddNetworkDlg() {
-	AddNetworkDlg *addNetworkDlg = new AddNetworkDlg();
+/*** SLOT - Open the EditNetworkDlg ***/
+void NetworkDlg::openEditNetworkDlg() {
+    EditNetworkDlg *editNetworkDlg = new EditNetworkDlg(selectedNetwork);
+    
+    if (editNetworkDlg->exec()) {
+        // TODO: Handle the addition of networks into a file.
+    }
 
-	if (addNetworkDlg->exec()) {
-		// TODO: Handle the addition of networks into a file.
-	}
+    delete editNetworkDlg;
+}
 
-	delete addNetworkDlg;
+/*** SLOT - Selects network from emitted networkList indexChanged signal ***/
+void NetworkDlg::selectNetwork() {
+    selectedNetwork = networkList->currentItem()->text();
+    selectedNetwork = selectedNetwork.trimmed();
+}
+
+/*** Populates networkList with networks from 'networks.conf' file ***/
+void NetworkDlg::readData() {
+    QFile file("networks.conf");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug() << "Error opening 'networks.conf'";
+    }
+    
+    // Loop until all networks are found
+    while (!file.atEnd()) {
+        QString line = file.readLine();
+        if (line.left(2) == "N=") {
+            QString networkStr = line.mid(2);
+            networkStr = networkStr.trimmed();
+            networkList->addItem(networkStr);
+        }
+    }
+    
+    file.close();
 }

@@ -8,6 +8,6 @@ INCLUDEPATH += .
 QT += widgets
 
 # Input
-HEADERS += ChangeNickDlg.h MainWindow.h NetworkDlg.h AddNetworkDlg.h
-FORMS += ChangeNickDlg.ui MainWindow.ui NetworkDlg.ui AddNetworkDlg.ui
-SOURCES += ChangeNickDlg.cpp main.cpp MainWindow.cpp NetworkDlg.cpp AddNetworkDlg.cpp
+HEADERS += ChangeNickDlg.h MainWindow.h NetworkDlg.h AddNetworkDlg.h EditNetworkDlg.h
+FORMS += ChangeNickDlg.ui MainWindow.ui NetworkDlg.ui AddNetworkDlg.ui EditNetworkDlg.ui
+SOURCES += ChangeNickDlg.cpp main.cpp MainWindow.cpp NetworkDlg.cpp AddNetworkDlg.cpp EditNetworkDlg.cpp

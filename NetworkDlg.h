@@ -8,23 +8,27 @@
 #ifndef NETWORKDLG_H_
 #define NETWORKDLG_H_
 
+#include <QString>
 #include "ui_NetworkDlg.h"
 
 class NetworkDlg : public QDialog, public Ui::NetworkDlg {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	NetworkDlg();
-	virtual ~NetworkDlg();
-
+    NetworkDlg();
+    virtual ~NetworkDlg();
+    
+    QString selectedNetwork;
+    
 public slots:
 
-
 private:
-
+    void readData();
 
 private slots:
-	void openAddNetworkDlg();
+    void openAddNetworkDlg();
+    void openEditNetworkDlg();
+    void selectNetwork();
 
 };
 

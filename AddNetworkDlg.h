@@ -8,6 +8,7 @@
 #ifndef ADDNETWORKDLG_H_
 #define ADDNETWORKDLG_H_
 
+#include <QString>
 #include "ui_AddNetworkDlg.h"
 
 class AddNetworkDlg : public QDialog, public Ui::AddNetworkDlg {
@@ -21,10 +22,9 @@ public slots:
 
 
 private:
-
+    void writeData();
 
 private slots:
-    void updateWidget();
     void toggleUserInfo();
 
 };
