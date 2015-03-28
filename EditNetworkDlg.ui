@@ -89,7 +89,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="okBtn">
+     <widget class="QPushButton" name="saveBtn">
       <property name="text">
        <string>&amp;Save</string>
       </property>
@@ -359,7 +359,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>okBtn</sender>
+   <sender>saveBtn</sender>
    <signal>clicked()</signal>
    <receiver>EditNetworkDlg</receiver>
    <slot>accept()</slot>

@@ -16,8 +16,6 @@
 EditNetworkDlg::EditNetworkDlg(QString &networkName) {
     setupUi(this);
     
-    //QString network = networkName;
-    
     // Set 1-99999 validator for port QLineEdit and set default port '6667'
     QRegExp portRegExp("[1-9]\\d{0,4}");
     QValidator *portValidator = new QRegExpValidator(portRegExp, this);
@@ -37,7 +35,7 @@ EditNetworkDlg::~EditNetworkDlg() {
 /*** Reads data from a file for specific network and loads data into data fields ***/
 void EditNetworkDlg::readData(QString &networkName) {
     QFile file("networks.conf");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)){
         qDebug() << "Error opening 'networks.conf'";
     }
 

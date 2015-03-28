@@ -26,6 +26,7 @@ private:
 
 private slots:
     void toggleUserInfo();
+    void accept();
 
 };
 

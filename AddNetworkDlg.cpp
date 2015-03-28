@@ -6,9 +6,12 @@
  */
 
 #include <QByteArray>
+#include <QDebug>
 #include <QFile>
+#include <QMessageBox>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QString>
 #include <QTextStream>
 #include "AddNetworkDlg.h"
 
@@ -30,7 +33,82 @@ AddNetworkDlg::~AddNetworkDlg() {
 
 /*** Writes data from Network struct to file ***/
 void AddNetworkDlg::writeData() {
+    QFile file("networks.conf");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Creating networks.conf file since it did not exist.";
+    }
     
+    QFile temp("temp");
+    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Creating temp file for writing.";
+    }
+    QTextStream write(&temp);
+    
+    // Make sure network doesn't already exist, if exists, ask to overwrite
+    QString networkName = networkLE->text();
+    QString line;
+    while (!file.atEnd()) {
+        line = file.readLine();
+        write << line;
+        line = line.trimmed();
+        if (line.mid(2) == networkName) {
+            QMessageBox msgBox;
+            msgBox.setText("This network already exists.");
+            msgBox.setInformativeText("Overwrite?");
+            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Cancel);
+            int rtrn = msgBox.exec();
+            switch (rtrn) {
+                case QMessageBox::Ok:
+                    write << "N=" + networkLE->text() + '\n';
+                    write << "S=" + serverLE->text() + '\n';
+                    write << "p=" + portLE->text() + '\n';
+                    write << "I=" + nickLE->text() + '\n';
+                    write << "i=" + nick2LE->text() + '\n';
+                    write << "U=" + usernameLE->text() + '\n';
+                    write << "R=" + realNameLE->text() + '\n';
+                    write << "L=" + QString::number(loginMethodCbo->currentIndex()) + '\n';
+                    write << "P=" + passwordLE->text() + '\n';
+                    write << "J=" + joinChansLE->text() + '\n';
+                    write << "c=" + QString::number(connectCkb->isChecked()) + '\n';
+                    write << "n=" + QString::number(sslCkb->isChecked()) + '\n';
+                    write << "a=" + QString::number(invalidCertCkb->isChecked()) + '\n';
+                    write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
+                    while (line.left(2) != "\n") {
+                        line = file.readLine();
+                        if (line == 0) { break; }
+                    }
+                    break;
+                case QMessageBox::Cancel:
+                    return;
+            }
+        }
+        if (line == 0) { break; }
+    }
+    write << "N=" + networkLE->text() + '\n';
+    write << "S=" + serverLE->text() + '\n';
+    write << "p=" + portLE->text() + '\n';
+    write << "I=" + nickLE->text() + '\n';
+    write << "i=" + nick2LE->text() + '\n';
+    write << "U=" + usernameLE->text() + '\n';
+    write << "R=" + realNameLE->text() + '\n';
+    write << "L=" + QString::number(loginMethodCbo->currentIndex()) + '\n';
+    write << "P=" + passwordLE->text() + '\n';
+    write << "J=" + joinChansLE->text() + '\n';
+    write << "c=" + QString::number(connectCkb->isChecked()) + '\n';
+    write << "n=" + QString::number(sslCkb->isChecked()) + '\n';
+    write << "a=" + QString::number(invalidCertCkb->isChecked()) + '\n';
+    write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
+    file.close();
+    temp.close();
+    file.remove();
+    temp.rename("networks.conf");
+}
+
+/*** SLOT - Called when 'save' button is clicked ***/
+void AddNetworkDlg::accept() {
+    writeData();
+    this->close();
 }
 
 /*** SLOT - Use global user info or per-server info ***/

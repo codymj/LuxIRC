@@ -59,6 +59,7 @@ void NetworkDlg::readData() {
     QFile file("networks.conf");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug() << "Error opening 'networks.conf'";
+        return;
     }
     
     // Loop until all networks are found
@@ -70,6 +71,5 @@ void NetworkDlg::readData() {
             networkList->addItem(networkStr);
         }
     }
-    
     file.close();
 }
