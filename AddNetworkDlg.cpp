@@ -17,13 +17,13 @@
 
 AddNetworkDlg::AddNetworkDlg() {
     setupUi(this);
-    
+
     // Set 1-99999 validator for port QLineEdit and set default port '6667'
     QRegExp portRegExp("[1-9]\\d{0,4}");
     QValidator *portValidator = new QRegExpValidator(portRegExp, this);
     portLE->setValidator(portValidator);
     portLE->setText("6667");
-    
+
     // Ticking 'Use Global Information' disables per-network user info
     connect(globalInfoCkb, SIGNAL(toggled(bool)), this, SLOT(toggleUserInfo()));
 }
@@ -37,13 +37,13 @@ void AddNetworkDlg::writeData() {
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Creating networks.conf file since it did not exist.";
     }
-    
+
     QFile temp("temp");
     if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qDebug() << "Creating temp file for writing.";
     }
     QTextStream write(&temp);
-    
+
     // Make sure network doesn't already exist, if exists, ask to overwrite
     QString networkName = networkLE->text();
     QString line;
@@ -60,20 +60,7 @@ void AddNetworkDlg::writeData() {
             int rtrn = msgBox.exec();
             switch (rtrn) {
                 case QMessageBox::Ok:
-                    write << "N=" + networkLE->text() + '\n';
-                    write << "S=" + serverLE->text() + '\n';
-                    write << "p=" + portLE->text() + '\n';
-                    write << "I=" + nickLE->text() + '\n';
-                    write << "i=" + nick2LE->text() + '\n';
-                    write << "U=" + usernameLE->text() + '\n';
-                    write << "R=" + realNameLE->text() + '\n';
-                    write << "L=" + QString::number(loginMethodCbo->currentIndex()) + '\n';
-                    write << "P=" + passwordLE->text() + '\n';
-                    write << "J=" + joinChansLE->text() + '\n';
-                    write << "c=" + QString::number(connectCkb->isChecked()) + '\n';
-                    write << "n=" + QString::number(sslCkb->isChecked()) + '\n';
-                    write << "a=" + QString::number(invalidCertCkb->isChecked()) + '\n';
-                    write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
+					streamDataIntoFile(write);
                     while (line.left(2) != "\n") {
                         line = file.readLine();
                         if (line == 0) { break; }
@@ -85,24 +72,29 @@ void AddNetworkDlg::writeData() {
         }
         if (line == 0) { break; }
     }
-    write << "N=" + networkLE->text() + '\n';
-    write << "S=" + serverLE->text() + '\n';
-    write << "p=" + portLE->text() + '\n';
-    write << "I=" + nickLE->text() + '\n';
-    write << "i=" + nick2LE->text() + '\n';
-    write << "U=" + usernameLE->text() + '\n';
-    write << "R=" + realNameLE->text() + '\n';
-    write << "L=" + QString::number(loginMethodCbo->currentIndex()) + '\n';
-    write << "P=" + passwordLE->text() + '\n';
-    write << "J=" + joinChansLE->text() + '\n';
-    write << "c=" + QString::number(connectCkb->isChecked()) + '\n';
-    write << "n=" + QString::number(sslCkb->isChecked()) + '\n';
-    write << "a=" + QString::number(invalidCertCkb->isChecked()) + '\n';
-    write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
+    streamDataIntoFile(write);
     file.close();
     temp.close();
     file.remove();
     temp.rename("networks.conf");
+}
+
+/*** Helper method to stream data into a file ***/
+void AddNetworkDlg::streamDataIntoFile(QTextStream &write) {
+	write << "N=" + networkLE->text() + '\n';
+	write << "S=" + serverLE->text() + '\n';
+	write << "p=" + portLE->text() + '\n';
+	write << "I=" + nickLE->text() + '\n';
+	write << "i=" + nick2LE->text() + '\n';
+	write << "U=" + usernameLE->text() + '\n';
+	write << "R=" + realNameLE->text() + '\n';
+	write << "L=" + QString::number(loginMethodCbo->currentIndex()) + '\n';
+	write << "P=" + passwordLE->text() + '\n';
+	write << "J=" + joinChansLE->text() + '\n';
+	write << "c=" + QString::number(connectCkb->isChecked()) + '\n';
+	write << "n=" + QString::number(sslCkb->isChecked()) + '\n';
+	write << "a=" + QString::number(invalidCertCkb->isChecked()) + '\n';
+	write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
 }
 
 /*** SLOT - Called when 'save' button is clicked ***/

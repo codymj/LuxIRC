@@ -23,7 +23,7 @@ public slots:
 
 private:
     void writeData();
-
+	void streamDataIntoFile(QTextStream &write);
 private slots:
     void toggleUserInfo();
     void accept();
