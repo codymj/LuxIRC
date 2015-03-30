@@ -17,18 +17,20 @@ class NetworkDlg : public QDialog, public Ui::NetworkDlg {
 public:
     NetworkDlg();
     virtual ~NetworkDlg();
-    
+
     QString selectedNetwork;
-    
+	void readData();
+
 public slots:
 
 private:
-    void readData();
 
 private slots:
     void openAddNetworkDlg();
     void openEditNetworkDlg();
     void selectNetwork();
+
+protected:
 
 };
 

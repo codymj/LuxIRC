@@ -15,13 +15,11 @@
 
 NetworkDlg::NetworkDlg() {
     setupUi(this);
-    
-    readData();
-    
+
     connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
     connect(editBtn, SIGNAL(clicked()), this, SLOT(openEditNetworkDlg()));
     connect(networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork()));
-    
+
     networkList->setCurrentRow(0);
 }
 
@@ -31,7 +29,7 @@ NetworkDlg::~NetworkDlg() {
 /*** SLOT - Open the AddNetworkDlg ***/
 void NetworkDlg::openAddNetworkDlg() {
     AddNetworkDlg *addNetworkDlg = new AddNetworkDlg();
-    
+
     if (addNetworkDlg->exec()) {
     }
 
@@ -41,7 +39,7 @@ void NetworkDlg::openAddNetworkDlg() {
 /*** SLOT - Open the EditNetworkDlg ***/
 void NetworkDlg::openEditNetworkDlg() {
     EditNetworkDlg *editNetworkDlg = new EditNetworkDlg(selectedNetwork);
-    
+
     if (editNetworkDlg->exec()) {
     }
 
@@ -61,7 +59,10 @@ void NetworkDlg::readData() {
         qDebug() << "Error opening 'networks.conf'";
         return;
     }
-    
+
+	// Clear networkList first
+	networkList->clear();
+
     // Loop until all networks are found
     while (!file.atEnd()) {
         QString line = file.readLine();

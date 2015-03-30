@@ -34,7 +34,7 @@ class EditNetworkDlg : public QDialog, public Ui::EditNetworkDlg {
     Q_OBJECT
 
 public:
-    EditNetworkDlg(QString &networkName);
+    EditNetworkDlg(QString &);
     virtual ~EditNetworkDlg();
 
 public slots:

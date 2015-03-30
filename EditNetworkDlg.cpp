@@ -12,6 +12,7 @@
 #include <QRegExpValidator>
 #include <QTextStream>
 #include "EditNetworkDlg.h"
+#include "NetworkDlg.h"
 
 EditNetworkDlg::EditNetworkDlg(QString &networkName) {
     setupUi(this);
