@@ -31,7 +31,7 @@ AddNetworkDlg::AddNetworkDlg() {
 AddNetworkDlg::~AddNetworkDlg() {
 }
 
-/*** Writes data from Network struct to file ***/
+/*** Writes data from data widgets to file ***/
 void AddNetworkDlg::writeData() {
     QFile file("networks.conf");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -49,29 +49,46 @@ void AddNetworkDlg::writeData() {
     QString line;
     while (!file.atEnd()) {
         line = file.readLine();
-        write << line;
-        line = line.trimmed();
-        if (line.mid(2) == networkName) {
+		
+		// Network already in file, ask to overwrite
+        if (line.mid(2).trimmed() == networkName) {
             QMessageBox msgBox;
             msgBox.setText("This network already exists.");
             msgBox.setInformativeText("Overwrite?");
             msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
             msgBox.setDefaultButton(QMessageBox::Cancel);
+
             int rtrn = msgBox.exec();
             switch (rtrn) {
                 case QMessageBox::Ok:
 					streamDataIntoFile(write);
+
+					// Skip previous data for network
                     while (line.left(2) != "\n") {
                         line = file.readLine();
                         if (line == 0) { break; }
                     }
-                    break;
+
+                    // Write rest of the file into temp
+                    while (!file.atEnd()) {
+						line = file.readLine();
+						write << line;
+						line = line.trimmed();
+					}
+
+                    file.close();
+					temp.close();
+					file.remove();
+					temp.rename("networks.conf");
+                    return;
                 case QMessageBox::Cancel:
                     return;
             }
         }
-        if (line == 0) { break; }
+		write << line;
     }
+
+    // Network was not found in file, entering new network info to file
     streamDataIntoFile(write);
     file.close();
     temp.close();

@@ -43,10 +43,12 @@ public slots:
 private:
     void readData(QString &);
     void writeData();
+	void streamDataIntoFile(QTextStream &);
     void populateData(QString &);
 
 private slots:
     void toggleUserInfo();
+	void accept();
 
 };
 
