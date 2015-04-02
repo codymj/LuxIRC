@@ -49,7 +49,7 @@ void AddNetworkDlg::writeData() {
     QString line;
     while (!file.atEnd()) {
         line = file.readLine();
-		
+
 		// Network already in file, ask to overwrite
         if (line.mid(2).trimmed() == networkName) {
             QMessageBox msgBox;

@@ -22,6 +22,9 @@
     <height>356</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Networks</string>
   </property>
@@ -67,7 +70,7 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>&amp;Second Nickname:</string>
+       <string>Second Nic&amp;kname:</string>
       </property>
       <property name="buddy">
        <cstring>nick2LE</cstring>
@@ -93,7 +96,7 @@
     <item row="3" column="0">
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>&amp;Real Name:</string>
+       <string>Rea&amp;l Name:</string>
       </property>
       <property name="buddy">
        <cstring>realNameLE</cstring>
@@ -175,11 +178,6 @@
     <string>Networks:</string>
    </property>
   </widget>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>networkList</zorder>
-  <zorder>label_5</zorder>
  </widget>
  <tabstops>
   <tabstop>nickLE</tabstop>

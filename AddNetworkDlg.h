@@ -15,7 +15,7 @@ class AddNetworkDlg : public QDialog, public Ui::AddNetworkDlg {
     Q_OBJECT
 
 public:
-    AddNetworkDlg();
+	AddNetworkDlg();
     virtual ~AddNetworkDlg();
 
 public slots:
@@ -24,9 +24,10 @@ public slots:
 private:
     void writeData();
 	void streamDataIntoFile(QTextStream &);
+
 private slots:
     void toggleUserInfo();
-    void accept();
+	void accept();
 
 };
 

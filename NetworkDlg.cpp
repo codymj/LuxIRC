@@ -10,7 +10,6 @@
 #include <QListWidgetItem>
 #include <QString>
 #include "NetworkDlg.h"
-#include "AddNetworkDlg.h"
 #include "EditNetworkDlg.h"
 
 NetworkDlg::NetworkDlg() {
@@ -20,7 +19,7 @@ NetworkDlg::NetworkDlg() {
     connect(editBtn, SIGNAL(clicked()), this, SLOT(openEditNetworkDlg()));
     connect(networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork()));
 
-    networkList->setCurrentRow(0);
+	readData();
 }
 
 NetworkDlg::~NetworkDlg() {
@@ -29,11 +28,11 @@ NetworkDlg::~NetworkDlg() {
 /*** SLOT - Open the AddNetworkDlg ***/
 void NetworkDlg::openAddNetworkDlg() {
     AddNetworkDlg *addNetworkDlg = new AddNetworkDlg();
+	connect(addNetworkDlg->saveBtn, SIGNAL(clicked()), this, SLOT(readData()));
 
-    if (addNetworkDlg->exec()) {
-    }
+	addNetworkDlg->exec();
 
-    delete addNetworkDlg;
+	delete addNetworkDlg;
 }
 
 /*** SLOT - Open the EditNetworkDlg ***/
@@ -73,4 +72,5 @@ void NetworkDlg::readData() {
         }
     }
     file.close();
+	networkList->setCurrentRow(0);
 }

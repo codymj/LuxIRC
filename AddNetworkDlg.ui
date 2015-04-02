@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>AddNetworkDlg</class>
  <widget class="QDialog" name="AddNetworkDlg">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -30,6 +33,9 @@
   </property>
   <property name="inputMethodHints">
    <set>Qt::ImhNone</set>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
