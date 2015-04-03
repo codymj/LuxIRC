@@ -98,6 +98,7 @@ void AddNetworkDlg::writeData() {
 
 /*** Helper method to stream data into a file ***/
 void AddNetworkDlg::streamDataIntoFile(QTextStream &write) {
+	write << '\n';
 	write << "N=" + networkLE->text() + '\n';
 	write << "S=" + serverLE->text() + '\n';
 	write << "p=" + portLE->text() + '\n';
@@ -111,7 +112,7 @@ void AddNetworkDlg::streamDataIntoFile(QTextStream &write) {
 	write << "c=" + QString::number(connectCkb->isChecked()) + '\n';
 	write << "n=" + QString::number(sslCkb->isChecked()) + '\n';
 	write << "a=" + QString::number(invalidCertCkb->isChecked()) + '\n';
-	write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
+	write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n";
 }
 
 /*** SLOT - Called when 'save' button is clicked ***/

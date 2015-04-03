@@ -11,25 +11,6 @@
 #include <QString>
 #include "ui_EditNetworkDlg.h"
 
-/* Struct for holding network data
-struct Network {
-    QString name;
-    QString server;
-    int port;
-    QString nick1;
-    QString nick2;
-    QString username;
-    QString realName;
-    int loginMethod;
-    QString password;
-    QString channels;
-    bool connectAtStart;
-    bool useSSL;
-    bool acceptInvalidCert;
-    bool useGlobalInfo;
-};
-*/
-
 class EditNetworkDlg : public QDialog, public Ui::EditNetworkDlg {
     Q_OBJECT
 

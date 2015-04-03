@@ -30,6 +30,7 @@ private slots:
     void openEditNetworkDlg();
     void selectNetwork();
 	void readData();
+	void removeNetwork();
 
 };
 

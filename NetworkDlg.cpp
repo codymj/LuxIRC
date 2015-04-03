@@ -17,6 +17,7 @@ NetworkDlg::NetworkDlg() {
 
     connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
     connect(editBtn, SIGNAL(clicked()), this, SLOT(openEditNetworkDlg()));
+	connect(removeBtn, SIGNAL(clicked()), this, SLOT(removeNetwork()));
     connect(networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork()));
 
 	readData();
@@ -51,7 +52,7 @@ void NetworkDlg::selectNetwork() {
     selectedNetwork = selectedNetwork.trimmed();
 }
 
-/*** Populates networkList with networks from 'networks.conf' file ***/
+/*** SLOT - Populates networkList with networks from 'networks.conf' file ***/
 void NetworkDlg::readData() {
     QFile file("networks.conf");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -74,4 +75,42 @@ void NetworkDlg::readData() {
     file.close();
 	networkList->sortItems();
 	networkList->setCurrentRow(0);
+}
+
+/*** SLOT - Removes a network from the network list ***/
+void NetworkDlg::removeNetwork() {
+	QFile file("networks.conf");
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		qDebug() << "Creating networks.conf file since it did not exist.";
+	}
+
+	QFile temp("temp");
+	if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		qDebug() << "Creating temp file for writing.";
+	}
+
+	QTextStream write(&temp);
+
+	QString networkName = selectedNetwork;
+	QString line;
+	while (!file.atEnd()) {
+		line = file.readLine();
+
+		// Found network to remove
+		if (line.mid(2).trimmed() == networkName) {
+			// Skip data for network
+			while (line.left(2) != "\n") {
+				line = file.readLine();
+				if (line == "") { break; }	// If data is at end of file
+			}
+			line = file.readLine();
+		}
+		write << line;
+
+	}
+	file.close();
+	temp.close();
+	file.remove();
+	temp.rename("networks.conf");
+	readData();
 }

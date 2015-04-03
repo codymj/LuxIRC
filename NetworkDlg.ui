@@ -65,7 +65,7 @@
    </property>
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="1">
-     <widget class="QLineEdit" name="nickLE"/>
+     <widget class="QLineEdit" name="gblNickLE"/>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
@@ -73,12 +73,12 @@
        <string>Second Nic&amp;kname:</string>
       </property>
       <property name="buddy">
-       <cstring>nick2LE</cstring>
+       <cstring>gblNick2LE</cstring>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="nick2LE"/>
+     <widget class="QLineEdit" name="gblNick2LE"/>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_3">
@@ -86,12 +86,12 @@
        <string>&amp;Username:</string>
       </property>
       <property name="buddy">
-       <cstring>usernameLE</cstring>
+       <cstring>gblUsernameLE</cstring>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="usernameLE"/>
+     <widget class="QLineEdit" name="gblUsernameLE"/>
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_4">
@@ -99,12 +99,12 @@
        <string>Rea&amp;l Name:</string>
       </property>
       <property name="buddy">
-       <cstring>realNameLE</cstring>
+       <cstring>gblRealNameLE</cstring>
       </property>
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="realNameLE"/>
+     <widget class="QLineEdit" name="gblRealNameLE"/>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label">
@@ -112,7 +112,7 @@
        <string>&amp;Nickname:</string>
       </property>
       <property name="buddy">
-       <cstring>nickLE</cstring>
+       <cstring>gblNickLE</cstring>
       </property>
      </widget>
     </item>
@@ -141,13 +141,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="removeBtn">
-        <property name="text">
-         <string>Remove</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="editBtn">
         <property name="text">
          <string>&amp;Edit</string>
@@ -166,6 +159,13 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="removeBtn">
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -186,12 +186,11 @@
   </widget>
  </widget>
  <tabstops>
-  <tabstop>nickLE</tabstop>
-  <tabstop>nick2LE</tabstop>
-  <tabstop>usernameLE</tabstop>
-  <tabstop>realNameLE</tabstop>
+  <tabstop>gblNickLE</tabstop>
+  <tabstop>gblNick2LE</tabstop>
+  <tabstop>gblUsernameLE</tabstop>
+  <tabstop>gblRealNameLE</tabstop>
   <tabstop>addBtn</tabstop>
-  <tabstop>removeBtn</tabstop>
   <tabstop>editBtn</tabstop>
   <tabstop>cancelBtn</tabstop>
   <tabstop>okBtn</tabstop>

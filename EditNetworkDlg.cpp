@@ -28,6 +28,9 @@ EditNetworkDlg::EditNetworkDlg(QString &networkName) {
 
     // Read in data from file
     readData(networkName);
+
+	// Disable editing of network name
+	networkLE->setEnabled(false);
 }
 
 EditNetworkDlg::~EditNetworkDlg() {
@@ -128,7 +131,6 @@ void EditNetworkDlg::writeData() {
 	QString line;
 	while (!file.atEnd()) {
 		line = file.readLine();
-		//line = line.trimmed();
 
 		// Found network to edit
 		if (line.mid(2).trimmed() == networkName) {
