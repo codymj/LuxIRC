@@ -72,5 +72,6 @@ void NetworkDlg::readData() {
         }
     }
     file.close();
+	networkList->sortItems();
 	networkList->setCurrentRow(0);
 }

@@ -24,7 +24,7 @@ public slots:
 
 private:
 	QString selectedNetwork;
-	
+
 private slots:
     void openAddNetworkDlg();
     void openEditNetworkDlg();
