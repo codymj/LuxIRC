@@ -31,6 +31,7 @@ private slots:
     void selectNetwork();
 	void readData();
 	void removeNetwork();
+	void accept();
 
 };
 

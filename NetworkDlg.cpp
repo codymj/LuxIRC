@@ -9,9 +9,11 @@
 #include <QFile>
 #include <QListWidgetItem>
 #include <QString>
+#include <QTextStream>
 #include "NetworkDlg.h"
 #include "EditNetworkDlg.h"
 
+/*** Constructor ***/
 NetworkDlg::NetworkDlg() {
     setupUi(this);
 
@@ -23,6 +25,7 @@ NetworkDlg::NetworkDlg() {
 	readData();
 }
 
+/*** Destructor ***/
 NetworkDlg::~NetworkDlg() {
 }
 
@@ -54,45 +57,74 @@ void NetworkDlg::selectNetwork() {
 
 /*** SLOT - Populates networkList with networks from 'networks.conf' file ***/
 void NetworkDlg::readData() {
-    QFile file("networks.conf");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        qDebug() << "Error opening 'networks.conf'";
+	// Open networks.conf for reading
+    QFile networks("networks.conf");
+	if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)){
+        qDebug() << "Error opening networks.conf";
         return;
     }
+
+    // Open luxirc.conf for reading
+    QFile luxirc("luxirc.conf");
+	if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		qDebug() << "Error opening luxirc.conf.";
+	}
+
+    QString line;
+
+    // Load global user info into NetworkDlg
+    while (!luxirc.atEnd()) {
+		line = luxirc.readLine();
+		if (line.left(2) == "I=") {
+			gblNickLE->setText(line.mid(2).trimmed());
+		}
+		if (line.left(2) == "i=") {
+			gblNick2LE->setText(line.mid(2).trimmed());
+		}
+		if (line.left(2) == "U=") {
+			gblUsernameLE->setText(line.mid(2).trimmed());
+		}
+		if (line.left(2) == "R=") {
+			gblRealNameLE->setText(line.mid(2).trimmed());
+		}
+	}
 
 	// Clear networkList first
 	networkList->clear();
 
     // Loop until all networks are found
-    while (!file.atEnd()) {
-        QString line = file.readLine();
+	while (!networks.atEnd()) {
+		line = networks.readLine();
         if (line.left(2) == "N=") {
             QString networkStr = line.mid(2);
             networkStr = networkStr.trimmed();
             networkList->addItem(networkStr);
         }
     }
-    file.close();
+    luxirc.close();
+    networks.close();
 	networkList->sortItems();
 	networkList->setCurrentRow(0);
 }
 
 /*** SLOT - Removes a network from the network list ***/
 void NetworkDlg::removeNetwork() {
+	// Open networks.conf for reading
 	QFile file("networks.conf");
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		qDebug() << "Creating networks.conf file since it did not exist.";
 	}
 
+	// Open temp file for writing
 	QFile temp("temp");
 	if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		qDebug() << "Creating temp file for writing.";
 	}
 
 	QTextStream write(&temp);
-
 	QString networkName = selectedNetwork;
 	QString line;
+
 	while (!file.atEnd()) {
 		line = file.readLine();
 
@@ -106,11 +138,39 @@ void NetworkDlg::removeNetwork() {
 			line = file.readLine();
 		}
 		write << line;
-
 	}
 	file.close();
 	temp.close();
 	file.remove();
 	temp.rename("networks.conf");
 	readData();
+}
+
+/*** SLOT - Accept override to save global user info into file luxirc.conf ***/
+void NetworkDlg::accept() {
+	// Open luxirc.conf for reading
+	QFile luxirc("luxirc.conf");
+	if (!luxirc.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		qDebug() << "Unable to open luxirc.conf";
+	}
+
+	// Open temp file for writing
+	QFile temp("temp");
+	if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		qDebug() << "Creating temp file for writing.";
+	}
+
+	QTextStream write(&temp);
+
+	write << "I=" << gblNickLE->text() << '\n';
+	write << "i=" << gblNick2LE->text() << '\n';
+	write << "U=" << gblUsernameLE->text() << '\n';
+	write << "R=" << gblRealNameLE->text() << '\n';
+
+	luxirc.close();
+	temp.close();
+	luxirc.remove();
+	temp.rename("luxirc.conf");
+
+	this->close();
 }

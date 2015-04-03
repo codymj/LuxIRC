@@ -177,16 +177,55 @@ void EditNetworkDlg::accept() {
 
 /*** SLOT - Use global user info or per-server info ***/
 void EditNetworkDlg::toggleUserInfo() {
-    if (globalInfoCkb->isChecked()) {
-        nickLE->setEnabled(false);
-        nick2LE->setEnabled(false);
-        usernameLE->setEnabled(false);
-        realNameLE->setEnabled(false);
-    }
-    else {
-        nickLE->setEnabled(true);
-        nick2LE->setEnabled(true);
-        usernameLE->setEnabled(true);
-        realNameLE->setEnabled(true);
-    }
+	// Open luxirc.conf for reading
+	QFile luxirc("luxirc.conf");
+	if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		qDebug() << "Unable to open luxirc.conf";
+	}
+
+	QString line;
+	QString nick;
+	QString nick2;
+	QString username;
+	QString realName;
+
+	// Load global user info into NetworkDlg
+	while (!luxirc.atEnd()) {
+		line = luxirc.readLine();
+		if (line.left(2) == "I=") {
+			nick = line.mid(2).trimmed();
+		}
+		if (line.left(2) == "i=") {
+			nick2 = line.mid(2).trimmed();
+		}
+		if (line.left(2) == "U=") {
+			username = line.mid(2).trimmed();
+		}
+		if (line.left(2) == "R=") {
+			realName = line.mid(2).trimmed();
+		}
+	}
+
+	if (globalInfoCkb->isChecked()) {
+		nickLE->setText(nick);
+		nickLE->setEnabled(false);
+		nick2LE->setText(nick2);
+		nick2LE->setEnabled(false);
+		usernameLE->setText(username);
+		usernameLE->setEnabled(false);
+		realNameLE->setText(realName);
+		realNameLE->setEnabled(false);
+	}
+	else {
+		nickLE->setEnabled(true);
+		nickLE->clear();
+		nick2LE->setEnabled(true);
+		nick2LE->clear();
+		usernameLE->setEnabled(true);
+		usernameLE->clear();
+		realNameLE->setEnabled(true);
+		realNameLE->clear();
+	}
+
+	luxirc.close();
 }
