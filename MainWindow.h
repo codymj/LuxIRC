@@ -1,4 +1,4 @@
-/* 
+/*
  * MainWindow.h
  *
  * 	Created on Mar 15, 2015
@@ -16,18 +16,18 @@
 
 class MainWindow : public QMainWindow, public Ui::MainWindow {
     Q_OBJECT
-    
+
 public:
     MainWindow();
     virtual ~MainWindow();
-    
+
 public slots:
 
-    
+
 private:
-	QString nickName;
+	QString nickname;
 	void connectActions();
-    
+
 private slots:
     void changeNick();
     void openNetworkDlg();

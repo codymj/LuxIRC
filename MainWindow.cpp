@@ -13,7 +13,7 @@ MainWindow::MainWindow() {
 	connectActions();
 
 	// I'll create a method to handle initial data settings later.
-	nickName = changeNickBtn->text();
+	nickname = changeNickBtn->text();
 
 	// Resize the splitter so the widgets look more aesthetic.
 	// sizeList << chanView size << centralWidget size << nickView size;
@@ -35,14 +35,12 @@ void MainWindow::connectActions() {
 /*** SLOT - Change nickname ***/
 void MainWindow::changeNick() {
 	ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
-	changeNickDlg->newNickLE->setText(nickName);
+	changeNickDlg->newNickLE->setText(nickname);
 	changeNickDlg->newNickLE->selectAll();
+	changeNickDlg->exec();
 
-	if (changeNickDlg->exec()) {
-		// TODO: Handle blank line edit...
-		nickName = changeNickDlg->newNickLE->text();
-		changeNickBtn->setText(nickName);
-	}
+	nickname = changeNickDlg->getNewNick();
+	changeNickBtn->setText(nickname);
 
 	// TODO:  Handle method to change nick via IRC protocol.
 
@@ -52,10 +50,7 @@ void MainWindow::changeNick() {
 /*** SLOT - Open the Network Dialog ***/
 void MainWindow::openNetworkDlg() {
 	NetworkDlg *networkDlg = new NetworkDlg();
-
-	if (networkDlg->exec()) {
-		// TODO: Handle saving of networks (should I do this in MainWindow or NetworkDlg?)
-	}
+	networkDlg->exec();
 
 	delete networkDlg;
 }

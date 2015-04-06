@@ -42,9 +42,7 @@ void NetworkDlg::openAddNetworkDlg() {
 /*** SLOT - Open the EditNetworkDlg ***/
 void NetworkDlg::openEditNetworkDlg() {
     EditNetworkDlg *editNetworkDlg = new EditNetworkDlg(selectedNetwork);
-
-    if (editNetworkDlg->exec()) {
-    }
+	editNetworkDlg->exec();
 
     delete editNetworkDlg;
 }
