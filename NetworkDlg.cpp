@@ -150,7 +150,7 @@ void NetworkDlg::removeNetwork() {
 void NetworkDlg::accept() {
 	// Open luxirc.conf for reading
 	QFile luxirc("luxirc.conf");
-	if (!luxirc.open(QIODevice::WriteOnly | QIODevice::Text)) {
+	if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		qDebug() << "Unable to open luxirc.conf";
 	}
 

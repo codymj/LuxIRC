@@ -126,12 +126,13 @@ void EditNetworkDlg::writeData() {
 	}
 
 	QTextStream write(&temp);
-
 	QString networkName = networkLE->text();
 	QString line;
+
 	while (!file.atEnd()) {
 		line = file.readLine();
-
+		if (line == "") { break; }	// If data is at end of file
+		
 		// Found network to edit
 		if (line.mid(2).trimmed() == networkName) {
 			streamDataIntoFile(write);
@@ -139,12 +140,13 @@ void EditNetworkDlg::writeData() {
 			// Skip previous data for network
 			while (line.left(2) != "\n") {
 				line = file.readLine();
-				if (line.isNull()) { break; }	// If data is at end of file
+				if (line == "") { break; }	// If data is at end of file
 			}
 			line = file.readLine();
 		}
 		write << line;
 	}
+
 	file.close();
 	temp.close();
 	file.remove();
