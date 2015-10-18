@@ -8,18 +8,18 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() {
-	setupUi(this);
+   setupUi(this);
 
-	connectActions();
+   connectActions();
 
-	// I'll create a method to handle initial data settings later.
-	nickname = changeNickBtn->text();
+   // I'll create a method to handle initial data settings later.
+   nickName = changeNickBtn->text();
 
-	// Resize the splitter so the widgets look more aesthetic.
-	// sizeList << chanView size << centralWidget size << nickView size;
-	QList<int> sizeList;
-	sizeList << 150 << 450 << 150;
-	splitter->setSizes(sizeList);
+   // Resize the splitter so the widgets look more aesthetic.
+   // sizeList << chanView size << centralWidget size << nickView size;
+   QList<int> sizeList;
+   sizeList << 150 << 450 << 150;
+   splitter->setSizes(sizeList);
 }
 
 MainWindow::~MainWindow() {
@@ -27,30 +27,35 @@ MainWindow::~MainWindow() {
 
 /*** Create menu actions ***/
 void MainWindow::connectActions() {
-	connect(openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg()));
-	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
-	connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
+   connect(openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg()));
+   connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+   connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
 }
 
 /*** SLOT - Change nickname ***/
 void MainWindow::changeNick() {
-	ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
-	changeNickDlg->newNickLE->setText(nickname);
-	changeNickDlg->newNickLE->selectAll();
-	changeNickDlg->exec();
+   ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
+   changeNickDlg->newNickLE->setText(nickName);
+   changeNickDlg->newNickLE->selectAll();
 
-	nickname = changeNickDlg->getNewNick();
-	changeNickBtn->setText(nickname);
+   if (changeNickDlg->exec()) {
+      // TODO: Handle blank line edit...
+      nickName = changeNickDlg->newNickLE->text();
+      changeNickBtn->setText(nickName);
+   }
 
-	// TODO:  Handle method to change nick via IRC protocol.
+   // TODO:  Handle method to change nick via IRC protocol.
 
-	delete changeNickDlg;
+   delete changeNickDlg;
 }
 
 /*** SLOT - Open the Network Dialog ***/
 void MainWindow::openNetworkDlg() {
-	NetworkDlg *networkDlg = new NetworkDlg();
-	networkDlg->exec();
+   NetworkDlg *networkDlg = new NetworkDlg();
 
-	delete networkDlg;
+   if (networkDlg->exec()) {
+      // TODO: Handle saving of networks (should I do this in MainWindow or NetworkDlg?)
+   }
+
+   delete networkDlg;
 }

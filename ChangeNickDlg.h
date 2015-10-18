@@ -5,32 +5,26 @@
  * 		Author: br0d1n
  */
 
-#ifndef _CHANGENICKDLG_H
-#define	_CHANGENICKDLG_H
+#ifndef CHANGENICKDLG_H
+#define CHANGENICKDLG_H
 
-#include <QMessageBox>
-#include <QRegExp>
-#include <QRegExpValidator>
-#include <QString>
 #include "ui_ChangeNickDlg.h"
 
 class ChangeNickDlg : public QDialog, public Ui::ChangeNickDlg {
-    Q_OBJECT
+   Q_OBJECT
 
 public:
-    ChangeNickDlg();
-    virtual ~ChangeNickDlg();
-
-	QString newNick;
-	QString getNewNick();
+   ChangeNickDlg();
+   virtual ~ChangeNickDlg();
 
 public slots:
+
 
 private:
 
 
 private slots:
-	void accept();
+
 
 };
 
