@@ -5,6 +5,7 @@
  *      Author: br0d1n
  */
 
+#include <iostream>
 #include <QtCore/QByteArray>
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
@@ -138,7 +139,8 @@ void EditNetworkDlg::writeData() {
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
-
+   
+   // TODO: FIXME
    QFile temp("temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
