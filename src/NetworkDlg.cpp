@@ -1,9 +1,9 @@
-/*
- * NetworkDlg.cpp
- *
- *  Created on: Mar 19, 2015
- *      Author: br0d1n
- */
+/******************************************************************************
+ * NetworkDlg.cpp                                                             *
+ *                                                                            *
+ * Created on: Mar 19, 2015                                                   *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #include <QtCore/QDebug>
 #include <QtCore/QFile>

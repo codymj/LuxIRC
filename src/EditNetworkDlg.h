@@ -1,9 +1,9 @@
-/*
- * EditNetworkDlg.h
- *
- *  Created on: Mar 21, 2015
- *      Author: br0d1n
- */
+/******************************************************************************
+ * EditNetworkDlg.h                                                           *
+ *                                                                            *
+ * Created on: Mar 21, 2015                                                   *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #ifndef EDITNETWORKDLG_H_
 #define EDITNETWORKDLG_H_
