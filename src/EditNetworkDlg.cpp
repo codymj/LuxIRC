@@ -140,19 +140,19 @@ void EditNetworkDlg::writeData() {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
    
-   // TODO: FIXME
    QFile temp("temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
-
+   
    QTextStream write(&temp);
 
    QString networkName = networkLE->text();
    QString line;
-   while (!file.atEnd()) {
+   
+   while (!file.atEnd() || line != "\0") {
       line = file.readLine();
-
+      
       // Found network to edit
       if (line.mid(2).trimmed() == networkName) {
          streamDataIntoFile(write);
@@ -160,7 +160,7 @@ void EditNetworkDlg::writeData() {
          // Skip previous data for network
          while (line.left(2) != "\n") {
             line = file.readLine();
-            if (line.isNull()) {
+            if (line == 0) {
                break;   // If data is at end of file
             }
          }
@@ -168,6 +168,7 @@ void EditNetworkDlg::writeData() {
       }
       write << line;
    }
+   
    file.close();
    temp.close();
    file.remove();
