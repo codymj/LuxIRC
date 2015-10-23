@@ -1,3 +1,13 @@
-IRC Client in Qt5.
+Documentation:
+==============
 
-(Nothing works yet... only front-end).
+LuxIRC is intended to be a basic IRC client without too much bloat. It is a
+self-project of mine to learn the basics of GUI and network programming while
+making something useful. I will expand the program further by making it
+scriptable with Lua and Python.
+
+Libraries and modules used so far:
+----------------------------------
+Qt 5:
+   * QtGui
+   * QtCore
