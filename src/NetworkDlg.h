@@ -1,9 +1,9 @@
-/*
- * NetworkDlg.h
- *
- *  Created on: Mar 19, 2015
- *      Author: br0d1n
- */
+/******************************************************************************
+ * NetworkDlg.h                                                               *
+ *                                                                            *
+ * Created on: Mar 19, 2015                                                   *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #ifndef NETWORKDLG_H_
 #define NETWORKDLG_H_

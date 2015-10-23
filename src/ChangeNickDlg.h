@@ -1,9 +1,9 @@
-/*
- * ChangeNickDlg.h
- *
- * 	Created on Mar 15, 2015
- * 		Author: br0d1n
- */
+/******************************************************************************
+ * ChangeNickDlg.h                                                            *
+ *                                                                            *
+ * Created on Mar 15, 2015                                                    *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #ifndef CHANGENICKDLG_H
 #define CHANGENICKDLG_H
@@ -28,4 +28,4 @@ private slots:
 
 };
 
-#endif	/* _CHANGENICKDLG_H */
+#endif   /* _CHANGENICKDLG_H */

@@ -1,9 +1,9 @@
-/*
- * AddNetworkDlg.cpp
- *
- *  Created on: Mar 21, 2015
- *      Author: br0d1n
- */
+/******************************************************************************
+ * AddNetworkDlg.cpp                                                          *
+ *                                                                            *
+ * Created on: Mar 21, 2015                                                   *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #include <QtCore/QByteArray>
 #include <QtCore/QDebug>

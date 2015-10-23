@@ -1,9 +1,9 @@
-/*
- * ChangeNickDlg.cpp
- *
- * 	Created on Mar 15, 2015
- * 		Author: br0d1n
- */
+/******************************************************************************
+ * ChangeNickDlg.cpp                                                          *
+ *                                                                            *
+ * Created on Mar 15, 2015                                                    *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #include "ChangeNickDlg.h"
 

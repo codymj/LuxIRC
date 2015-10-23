@@ -1,9 +1,9 @@
-/*
- * MainWindow.h
- *
- *    Created on Mar 15, 2015
- *       Author: br0d1n
- */
+/******************************************************************************
+ * MainWindow.h                                                               *
+ *                                                                            *
+ * Created on Mar 15, 2015                                                    *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #ifndef _MAINWINDOW_H
 #define  _MAINWINDOW_H

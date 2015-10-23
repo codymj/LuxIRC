@@ -1,9 +1,9 @@
-/*
- * main.cpp
- *
- * 	Created on Mar 15, 2015
- * 		Author: br0d1n
- */
+/******************************************************************************
+ * main.cpp                                                                   *
+ *                                                                            *
+ * Created on Mar 15, 2015                                                    *
+ * Author: ismann <ismann@protonmail.com>                                     *
+ ******************************************************************************/
 
 #include <QtWidgets/QApplication>
 #include "MainWindow.h"
