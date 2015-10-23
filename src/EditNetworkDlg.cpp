@@ -1,9 +1,9 @@
-/******************************************************************************
- * EditNetworkDlg.cpp                                                         *
- *                                                                            *
- * Created on: Mar 21, 2015                                                   *
- * Author: ismann <ismann@protonmail.com>                                     *
- ******************************************************************************/
+/*
+ * EditNetworkDlg.cpp
+ *
+ *  Created on: Mar 21, 2015
+ *      Author: br0d1n
+ */
 
 #include <iostream>
 #include <QtCore/QByteArray>
