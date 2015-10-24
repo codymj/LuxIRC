@@ -12,4 +12,5 @@ ChangeNickDlg::ChangeNickDlg() {
 }
 
 ChangeNickDlg::~ChangeNickDlg() {
+   
 }

@@ -5,13 +5,14 @@
  * Author: ismann <ismann@protonmail.com>                                     *
  ******************************************************************************/
 
-#ifndef _MAINWINDOW_H
-#define  _MAINWINDOW_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QtCore/QString>
 #include <QtCore/QList>
 #include "ChangeNickDlg.h"
 #include "NetworkDlg.h"
+#include "AboutDlg.h"
 #include "ui_MainWindow.h"
 
 class MainWindow : public QMainWindow, public Ui::MainWindow {
@@ -31,6 +32,7 @@ private:
 private slots:
    void changeNick();
    void openNetworkDlg();
+   void openAboutDlg();
 };
 
 #endif   /* _MAINWINDOW_H */

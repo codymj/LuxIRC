@@ -28,4 +28,4 @@ private slots:
 
 };
 
-#endif   /* _CHANGENICKDLG_H */
+#endif   /* CHANGENICKDLG_H */

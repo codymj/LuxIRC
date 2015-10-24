@@ -28,6 +28,7 @@ MainWindow::~MainWindow() {
 /*** Create menu actions ***/
 void MainWindow::connectActions() {
    connect(openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg()));
+   connect(aboutAction, SIGNAL(triggered()), this, SLOT(openAboutDlg()));
    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
    connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
 }
@@ -52,10 +53,15 @@ void MainWindow::changeNick() {
 /*** SLOT - Open the Network Dialog ***/
 void MainWindow::openNetworkDlg() {
    NetworkDlg *networkDlg = new NetworkDlg();
-
-   if (networkDlg->exec()) {
-      // TODO: Handle saving of networks (should I do this in MainWindow or NetworkDlg?)
-   }
+   networkDlg->exec();
 
    delete networkDlg;
+}
+
+/*** SLOT- Open the About Dialog ***/
+void MainWindow::openAboutDlg() {
+   AboutDlg *aboutDlg = new AboutDlg();
+   aboutDlg->exec();
+   
+   delete aboutDlg;
 }
