@@ -9,10 +9,13 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtCore/QRegExp>
-#include <QtGui/QRegExpValidator>
+#include <QtCore/QString>
 #include <QtCore/QTextStream>
+#include <QtGui/QRegExpValidator>
 #include "EditNetworkDlg.h"
 #include "NetworkDlg.h"
+
+static QString gConfigDir = "./config/";
 
 EditNetworkDlg::EditNetworkDlg(QString &networkName) {
    setupUi(this);
@@ -38,7 +41,7 @@ EditNetworkDlg::~EditNetworkDlg() {
 
 /*** Reads data from a file for specific network and loads data into data fields ***/
 void EditNetworkDlg::readData(QString &networkName) {
-   QFile file("networks.conf");
+   QFile file(gConfigDir + "networks.conf");
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening 'networks.conf'";
    }
@@ -134,7 +137,7 @@ void EditNetworkDlg::populateData(QString &line) {
 
 /*** Writes data from data widgets to file ***/
 void EditNetworkDlg::writeData() {
-   QFile file("networks.conf");
+   QFile file(gConfigDir + "networks.conf");
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
@@ -201,7 +204,7 @@ void EditNetworkDlg::accept() {
 /*** SLOT - Use global user info or per-server info ***/
 void EditNetworkDlg::toggleUserInfo() {
    // Open luxirc.conf for reading
-   QFile luxirc("luxirc.conf");
+   QFile luxirc(gConfigDir + "luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }

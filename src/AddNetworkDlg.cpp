@@ -8,12 +8,14 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
-#include <QtWidgets/QMessageBox>
 #include <QtCore/QRegExp>
-#include <QtGui/QRegExpValidator>
 #include <QtCore/QString>
 #include <QtCore/QTextStream>
+#include <QtGui/QRegExpValidator>
+#include <QtWidgets/QMessageBox>
 #include "AddNetworkDlg.h"
+
+static QString gConfigDir = "./config/";
 
 AddNetworkDlg::AddNetworkDlg() {
    setupUi(this);
@@ -33,12 +35,12 @@ AddNetworkDlg::~AddNetworkDlg() {
 
 /*** Writes data from data widgets to file ***/
 void AddNetworkDlg::writeData() {
-   QFile file("networks.conf");
+   QFile file(gConfigDir + "networks.conf");
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
 
-   QFile temp("temp");
+   QFile temp(gConfigDir + "temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -127,7 +129,7 @@ void AddNetworkDlg::accept() {
 /*** SLOT - Use global user info or per-server info ***/
 void AddNetworkDlg::toggleUserInfo() {
    // Open luxirc.conf for reading
-   QFile luxirc("luxirc.conf");
+   QFile luxirc(gConfigDir + "luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }

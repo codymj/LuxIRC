@@ -7,11 +7,13 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
-#include <QtWidgets/QListWidgetItem>
 #include <QtCore/QString>
 #include <QtCore/QTextStream>
+#include <QtWidgets/QListWidgetItem>
 #include "NetworkDlg.h"
 #include "EditNetworkDlg.h"
+
+static QString gConfigDir = "./config/";
 
 /*** Constructor ***/
 NetworkDlg::NetworkDlg() {
@@ -58,14 +60,14 @@ void NetworkDlg::selectNetwork() {
 /*** SLOT - Populates networkList with networks from 'networks.conf' file ***/
 void NetworkDlg::readData() {
    // Open networks.conf for reading
-   QFile networks("networks.conf");
+   QFile networks(gConfigDir + "networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening networks.conf";
       return;
    }
 
    // Open luxirc.conf for reading
-   QFile luxirc("luxirc.conf");
+   QFile luxirc(gConfigDir + "luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening luxirc.conf.";
    }
@@ -110,13 +112,13 @@ void NetworkDlg::readData() {
 /*** SLOT - Removes a network from the network list ***/
 void NetworkDlg::removeNetwork() {
    // Open networks.conf for reading
-   QFile file("networks.conf");
+   QFile file(gConfigDir + "networks.conf");
    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
 
    // Open temp file for writing
-   QFile temp("temp");
+   QFile temp(gConfigDir + "temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -151,13 +153,13 @@ void NetworkDlg::removeNetwork() {
 /*** SLOT - Accept override to save global user info into file luxirc.conf ***/
 void NetworkDlg::accept() {
    // Open luxirc.conf for reading
-   QFile luxirc("luxirc.conf");
+   QFile luxirc(gConfigDir + "luxirc.conf");
    if (!luxirc.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }
 
    // Open temp file for writing
-   QFile temp("temp");
+   QFile temp(gConfigDir + "temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
