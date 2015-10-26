@@ -5,8 +5,8 @@
  * Author: ismann <ismann@protonmail.com>                                     *
  ******************************************************************************/
 
-#ifndef CHANGENICKDLG_H
-#define CHANGENICKDLG_H
+#ifndef _CHANGENICKDLG_H_
+#define _CHANGENICKDLG_H_
 
 #include "ui_ChangeNickDlg.h"
 
@@ -28,4 +28,4 @@ private slots:
 
 };
 
-#endif   /* CHANGENICKDLG_H */
+#endif   /* _CHANGENICKDLG_H_ */

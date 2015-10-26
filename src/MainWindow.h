@@ -5,8 +5,8 @@
  * Author: ismann <ismann@protonmail.com>                                     *
  ******************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef _MAINWINDOW_H_
+#define _MAINWINDOW_H_
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -35,4 +35,4 @@ private slots:
    void openAboutDlg();
 };
 
-#endif   /* _MAINWINDOW_H */
+#endif   /* _MAINWINDOW_H_ */

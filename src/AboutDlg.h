@@ -5,8 +5,8 @@
  * Author: ismann <ismann@protonmail.com>                                     *
  ******************************************************************************/
 
-#ifndef ABOUTDLG_H
-#define ABOUTDLG_H
+#ifndef _ABOUTDLG_H_
+#define _ABOUTDLG_H_
 
 #include "ui_AboutDlg.h"
 
@@ -28,4 +28,4 @@ private slots:
 
 };
 
-#endif   /* ABOUTDLG_H */
+#endif   /* _ABOUTDLG_H_ */

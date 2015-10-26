@@ -5,8 +5,8 @@
  * Author: ismann <ismann@protonmail.com>                                     *
  ******************************************************************************/
 
-#ifndef EDITNETWORKDLG_H_
-#define EDITNETWORKDLG_H_
+#ifndef _EDITNETWORKDLG_H_
+#define _EDITNETWORKDLG_H_
 
 #include <QtCore/QString>
 #include "ui_EditNetworkDlg.h"
@@ -33,4 +33,4 @@ private slots:
 
 };
 
-#endif /* EDITNETWORKDLG_H_ */
+#endif /* _EDITNETWORKDLG_H_ */

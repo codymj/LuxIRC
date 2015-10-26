@@ -5,8 +5,8 @@
  * Author: ismann <ismann@protonmail.com>                                     *
  ******************************************************************************/
 
-#ifndef NETWORKDLG_H_
-#define NETWORKDLG_H_
+#ifndef _NETWORKDLG_H_
+#define _NETWORKDLG_H_
 
 #include <QtCore/QString>
 #include "ui_NetworkDlg.h"
@@ -35,4 +35,4 @@ private slots:
 
 };
 
-#endif /* NETWORKDLG_H_ */
+#endif /* _NETWORKDLG_H_ */
