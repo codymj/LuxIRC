@@ -13,8 +13,6 @@
 #include "NetworkDlg.h"
 #include "EditNetworkDlg.h"
 
-static QString gConfigDir = "./config/";
-
 /*** Constructor ***/
 NetworkDlg::NetworkDlg() {
    setupUi(this);
@@ -60,14 +58,14 @@ void NetworkDlg::selectNetwork() {
 /*** SLOT - Populates networkList with networks from 'networks.conf' file ***/
 void NetworkDlg::readData() {
    // Open networks.conf for reading
-   QFile networks(gConfigDir + "networks.conf");
+   QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening networks.conf";
       return;
    }
 
    // Open luxirc.conf for reading
-   QFile luxirc(gConfigDir + "luxirc.conf");
+   QFile luxirc("config/luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening luxirc.conf.";
    }
@@ -112,13 +110,13 @@ void NetworkDlg::readData() {
 /*** SLOT - Removes a network from the network list ***/
 void NetworkDlg::removeNetwork() {
    // Open networks.conf for reading
-   QFile file(gConfigDir + "networks.conf");
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+   QFile networks("config/networks.conf");
+   if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
 
    // Open temp file for writing
-   QFile temp(gConfigDir + "temp");
+   QFile temp("config/temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -127,39 +125,39 @@ void NetworkDlg::removeNetwork() {
    QString networkName = selectedNetwork;
    QString line;
 
-   while (!file.atEnd()) {
-      line = file.readLine();
+   while (!networks.atEnd()) {
+      line = networks.readLine();
 
       // Found network to remove
       if (line.mid(2).trimmed() == networkName) {
          // Skip data for network
          while (line.left(2) != "\n") {
-            line = file.readLine();
+            line = networks.readLine();
             if (line == "") {
                break;   // If data is at end of file
             }
          }
-         line = file.readLine();
+         line = networks.readLine();
       }
       write << line;
    }
-   file.close();
+   networks.close();
    temp.close();
-   file.remove();
-   temp.rename("networks.conf");
+   networks.remove();
+   temp.rename("config/networks.conf");
    readData();
 }
 
 /*** SLOT - Accept override to save global user info into file luxirc.conf ***/
 void NetworkDlg::accept() {
    // Open luxirc.conf for reading
-   QFile luxirc(gConfigDir + "luxirc.conf");
+   QFile luxirc("config/luxirc.conf");
    if (!luxirc.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }
 
    // Open temp file for writing
-   QFile temp(gConfigDir + "temp");
+   QFile temp("config/temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -174,7 +172,7 @@ void NetworkDlg::accept() {
    luxirc.close();
    temp.close();
    luxirc.remove();
-   temp.rename("luxirc.conf");
+   temp.rename("config/luxirc.conf");
 
    this->close();
 }

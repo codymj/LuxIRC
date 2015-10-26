@@ -15,8 +15,6 @@
 #include "EditNetworkDlg.h"
 #include "NetworkDlg.h"
 
-static QString gConfigDir = "./config/";
-
 EditNetworkDlg::EditNetworkDlg(QString &networkName) {
    setupUi(this);
 
@@ -41,21 +39,21 @@ EditNetworkDlg::~EditNetworkDlg() {
 
 /*** Reads data from a file for specific network and loads data into data fields ***/
 void EditNetworkDlg::readData(QString &networkName) {
-   QFile file(gConfigDir + "networks.conf");
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+   QFile networks("config/networks.conf");
+   if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening 'networks.conf'";
    }
 
    // Loop until selected network is found
    QString line;
-   while (!file.atEnd()) {
-      line = file.readLine();
+   while (!networks.atEnd()) {
+      line = networks.readLine();
       line = line.trimmed();
       if (line.mid(2) == networkName) {
          // Network found. Parse info until the next blank line
          while (line != "\n") {
             populateData(line);
-            line = file.readLine();
+            line = networks.readLine();
             // A hack -- for some reason file.atEnd() isn't breaking loop
             if (line == 0) {
                break;
@@ -63,7 +61,7 @@ void EditNetworkDlg::readData(QString &networkName) {
          }
       }
    }
-   file.close();
+   networks.close();
 }
 
 /*** Inputs data from file into data widgets ***/
@@ -137,12 +135,12 @@ void EditNetworkDlg::populateData(QString &line) {
 
 /*** Writes data from data widgets to file ***/
 void EditNetworkDlg::writeData() {
-   QFile file(gConfigDir + "networks.conf");
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+   QFile networks("config/networks.conf");
+   if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
    
-   QFile temp("temp");
+   QFile temp("config/temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -152,8 +150,8 @@ void EditNetworkDlg::writeData() {
    QString networkName = networkLE->text();
    QString line;
    
-   while (!file.atEnd() || line != "\0") {
-      line = file.readLine();
+   while (!networks.atEnd() || line != "\0") {
+      line = networks.readLine();
       
       // Found network to edit
       if (line.mid(2).trimmed() == networkName) {
@@ -161,20 +159,20 @@ void EditNetworkDlg::writeData() {
 
          // Skip previous data for network
          while (line.left(2) != "\n") {
-            line = file.readLine();
+            line = networks.readLine();
             if (line == 0) {
                break;   // If data is at end of file
             }
          }
-         line = file.readLine();
+         line = networks.readLine();
       }
       write << line;
    }
    
-   file.close();
+   networks.close();
    temp.close();
-   file.remove();
-   temp.rename("networks.conf");
+   networks.remove();
+   temp.rename("config/networks.conf");
 }
 
 /*** Helper method to stream data into a file ***/
@@ -204,7 +202,7 @@ void EditNetworkDlg::accept() {
 /*** SLOT - Use global user info or per-server info ***/
 void EditNetworkDlg::toggleUserInfo() {
    // Open luxirc.conf for reading
-   QFile luxirc(gConfigDir + "luxirc.conf");
+   QFile luxirc("config/luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }

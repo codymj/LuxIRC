@@ -15,8 +15,6 @@
 #include <QtWidgets/QMessageBox>
 #include "AddNetworkDlg.h"
 
-static QString gConfigDir = "./config/";
-
 AddNetworkDlg::AddNetworkDlg() {
    setupUi(this);
 
@@ -35,12 +33,12 @@ AddNetworkDlg::~AddNetworkDlg() {
 
 /*** Writes data from data widgets to file ***/
 void AddNetworkDlg::writeData() {
-   QFile file(gConfigDir + "networks.conf");
-   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+   QFile networks("config/networks.conf");
+   if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
 
-   QFile temp(gConfigDir + "temp");
+   QFile temp("config/temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -50,8 +48,8 @@ void AddNetworkDlg::writeData() {
    // Make sure network doesn't already exist, if exists, ask to overwrite
    QString networkName = networkLE->text();
    QString line;
-   while (!file.atEnd()) {
-      line = file.readLine();
+   while (!networks.atEnd()) {
+      line = networks.readLine();
 
       // Network already in file, ask to overwrite
       if (line.mid(2).trimmed() == networkName) {
@@ -68,23 +66,23 @@ void AddNetworkDlg::writeData() {
 
             // Skip previous data for network
             while (line.left(2) != "\n") {
-               line = file.readLine();
+               line = networks.readLine();
                if (line == 0) {
                   break;
                }
             }
 
             // Write rest of the file into temp
-            while (!file.atEnd()) {
-               line = file.readLine();
+            while (!networks.atEnd()) {
+               line = networks.readLine();
                write << line;
                line = line.trimmed();
             }
 
-            file.close();
+            networks.close();
             temp.close();
-            file.remove();
-            temp.rename("networks.conf");
+            networks.remove();
+            temp.rename("config/networks.conf");
             return;
          case QMessageBox::Cancel:
             return;
@@ -95,10 +93,10 @@ void AddNetworkDlg::writeData() {
 
    // Network was not found in file, entering new network info to file
    streamDataIntoFile(write);
-   file.close();
+   networks.close();
    temp.close();
-   file.remove();
-   temp.rename("networks.conf");
+   networks.remove();
+   temp.rename("config/networks.conf");
 }
 
 /*** Helper method to stream data into a file ***/
@@ -129,7 +127,7 @@ void AddNetworkDlg::accept() {
 /*** SLOT - Use global user info or per-server info ***/
 void AddNetworkDlg::toggleUserInfo() {
    // Open luxirc.conf for reading
-   QFile luxirc(gConfigDir + "luxirc.conf");
+   QFile luxirc("config/luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }
