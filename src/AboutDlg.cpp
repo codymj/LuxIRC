@@ -2,7 +2,7 @@
  * AboutDlg.cpp                                                               *
  *                                                                            *
  * Created on Oct 24, 2015                                                    *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #include "AboutDlg.h"

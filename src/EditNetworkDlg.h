@@ -2,7 +2,7 @@
  * EditNetworkDlg.h                                                           *
  *                                                                            *
  * Created on: Mar 21, 2015                                                   *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #ifndef _EDITNETWORKDLG_H_

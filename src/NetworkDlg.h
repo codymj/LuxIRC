@@ -2,7 +2,7 @@
  * NetworkDlg.h                                                               *
  *                                                                            *
  * Created on: Mar 19, 2015                                                   *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #ifndef _NETWORKDLG_H_

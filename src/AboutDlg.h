@@ -2,7 +2,7 @@
  * AboutDlg.h                                                                 *
  *                                                                            *
  * Created on Oct 24, 2015                                                    *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #ifndef _ABOUTDLG_H_

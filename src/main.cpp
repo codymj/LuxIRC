@@ -2,7 +2,7 @@
  * main.cpp                                                                   *
  *                                                                            *
  * Created on Mar 15, 2015                                                    *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #include <QtWidgets/QApplication>

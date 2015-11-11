@@ -2,7 +2,7 @@
  * NetworkDlg.cpp                                                             *
  *                                                                            *
  * Created on: Mar 19, 2015                                                   *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #include <QtCore/QDebug>

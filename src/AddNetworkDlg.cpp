@@ -2,7 +2,7 @@
  * AddNetworkDlg.cpp                                                          *
  *                                                                            *
  * Created on: Mar 21, 2015                                                   *
- * Author: ismann <ismann@protonmail.com>                                     *
+ * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
  ******************************************************************************/
 
 #include <QtCore/QByteArray>
