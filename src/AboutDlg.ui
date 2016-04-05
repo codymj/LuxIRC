@@ -44,7 +44,7 @@
     <string>Close</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -82,14 +82,14 @@
     <item>
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Developer: ismann [&lt;a href=&quot;mailto:ismann@protonmail.com&quot;&gt;ismann@protonmail.com&lt;/a&gt;]</string>
+       <string>Developer: Cody Johnson [&lt;a href=&quot;mailto:codyj@protonmail.com&quot;&gt;codyj@protonmail.com&lt;/a&gt;]</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Source Code: &lt;a href=&quot;https://github.com/ismann/LuxIRC&quot;&gt;https://github.com/ismann/LuxIRC&lt;/a&gt;</string>
+       <string>Source Code: &lt;a href=&quot;https://github.com/codymj/LuxIRC&quot;&gt;https://github.com/codymj/LuxIRC&lt;/a&gt;</string>
       </property>
      </widget>
     </item>
