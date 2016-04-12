@@ -27,7 +27,6 @@ int main() {
    if (socket.waitForConnected(3000)) {
       socket.write("NICK user1234\r\n");
       socket.write("USER user1234 0 * :user1234\r\n");
-      socket.write("JOIN ##math");
       socket.waitForBytesWritten();
       socket.waitForReadyRead();
       
