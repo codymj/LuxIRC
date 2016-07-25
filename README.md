@@ -1,7 +1,7 @@
 Documentation:
 ==============
 
-LuxIRC is intended to be a basic IRC client without too much bloat. It is a self-project of mine to learn the basics of GUI and network programming while making something useful. I will expand the program further by making it scriptable with Lua and Python. I am testing the program in Arch Linux and Windows 10. I will try to get a Mac VM up and running to test in that environment in the near future.
+LuxIRC is intended to be a basic IRC client without too much bloat. It is a self-project of mine to learn the basics of GUI and network programming while making something useful. I will expand the program further by making it scriptable with Lua and Python. I am testing the program in Arch Linux only (for now). I will try to get a Mac VM up and running to test in that environment in the near future.
 
 Current Progress:
 -----------------
