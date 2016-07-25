@@ -2,7 +2,7 @@
  * MainWindow.h                                                               *
  *                                                                            *
  * Created on Mar 15, 2015                                                    *
- * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
+ * Author: Cody Johnson <codyj@protonmail.com>                                *
  ******************************************************************************/
 
 #ifndef _MAINWINDOW_H_

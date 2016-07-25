@@ -2,7 +2,7 @@
  * MainWindow.cpp                                                             *
  *                                                                            *
  * Created on Mar 15, 2015                                                    *
- * Author: Cody Johnson <codyj@mail.usf.edu>                                  *
+ * Author: Cody Johnson <codyj@protonmail.com>                                *
  ******************************************************************************/
 
 #include "MainWindow.h"
@@ -27,7 +27,9 @@ MainWindow::~MainWindow() {
 
 /*** Create menu actions ***/
 void MainWindow::connectActions() {
-   connect(openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg()));
+   connect(
+      openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg())
+   );
    connect(aboutAction, SIGNAL(triggered()), this, SLOT(openAboutDlg()));
    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
    connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
