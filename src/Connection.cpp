@@ -7,3 +7,12 @@
 
 #include "Connection.h"
 
+/*** Default Constructor ***/
+Connection::Connection() {
+
+}
+
+/*** Destructor ***/
+Connection::~Connection() {
+
+}
