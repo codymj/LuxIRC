@@ -5,9 +5,9 @@ LuxIRC is intended to be a basic IRC client without too much bloat. It is a self
 
 Current Progress:
 -----------------
-2016/07/25 - Created the Connection class for handling the logic of connecting to networks. Each Connection will connect through its own thread.
-2016/04/05 - Started implementing the network side. I want to complete this rather quickly and get basic functionality for my portfolio.
-2015/10/23 - I am working on the front-end only and making sure basic file I/O is working properly. I am nearly ready to start delving into the network side of the project.
+* 2016/07/25 - Created the Connection class for handling the logic of connecting to networks. Each Connection will connect through its own thread.
+* 2016/04/05 - Started implementing the network side. I want to complete this rather quickly and get basic functionality for my portfolio.
+* 2015/10/23 - I am working on the front-end only and making sure basic file I/O is working properly. I am nearly ready to start delving into the network side of the project.
 
 Libraries and modules used so far:
 ----------------------------------
