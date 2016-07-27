@@ -8,7 +8,7 @@ INCLUDEPATH += .
 TEMPLATE = app
 TARGET = LuxIRC
 INCLUDEPATH += .
-QT += core widgets
+QT += core widgets network
 OBJECTS_DIR = ./obj
 MOC_DIR = ./moc
 UI_DIR = ./src
@@ -17,6 +17,7 @@ UI_DIR = ./src
 HEADERS += src/AboutDlg.h \
            src/AddNetworkDlg.h \
            src/ChangeNickDlg.h \
+           src/Connection.h \
            src/EditNetworkDlg.h \
            src/MainWindow.h \
            src/NetworkDlg.h \
@@ -35,6 +36,7 @@ FORMS += src/AboutDlg.ui \
 SOURCES += src/AboutDlg.cpp \
            src/AddNetworkDlg.cpp \
            src/ChangeNickDlg.cpp \
+           src/Connection.cpp \
            src/EditNetworkDlg.cpp \
            src/main.cpp \
            src/MainWindow.cpp \

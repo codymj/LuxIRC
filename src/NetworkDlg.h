@@ -12,6 +12,7 @@
 #include "ui_NetworkDlg.h"
 #include "AddNetworkDlg.h"
 #include "EditNetworkDlg.h"
+#include "Connection.h"
 
 class NetworkDlg : public QDialog, public Ui::NetworkDlg {
     Q_OBJECT

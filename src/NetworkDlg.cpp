@@ -11,7 +11,6 @@
 #include <QtCore/QTextStream>
 #include <QtWidgets/QListWidgetItem>
 #include "NetworkDlg.h"
-#include "EditNetworkDlg.h"
 
 /*** Constructor ***/
 NetworkDlg::NetworkDlg() {
@@ -20,7 +19,10 @@ NetworkDlg::NetworkDlg() {
    connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
    connect(editBtn, SIGNAL(clicked()), this, SLOT(openEditNetworkDlg()));
    connect(removeBtn, SIGNAL(clicked()), this, SLOT(removeNetwork()));
-   connect(networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork()));
+   connect(
+      networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork())
+   );
+   connect(connectBtn, SIGNAL(clicked()), this, SLOT(buildConnection()));
 
    readData();
 }

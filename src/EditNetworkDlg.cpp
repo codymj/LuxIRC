@@ -37,7 +37,7 @@ EditNetworkDlg::EditNetworkDlg(QString &networkName) {
 EditNetworkDlg::~EditNetworkDlg() {
 }
 
-/*** Reads data from a file for specific network and loads data into data fields ***/
+/*** Reads data from file for specific network, loads data into data fields ***/
 void EditNetworkDlg::readData(QString &networkName) {
    QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {

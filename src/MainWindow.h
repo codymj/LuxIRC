@@ -11,8 +11,9 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 #include "ChangeNickDlg.h"
-#include "NetworkDlg.h"
 #include "AboutDlg.h"
+#include "Connection.h"
+#include "NetworkDlg.h"
 #include "ui_MainWindow.h"
 
 class MainWindow : public QMainWindow, public Ui::MainWindow {
@@ -23,7 +24,6 @@ public:
    virtual ~MainWindow();
 
 public slots:
-
 
 private:
    QString nickName;
