@@ -73,6 +73,11 @@ void MainWindow::openAboutDlg() {
 /*** SLOT - Receive Connection object from NetworkDlg ***/
 // I will have to handle when connection is loaded, but disconnected
 void MainWindow::receiveConnectObj(Connection *connObj) {
+   // Check if connObj is NULL (initial value), return to prevent segfault
+   if (connObj == NULL) {
+      return;
+   }
+
    // Check for duplicate connections by network name
    bool dupe = false;
    for (int i=0; i<_connectionList.size(); i++) {
@@ -81,14 +86,16 @@ void MainWindow::receiveConnectObj(Connection *connObj) {
       }
    }
 
+   // If a duplicate is found, notify user and return to MainWindow
    if (dupe) {
       QMessageBox mb;
       mb.setText("Network is already added.");
       mb.exec();
       return;
    }
+
+   // Otherwise, append the Connection object to the list
    else {
-      // Add tempConnection from NetworkDlg to our list
       _connectionList << connObj;
    }
 }

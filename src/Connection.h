@@ -76,6 +76,10 @@ public:
 		return this->_network;
 	}
 
+	QList<QString> getChanList() {
+		return this->_chanList;
+	}
+
 private:
 	QString _network;
 	QString _server;

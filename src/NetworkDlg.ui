@@ -34,7 +34,7 @@
      <x>9</x>
      <y>320</y>
      <width>301</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -73,7 +73,7 @@
      <x>10</x>
      <y>10</y>
      <width>301</width>
-     <height>111</height>
+     <height>116</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -209,22 +209,5 @@
   <tabstop>networkList</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>cancelBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>NetworkDlg</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>220</x>
-     <y>332</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>188</x>
-     <y>328</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

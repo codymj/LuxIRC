@@ -23,7 +23,7 @@ public:
    NetworkDlg();
    virtual ~NetworkDlg();
 
-   Connection *tempConnection;
+   Connection *tempConnection = NULL;
 
 public slots:
    void buildConnection();

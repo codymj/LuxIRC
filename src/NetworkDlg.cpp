@@ -23,6 +23,7 @@ NetworkDlg::NetworkDlg() {
       networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork())
    );
    connect(connectBtn, SIGNAL(clicked()), this, SLOT(buildConnection()));
+   connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
 
    readData();
 }
