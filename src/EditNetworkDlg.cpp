@@ -66,7 +66,7 @@ void EditNetworkDlg::readData(QString &networkName) {
 
 /*** Inputs data from file into data widgets ***/
 void EditNetworkDlg::populateData(QString &line) {
-   QString id = line.left(2);      // First two chars in line (identifier) ex. N=
+   QString id = line.left(2);      // First two chars in line (ex. N=)
    QString lineData = line.mid(2); // The data on the rest of the line
    lineData = lineData.trimmed();
 

@@ -8,8 +8,11 @@
 #ifndef _MAINWINDOW_H_
 #define _MAINWINDOW_H_
 
-#include <QtCore/QString>
+#include <QtCore/QDebug>
 #include <QtCore/QList>
+#include <QtCore/QSet>
+#include <QtCore/QString>
+#include <QtWidgets/QMessageBox>
 #include "ChangeNickDlg.h"
 #include "AboutDlg.h"
 #include "Connection.h"
@@ -24,10 +27,12 @@ public:
    virtual ~MainWindow();
 
 public slots:
+	void receiveConnectObj(Connection*);
 
 private:
    QString nickName;
    void connectActions();
+   QList<Connection*> _connectionList;
 
 private slots:
    void changeNick();

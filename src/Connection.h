@@ -16,6 +16,66 @@ public:
 	Connection();
 	~Connection();
 
+	void setNetwork(QString &network) {
+		this->_network = network;
+	}
+
+	void setServer(QString &server) {
+		this->_server = server;
+	}
+
+	void setPort(int port) {
+		this->_port = port;
+	}
+
+	void setNick(QString &nick) {
+		this->_nick = nick;
+	}
+
+	void setNick2(QString &nick2) {
+		this->_nick2 = nick2;
+	}
+
+	void setUsername(QString &username) {
+		this->_username = username;
+	}
+
+	void setRealName(QString &realName) {
+		this->_realName = realName;
+	}
+
+	void setLoginMethod(int lm) {
+		this->_loginMethod = lm;
+	}
+
+	void setPassword(QString &pass) {
+		this->_password = pass;
+	}
+
+	void setChanList(QString &chanList) {
+		this->_chanList << chanList.split(',');
+	}
+
+	void setConnectAtStart(bool &b) {
+		this->_connectAtStart = b;
+	}
+
+	void setUseGlobalInfo(bool &b) {
+		this->_useGlobalInfo = b;
+	}
+
+	void setUseSSL(bool &b) {
+		this->_useSSL = b;
+	}
+
+	void setAcceptInvalidSSLCert(bool &b) {
+		this->_acceptInvalidSSLCert = b;
+	}
+
+	QString getNetwork() {
+		return this->_network;
+	}
+
 private:
 	QString _network;
 	QString _server;
@@ -28,10 +88,10 @@ private:
 	QString _password;
 	QList<QString> _chanList;
 
-	bool _connectAtStartup;
+	bool _connectAtStart;
 	bool _useGlobalInfo;
-
-	// TODO - SSL options later
+	bool _useSSL;
+	bool _acceptInvalidSSLCert;
 
 };
 

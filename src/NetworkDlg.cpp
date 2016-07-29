@@ -178,3 +178,98 @@ void NetworkDlg::accept() {
 
    this->close();
 }
+
+/*** SLOT - Builds Connection object from data file for selected network ***/
+void NetworkDlg::buildConnection() {
+   Connection *connection = new Connection;
+
+   QFile networks("config/networks.conf");
+   if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      qDebug() << "Error opening 'networks.conf'";
+   }
+
+   // Loop until selected network is found
+   QString line;
+   while (!networks.atEnd()) {
+      line = networks.readLine();
+      line = line.trimmed();
+      if (line.mid(2) == this->selectedNetwork) {
+         // Network found. Parse info until the next blank line
+         while (line != "\n") {
+            QString id = line.left(2);      // First two chars in line (ex. N=)
+            QString lineData = line.mid(2); // The data on the rest of the line
+            lineData = lineData.trimmed();
+
+            if (id == "N=") {
+               connection->setNetwork(lineData);
+            } else if (id == "S=") {
+               connection->setServer(lineData);
+            } else if (id == "p=") {
+               connection->setPort(lineData.toInt());
+            } else if (id == "I=") {
+               connection->setNick(lineData);
+            } else if (id == "i=") {
+               connection->setNick2(lineData);
+            } else if (id == "U=") {
+               connection->setUsername(lineData);
+            } else if (id == "R=") {
+               connection->setRealName(lineData);
+            } else if (id == "L=") {
+               connection->setLoginMethod(lineData.toInt());
+            } else if (id == "P=") {
+               connection->setPassword(lineData);
+            } else if (id == "J=") {
+               connection->setChanList(lineData);
+            } else if (id == "c=") {
+               bool cBool;
+               int lineToInt = lineData.toInt();
+               if (lineToInt == 0) {
+                  cBool = 0;
+               } else {
+                  cBool = 1;
+               }
+               connection->setConnectAtStart(cBool);
+            } else if (id == "n=") {
+               bool nBool;
+               int lineToInt = lineData.toInt();
+               if (lineToInt == 0) {
+                  nBool = 0;
+               } else {
+                  nBool = 1;
+               }
+               connection->setUseSSL(nBool);
+            } else if (id == "a=") {
+               bool aBool;
+               int lineToInt = lineData.toInt();
+               if (lineToInt == 0) {
+                  aBool = 0;
+               } else {
+                  aBool = 1;
+               }
+               connection->setAcceptInvalidSSLCert(aBool);
+            } else if (id == "g=") {
+               bool gBool;
+               int lineToInt = lineData.toInt();
+               if (lineToInt == 0) {
+                  gBool = 0;
+               } else {
+                  gBool = 1;
+               }
+               connection->setUseGlobalInfo(gBool);
+            } else {
+               qDebug() << "Error in EditNetworkDlg::populateData";
+            }
+            line = networks.readLine();
+            // A hack -- for some reason file.atEnd() isn't breaking loop
+            if (line == 0) {
+               break;
+            }
+         }
+      }
+   }
+   networks.close();
+
+   // Store connection object in public data member so MainWindow can grab it
+   tempConnection = connection;
+   this->accept();
+}

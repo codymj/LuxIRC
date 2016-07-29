@@ -57,13 +57,38 @@ void MainWindow::openNetworkDlg() {
    NetworkDlg *networkDlg = new NetworkDlg();
    networkDlg->exec();
 
+   this->receiveConnectObj(networkDlg->tempConnection);
+
    delete networkDlg;
 }
 
-/*** SLOT- Open the About Dialog ***/
+/*** SLOT - Open the About Dialog ***/
 void MainWindow::openAboutDlg() {
    AboutDlg *aboutDlg = new AboutDlg();
    aboutDlg->exec();
    
    delete aboutDlg;
+}
+
+/*** SLOT - Receive Connection object from NetworkDlg ***/
+// I will have to handle when connection is loaded, but disconnected
+void MainWindow::receiveConnectObj(Connection *connObj) {
+   // Check for duplicate connections by network name
+   bool dupe = false;
+   for (int i=0; i<_connectionList.size(); i++) {
+      if (connObj->getNetwork() == _connectionList.at(i)->getNetwork()) {
+         dupe = true;
+      }
+   }
+
+   if (dupe) {
+      QMessageBox mb;
+      mb.setText("Network is already added.");
+      mb.exec();
+      return;
+   }
+   else {
+      // Add tempConnection from NetworkDlg to our list
+      _connectionList << connObj;
+   }
 }

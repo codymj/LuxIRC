@@ -39,13 +39,6 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QPushButton" name="connectBtn">
-      <property name="text">
-       <string>Co&amp;nnect</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -66,9 +59,9 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="okBtn">
+     <widget class="QPushButton" name="connectBtn">
       <property name="text">
-       <string>&amp;Ok</string>
+       <string>Co&amp;nnect</string>
       </property>
      </widget>
     </item>
@@ -213,27 +206,10 @@
   <tabstop>addBtn</tabstop>
   <tabstop>editBtn</tabstop>
   <tabstop>cancelBtn</tabstop>
-  <tabstop>okBtn</tabstop>
   <tabstop>networkList</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>okBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>NetworkDlg</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>306</x>
-     <y>335</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>381</x>
-     <y>338</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>cancelBtn</sender>
    <signal>clicked()</signal>

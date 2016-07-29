@@ -14,6 +14,8 @@
 #include "EditNetworkDlg.h"
 #include "Connection.h"
 
+class MainWindow;
+
 class NetworkDlg : public QDialog, public Ui::NetworkDlg {
     Q_OBJECT
 
@@ -21,7 +23,10 @@ public:
    NetworkDlg();
    virtual ~NetworkDlg();
 
+   Connection *tempConnection;
+
 public slots:
+   void buildConnection();
 
 private:
    QString selectedNetwork;
@@ -33,6 +38,9 @@ private slots:
    void readData();
    void removeNetwork();
    void accept();
+
+signals:
+   void sendConnectObj(Connection*);
 
 };
 
