@@ -32,7 +32,7 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QTreeWidget" name="servChanTree">
+         <widget class="QTreeWidget" name="networkTree">
           <attribute name="headerVisible">
            <bool>false</bool>
           </attribute>

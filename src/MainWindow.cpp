@@ -98,4 +98,71 @@ void MainWindow::receiveConnectObj(Connection *connObj) {
    else {
       _connectionList << connObj;
    }
+
+   // Add Connection info to MainWindow::QTreeWidget
+   addConnectionToTree(connObj);
+}
+
+/*** Adds a connection to the QTreeWidget ***/
+void MainWindow::addConnectionToTree(Connection *connObj) {
+   // Build top-level item for tree
+   QTreeWidgetItem *connItem = new QTreeWidgetItem;
+   connItem->setText(0, connObj->getNetwork());
+   for (int i=0; i<connObj->getChanList().size(); i++) {
+      QTreeWidgetItem *chanChild = new QTreeWidgetItem;
+      chanChild->setText(0, connObj->getChanList().at(i));
+      connItem->addChild(chanChild);
+   }
+
+   // Add top-level item to tree, along with children
+   this->networkTree->addTopLevelItem(connItem);
+   connItem->setExpanded(true);
+}
+
+/*** Removes a connection from the QTreeWidget ***/
+void MainWindow::rmConnectionFromTree(const QString &network) {
+   // Find network (top-level item) in the QTreeWidget
+   int childCount = this->networkTree->topLevelItemCount();
+   for (int i=0; i<childCount; i++) {
+      if (this->networkTree->topLevelItem(i)->text(0) == network) {
+         // Delete all channel widgets in the network widget
+         int childCount = this->networkTree->topLevelItem(i)->childCount();
+         for (int j=0; j<childCount; j++) {
+            delete this->networkTree->topLevelItem(i)->child(j);
+         }
+         // Delete network widget
+         delete this->networkTree->topLevelItem(i);
+      }
+   }
+   // Remove Connection from _connectionList
+   for (int i=0; i<_connectionList.size(); i++) {
+      if (_connectionList.at(i)->getNetwork() == network) {
+         delete _connectionList.at(i);
+         _connectionList.removeAt(i);
+      }
+   }
+}
+
+/*** Removes a connection from the QTreeWidget ***/
+// void MainWindow::rmChannelFromTree(QString &channel) {}
+
+/*** Handles keyboard commands ***/
+void MainWindow::keyPressEvent(QKeyEvent *e) {
+   // Handle Ctrl+W
+   if (
+   (e->key() == Qt::Key_W) && (e->modifiers().testFlag(Qt::ControlModifier))) {
+      // Handle empty tree widget
+      if (this->networkTree->topLevelItemCount() == 0) {
+         return;
+      }
+      else if (!this->networkTree->currentItem()->parent()) {
+         rmConnectionFromTree(this->networkTree->currentItem()->text(0));
+      }
+      else {
+         return;
+      }
+   }
+   else {
+      return;
+   }
 }

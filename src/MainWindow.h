@@ -12,7 +12,10 @@
 #include <QtCore/QList>
 #include <QtCore/QSet>
 #include <QtCore/QString>
+#include <QtGui/QKeyEvent>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeWidgetItem>
 #include "ChangeNickDlg.h"
 #include "AboutDlg.h"
 #include "Connection.h"
@@ -27,12 +30,18 @@ public:
    virtual ~MainWindow();
 
 public slots:
-	void receiveConnectObj(Connection*);
 
 private:
    QString nickName;
-   void connectActions();
    QList<Connection*> _connectionList;
+   void connectActions();
+   void receiveConnectObj(Connection*);
+   void keyPressEvent(QKeyEvent *e);
+
+   // QTreeWidget (List of networks and channels) functions
+   void addConnectionToTree(Connection*);
+   void rmConnectionFromTree(const QString &network);
+   // void rmChannelFromTree(QString &channel);
 
 private slots:
    void changeNick();

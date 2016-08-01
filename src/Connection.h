@@ -72,11 +72,11 @@ public:
 		this->_acceptInvalidSSLCert = b;
 	}
 
-	QString getNetwork() {
+	QString getNetwork() const {
 		return this->_network;
 	}
 
-	QList<QString> getChanList() {
+	QList<QString> getChanList() const {
 		return this->_chanList;
 	}
 
