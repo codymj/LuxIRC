@@ -8,6 +8,7 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/08/01 - Upon 'connect' in NetworkDlg, network is added to QTreeWidget along with children items (#channels). Also able to remove networks via Ctrl+W.
 * 2016/07/29 - Implemented the Connection class to successfully transfer data in Connection objects from NetworkDlg to MainWindow. Also fixed a segfault which occured if clicking 'Cancel' in NetworkDlg which sent a null pointer to MainWindow.
 * 2016/07/27 - Started to implement the Connection class.
 * 2016/07/25 - Created the Connection class for handling the logic of connecting to networks. Each Connection will connect through its own thread.
