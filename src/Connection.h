@@ -10,77 +10,38 @@
 
 #include <QtCore/QList>
 #include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtConcurrent/QtConcurrent>
+#include <QtNetwork/QTcpSocket>
 
 class Connection {
 public:
 	Connection();
 	~Connection();
 
-	void setNetwork(QString &network) {
-		this->_network = network;
-	}
+	// Data returned from network to be accessed by outputTE
+	QString networkData;
 
-	void setServer(QString &server) {
-		this->_server = server;
-	}
-
-	void setPort(int port) {
-		this->_port = port;
-	}
-
-	void setNick(QString &nick) {
-		this->_nick = nick;
-	}
-
-	void setNick2(QString &nick2) {
-		this->_nick2 = nick2;
-	}
-
-	void setUsername(QString &username) {
-		this->_username = username;
-	}
-
-	void setRealName(QString &realName) {
-		this->_realName = realName;
-	}
-
-	void setLoginMethod(int lm) {
-		this->_loginMethod = lm;
-	}
-
-	void setPassword(QString &pass) {
-		this->_password = pass;
-	}
-
-	void setChanList(QString &chanList) {
-		this->_chanList << chanList.split(',');
-	}
-
-	void setConnectAtStart(bool &b) {
-		this->_connectAtStart = b;
-	}
-
-	void setUseGlobalInfo(bool &b) {
-		this->_useGlobalInfo = b;
-	}
-
-	void setUseSSL(bool &b) {
-		this->_useSSL = b;
-	}
-
-	void setAcceptInvalidSSLCert(bool &b) {
-		this->_acceptInvalidSSLCert = b;
-	}
-
-	QString getNetwork() const {
-		return this->_network;
-	}
-
-	QList<QString> getChanList() const {
-		return this->_chanList;
-	}
+	// Get'er and set'er functions
+	void setNetwork(QString &network);
+	void setServer(QString &server);
+	void setPort(int port);
+	void setNick(QString &nick);
+	void setNick2(QString &nick2);
+	void setUsername(QString &username);
+	void setRealName(QString &realName);
+	void setLoginMethod(int lm);
+	void setPassword(QString &pass);
+	void setChanList(QString &chanList);
+	void setConnectAtStart(bool &b);
+	void setUseGlobalInfo(bool &b);
+	void setUseSSL(bool &b);
+	void setAcceptInvalidSSLCert(bool &b);
+	QString getNetwork() const;
+	QList<QString> getChanList() const;
 
 private:
+	// Data for network from networks.conf
 	QString _network;
 	QString _server;
 	int _port;
@@ -90,13 +51,24 @@ private:
 	QString _realName;
 	int _loginMethod;
 	QString _password;
+	QString _chanListStr;
 	QList<QString> _chanList;
-
 	bool _connectAtStart;
 	bool _useGlobalInfo;
 	bool _useSSL;
 	bool _acceptInvalidSSLCert;
 
+	// Getting and handling data from server
+	QTcpSocket _socket;
+	// Must be dynamically created:
+	//     QList userList for each channel
+	//     QStringList channelData messages separated for each channel
+	//     QString topic for each channel
+
+	void connectToNetwork();
+
+signals:
+	void dataReady(QString &network, QString &data);
 };
 
 #endif // _CONNECTION_H_

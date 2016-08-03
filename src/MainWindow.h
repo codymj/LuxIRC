@@ -30,6 +30,7 @@ public:
    virtual ~MainWindow();
 
 public slots:
+	void updateOutputTE(QString &network, QString &data);
 
 private:
    QString nickName;
@@ -47,6 +48,7 @@ private slots:
    void changeNick();
    void openNetworkDlg();
    void openAboutDlg();
+   void updateTreeClick();
 };
 
 #endif   /* _MAINWINDOW_H_ */

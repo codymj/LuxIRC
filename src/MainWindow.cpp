@@ -125,12 +125,12 @@ void MainWindow::rmConnectionFromTree(const QString &network) {
    int childCount = this->networkTree->topLevelItemCount();
    for (int i=0; i<childCount; i++) {
       if (this->networkTree->topLevelItem(i)->text(0) == network) {
-         // Delete all channel widgets in the network widget
+         // Delete all channel widget items in the network widget parent item
          int childCount = this->networkTree->topLevelItem(i)->childCount();
          for (int j=0; j<childCount; j++) {
             delete this->networkTree->topLevelItem(i)->child(j);
          }
-         // Delete network widget
+         // Delete network tree widget item
          delete this->networkTree->topLevelItem(i);
       }
    }
@@ -143,7 +143,7 @@ void MainWindow::rmConnectionFromTree(const QString &network) {
    }
 }
 
-/*** Removes a connection from the QTreeWidget ***/
+/*** Removes a channel from the QTreeWidget's topLevelItem (network) ***/
 // void MainWindow::rmChannelFromTree(QString &channel) {}
 
 /*** Handles keyboard commands ***/
@@ -165,4 +165,20 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
    else {
       return;
    }
+}
+
+/*** SLOT - Updates widgets when different channel is clicked in tree ***/
+void MainWindow::updateTreeClick() {
+   // Get which channel the clicked tree item represents
+
+   // Update outputTE by getting the QStringList of messages parsed for that
+   // channel, stored in Connection object
+
+   // Update inputLE's target network and channel
+
+   // Update topicLE's text
+}
+
+void MainWindow::updateOutputTE(QString &network, QString &data) {
+
 }
