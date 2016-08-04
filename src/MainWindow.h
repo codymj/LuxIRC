@@ -30,7 +30,7 @@ public:
    virtual ~MainWindow();
 
 public slots:
-	void updateOutputTE(QString &network, QString &data);
+	void updateOutputTE(QString network, QString data);
 
 private:
    QString nickName;

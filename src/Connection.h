@@ -8,19 +8,24 @@
 #ifndef _CONNECTION_H_
 #define _CONNECTION_H_
 
+#include <QtCore/QDebug>
 #include <QtCore/QList>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
-#include <QtConcurrent/QtConcurrent>
+#include <QtCore/QThread>
 #include <QtNetwork/QTcpSocket>
 
-class Connection {
+class Connection : public QThread {
+	Q_OBJECT
+
 public:
 	Connection();
 	~Connection();
 
 	// Data returned from network to be accessed by outputTE
 	QString networkData;
+
+	void connectToNetwork();
 
 	// Get'er and set'er functions
 	void setNetwork(QString &network);
@@ -39,6 +44,10 @@ public:
 	void setAcceptInvalidSSLCert(bool &b);
 	QString getNetwork() const;
 	QList<QString> getChanList() const;
+	QString getServer() const;
+
+protected:
+	void run();
 
 private:
 	// Data for network from networks.conf
@@ -65,10 +74,8 @@ private:
 	//     QStringList channelData messages separated for each channel
 	//     QString topic for each channel
 
-	void connectToNetwork();
-
 signals:
-	void dataReady(QString &network, QString &data);
+	void dataReady(QString network, QString data);
 };
 
 #endif // _CONNECTION_H_

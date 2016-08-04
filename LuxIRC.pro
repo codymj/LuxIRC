@@ -5,9 +5,6 @@
 TEMPLATE = app
 TARGET = LuxIRC
 INCLUDEPATH += .
-TEMPLATE = app
-TARGET = LuxIRC
-INCLUDEPATH += .
 QT += core widgets network concurrent
 OBJECTS_DIR = ./obj
 MOC_DIR = ./moc
@@ -27,12 +24,14 @@ HEADERS += src/AboutDlg.h \
            src/ui_EditNetworkDlg.h \
            src/ui_MainWindow.h \
            src/ui_NetworkDlg.h
+           
 FORMS +=   src/AboutDlg.ui \
 	       src/AddNetworkDlg.ui \
 	       src/ChangeNickDlg.ui \
 	       src/EditNetworkDlg.ui \
 	       src/MainWindow.ui \
 	       src/NetworkDlg.ui
+	       
 SOURCES += src/AboutDlg.cpp \
            src/AddNetworkDlg.cpp \
            src/ChangeNickDlg.cpp \

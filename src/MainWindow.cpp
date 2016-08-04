@@ -28,11 +28,25 @@ MainWindow::~MainWindow() {
 /*** Create menu actions ***/
 void MainWindow::connectActions() {
    connect(
-      openNetworkDlgAction, SIGNAL(triggered()), this, SLOT(openNetworkDlg())
+      openNetworkDlgAction, SIGNAL(triggered()), 
+      this, SLOT(openNetworkDlg())
    );
-   connect(aboutAction, SIGNAL(triggered()), this, SLOT(openAboutDlg()));
-   connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
-   connect(changeNickBtn, SIGNAL(clicked()), this, SLOT(changeNick()));
+   connect(
+      aboutAction, SIGNAL(triggered()), 
+      this, SLOT(openAboutDlg())
+   );
+   connect(
+      exitAction, SIGNAL(triggered()), 
+      this, SLOT(close())
+   );
+   connect(
+      changeNickBtn, SIGNAL(clicked()), 
+      this, SLOT(changeNick())
+   );
+   connect(
+      this->networkTree, SIGNAL(itemSelectionChanged()), 
+      this, SLOT(updateTreeClick())
+   );
 }
 
 /*** SLOT - Change nickname ***/
@@ -96,11 +110,19 @@ void MainWindow::receiveConnectObj(Connection *connObj) {
 
    // Otherwise, append the Connection object to the list
    else {
+      // Connect Connection signals to slots in MainWindow first
+      connect(
+         connObj, SIGNAL(dataReady(QString, QString)),
+         this, SLOT(updateOutputTE(QString, QString))
+      );
       _connectionList << connObj;
    }
 
    // Add Connection info to MainWindow::QTreeWidget
    addConnectionToTree(connObj);
+
+   // Ready to connect to network
+   connObj->connectToNetwork();
 }
 
 /*** Adds a connection to the QTreeWidget ***/
@@ -179,6 +201,14 @@ void MainWindow::updateTreeClick() {
    // Update topicLE's text
 }
 
-void MainWindow::updateOutputTE(QString &network, QString &data) {
-
+void MainWindow::updateOutputTE(QString network, QString data) {
+   for (int i=0; i<this->networkTree->topLevelItemCount(); i++) {
+      if (this->networkTree->topLevelItem(i)->text(0) == network) {
+         // Bold the network label in tree to show new data available
+         // This will need to be altered for each channel label later
+         QString newText = QString("["+network+"]");
+         this->networkTree->topLevelItem(i)->setText(0, newText);
+      }
+   }
+   this->outputTE->append(data);
 }
