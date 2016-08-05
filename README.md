@@ -8,6 +8,7 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/08/05 - Threading and connecting are working. Had data written to QTextEdit but looking for a better way to accomplish it.
 * 2016/08/04 - I can now get a working connection, but having trouble with threads. I'll have to look into it more.
 * 2016/08/03 - Working on getting a real connection to server which I have done in a test method. Also working on how to update outputTE if new data is received or if networkTree items are clicked.
 * 2016/08/01 - Upon 'connect' in NetworkDlg, network is added to QTreeWidget along with children items (#channels). Also able to remove networks via Ctrl+W.
