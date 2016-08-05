@@ -112,8 +112,8 @@ void MainWindow::receiveConnectObj(Connection *connObj) {
    else {
       // Connect Connection signals to slots in MainWindow first
       connect(
-         connObj, SIGNAL(dataReady(QString, QString)),
-         this, SLOT(updateOutputTE(QString, QString))
+         connObj, SIGNAL(dataReady(QString, QMultiMap<QString,QString>)),
+         this, SLOT(updateOutputTE(QString, QMultiMap<QString,QString>))
       );
       _connectionList << connObj;
    }
@@ -122,7 +122,7 @@ void MainWindow::receiveConnectObj(Connection *connObj) {
    addConnectionToTree(connObj);
 
    // Ready to connect to network
-   connObj->connectToNetwork();
+   connObj->connectionReady();
 }
 
 /*** Adds a connection to the QTreeWidget ***/
@@ -201,14 +201,16 @@ void MainWindow::updateTreeClick() {
    // Update topicLE's text
 }
 
-void MainWindow::updateOutputTE(QString network, QString data) {
-   for (int i=0; i<this->networkTree->topLevelItemCount(); i++) {
-      if (this->networkTree->topLevelItem(i)->text(0) == network) {
-         // Bold the network label in tree to show new data available
-         // This will need to be altered for each channel label later
-         QString newText = QString("["+network+"]");
-         this->networkTree->topLevelItem(i)->setText(0, newText);
+void MainWindow::updateOutputTE(QString network, QMultiMap<QString,QString> data) {
+   QMultiMap<QString,QString>::iterator iter;
+   QTreeWidgetItem *currTreeItem = this->networkTree->currentItem();
+
+   if (currTreeItem->parent()->text(0) == network) {
+      while (iter != data.end() && iter.key() == currTreeItem->text(0)) {
+         this->outputTE->append(iter.value());
       }
    }
-   this->outputTE->append(data);
+   else {
+      return;
+   }
 }

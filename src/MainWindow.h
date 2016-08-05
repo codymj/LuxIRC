@@ -12,6 +12,7 @@
 #include <QtCore/QList>
 #include <QtCore/QSet>
 #include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <QtGui/QKeyEvent>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QTreeWidget>
@@ -30,7 +31,7 @@ public:
    virtual ~MainWindow();
 
 public slots:
-	void updateOutputTE(QString network, QString data);
+	void updateOutputTE(QString network, QMultiMap<QString,QString> data);
 
 private:
    QString nickName;

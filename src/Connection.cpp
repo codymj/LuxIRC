@@ -19,9 +19,16 @@ Connection::Connection() {
 	this->_realName = "LuxIRC - A Qt/C++ IRC Client";
 	this->_loginMethod = 0;
 	this->_password = "";
-	this->_chanList << "#lounge";
+	//this->_chanList << "";
 	this->_connectAtStart = false;
 	this->_useGlobalInfo = true;
+
+	// Connect signals/slots
+
+	connect(
+		this, SIGNAL(finished()),
+		this, SLOT(deleteLater())
+	);
 }
 
 /*** Destructor ***/
@@ -30,34 +37,50 @@ Connection::~Connection() {
 }
 
 /*** Connection is ready ***/
-void Connection::connectToNetwork() {
-	this->run();
+void Connection::connectionReady() {
+	// Start thread for this Connection
+	this->start();
 }
 
 /*** Connects to network. This function is ran in a new thread. ***/
 void Connection::run() {
-	std::string response;
-
+	QTcpSocket _socket;
 	// Attempt to connect to network
 	_socket.connectToHost(_server, _port);
 	if (_socket.waitForConnected(5000)) {
 		// Send initial IRC information
-		_socket.write(QString("NICK %1\r\n").arg(_nick).toUtf8());
-		_socket.write(QString("USER %1 0 * :%2\r\n").arg(_username,_realName).toUtf8());
-		_socket.write(QString("JOIN %1\r\n").arg(_chanListStr).toUtf8());
+		_socket.write(QString(
+			"NICK %1\r\n").arg(_nick).toUtf8()
+		);
+		_socket.write(QString(
+			"USER %1 0 * :%2\r\n").arg(_username,_realName).toUtf8()
+		);
+		_socket.write(QString(
+			"JOIN %1\r\n").arg(_chanListStr).toUtf8()
+		);
 
 		// Connection loop
 		while (true) {
 			// Wait for new data from network
 			_socket.waitForReadyRead();
-			response = _socket.readAll().toStdString();
-			emit dataReady(this->getNetwork(), networkData);
+
+			// Get number of bytes available to read
+			bytesToRead = _socket.bytesAvailable();
+			// qDebug() << "Bytes Available: " << bytesToRead;
 
 			// If data received
-			if (!response.empty()) {
-				// Store in our QString for access by outputTE
-				networkData = QString::fromStdString(response);
-				emit dataReady(this->getNetwork(), networkData);
+			if (bytesToRead > 0) {
+				// Store data into a std::string, send to outputTE
+				response = QString::fromUtf8(
+					_socket.read(bytesToRead)).toStdString();
+
+				networkData.prepend(QString::fromStdString(response));
+
+				// Parse data into QMultiMap<channel,message>
+				parseChannels(networkData);
+
+				emit dataReady(this->_network, this->channelMap);
+				// qDebug() << "Signal emitted";
 
 				// Handle PING/PONG messages
 				size_t spaceDelim = response.find(' ');
@@ -66,12 +89,23 @@ void Connection::run() {
 					_socket.write(pongStr.c_str());
 				}
 			}
+			else {
+				continue;
+			}
 		}
 		_socket.close();
 	}
 	else {
 		networkData.push_back("Connection timed out...\n");
-		emit dataReady(this->getNetwork(), networkData);
+		emit dataReady(this->_network, this->channelMap);
+	}
+}
+
+void Connection::parseChannels(QStringList &data) {
+	for (int i=0; i<this->_chanList.size(); i++) {
+		if (data.at(0).contains(QString("PRIVMSG " + this->_chanList.at(i)), Qt::CaseInsensitive)) {
+			channelMap.insert(this->_chanList.at(i), data.at(0));
+		}
 	}
 }
 

@@ -10,6 +10,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QList>
+#include <QtCore/QMultiMap>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
@@ -22,10 +23,13 @@ public:
 	Connection();
 	~Connection();
 
-	// Data returned from network to be accessed by outputTE
-	QString networkData;
+	// Multimap to map channel messages to the channel name
+	QMultiMap<QString,QString> channelMap;
+	std::string response;
+	QStringList networkData;
+	int bytesToRead = 0;
 
-	void connectToNetwork();
+	void connectionReady();
 
 	// Get'er and set'er functions
 	void setNetwork(QString &network);
@@ -61,21 +65,24 @@ private:
 	int _loginMethod;
 	QString _password;
 	QString _chanListStr;
-	QList<QString> _chanList;
+	QStringList _chanList;
 	bool _connectAtStart;
 	bool _useGlobalInfo;
 	bool _useSSL;
 	bool _acceptInvalidSSLCert;
 
+	// Private Functions
+	void parseChannels(QStringList &data);
+
 	// Getting and handling data from server
-	QTcpSocket _socket;
+	// QTcpSocket _socket;
 	// Must be dynamically created:
 	//     QList userList for each channel
 	//     QStringList channelData messages separated for each channel
 	//     QString topic for each channel
 
 signals:
-	void dataReady(QString network, QString data);
+	void dataReady(QString network, QMultiMap<QString,QString> data);
 };
 
 #endif // _CONNECTION_H_
