@@ -8,7 +8,7 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
-* 2016/08/08 - Successfully implemented data sharing between Connection objects and MainWindow. I created another object, Channel, to keep track of data specific to each channel and then used a QList<Channel> data member in the Connection object. Now, messages are stored in QStringLists one for network notices, and one for each channel connected. The next logical thing to tackle might be handling channel removals from the QTreeWidget, and basic commands to join/part channels.
+* 2016/08/08 - Successfully implemented data sharing between Connection objects and MainWindow. I created another object, Channel, to keep track of data specific to each channel and then used a QList&lt;Channel&gt; data member in the Connection object. Now, messages are stored in QStringLists one for network notices, and one for each channel connected. The next logical thing to tackle might be handling channel removals from the QTreeWidget, and basic commands to join/part channels.
 * 2016/08/05 - Threading and connecting are working. Had data written to QTextEdit but looking for a better way to accomplish it.
 * 2016/08/04 - I can now get a working connection, but having trouble with threads. I'll have to look into it more.
 * 2016/08/03 - Working on getting a real connection to server which I have done in a test method. Also working on how to update outputTE if new data is received or if networkTree items are clicked.
