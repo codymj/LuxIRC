@@ -19,12 +19,10 @@ Connection::Connection() {
 	this->_realName = "LuxIRC - A Qt/C++ IRC Client";
 	this->_loginMethod = 0;
 	this->_password = "";
-	//this->_chanList << "";
 	this->_connectAtStart = false;
 	this->_useGlobalInfo = true;
 
 	// Connect signals/slots
-
 	connect(
 		this, SIGNAL(finished()),
 		this, SLOT(deleteLater())
@@ -56,7 +54,7 @@ void Connection::run() {
 			"USER %1 0 * :%2\r\n").arg(_username,_realName).toUtf8()
 		);
 		_socket.write(QString(
-			"JOIN %1\r\n").arg(_chanListStr).toUtf8()
+			"JOIN %1\r\n").arg(chansStr).toUtf8()
 		);
 
 		// Connection loop
@@ -66,7 +64,6 @@ void Connection::run() {
 
 			// Get number of bytes available to read
 			bytesToRead = _socket.bytesAvailable();
-			// qDebug() << "Bytes Available: " << bytesToRead;
 
 			// If data received
 			if (bytesToRead > 0) {
@@ -79,8 +76,7 @@ void Connection::run() {
 				// Parse data into QMultiMap<channel,message>
 				parseChannels(networkData);
 
-				emit dataReady(this->_network, this->channelMap);
-				// qDebug() << "Signal emitted";
+				emit dataAvailable(this);
 
 				// Handle PING/PONG messages
 				size_t spaceDelim = response.find(' ');
@@ -97,14 +93,18 @@ void Connection::run() {
 	}
 	else {
 		networkData.push_back("Connection timed out...\n");
-		emit dataReady(this->_network, this->channelMap);
+		emit dataAvailable(this);
 	}
 }
 
-void Connection::parseChannels(QStringList &data) {
-	for (int i=0; i<this->_chanList.size(); i++) {
-		if (data.at(0).contains(QString("PRIVMSG " + this->_chanList.at(i)), Qt::CaseInsensitive)) {
-			channelMap.insert(this->_chanList.at(i), data.at(0));
+/*** Separate messages by channel ***/
+void Connection::parseChannels(const QStringList &data) {
+	for (int i=0; i<this->channels.size(); i++) {
+		if (data.at(0).contains(QString("PRIVMSG " + this->channels.at(i).getName()), Qt::CaseInsensitive)) {
+			this->channels[i].pushMsg(data.at(0));
+		}
+		else if (data.at(0).contains(QString("NOTICE "), Qt::CaseInsensitive)) {
+			this->pushNotice(data.at(0));
 		}
 	}
 }
@@ -145,11 +145,6 @@ void Connection::setPassword(QString &pass) {
 	this->_password = pass;
 }
 
-void Connection::setChanList(QString &chanList) {
-	this->_chanListStr = chanList;
-	this->_chanList << chanList.split(',');
-}
-
 void Connection::setConnectAtStart(bool &b) {
 	this->_connectAtStart = b;
 }
@@ -170,10 +165,14 @@ QString Connection::getNetwork() const {
 	return this->_network;
 }
 
-QList<QString> Connection::getChanList() const {
-	return this->_chanList;
-}
-
 QString Connection::getServer() const {
 	return this->_server;
+}
+
+void Connection::pushNotice(const QString msg) {
+	this->_notices << msg;
+}
+
+QStringList Connection::getNotices() const {
+	return this->_notices;
 }

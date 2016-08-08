@@ -15,6 +15,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
 #include <QtNetwork/QTcpSocket>
+#include "Channel.h"
 
 class Connection : public QThread {
 	Q_OBJECT
@@ -23,10 +24,10 @@ public:
 	Connection();
 	~Connection();
 
-	// Multimap to map channel messages to the channel name
-	QMultiMap<QString,QString> channelMap;
 	std::string response;
 	QStringList networkData;
+	QList<Channel> channels;
+	QString chansStr;
 	int bytesToRead = 0;
 
 	void connectionReady();
@@ -47,8 +48,9 @@ public:
 	void setUseSSL(bool &b);
 	void setAcceptInvalidSSLCert(bool &b);
 	QString getNetwork() const;
-	QList<QString> getChanList() const;
 	QString getServer() const;
+	void pushNotice(const QString msg);
+	QStringList getNotices() const;
 
 protected:
 	void run();
@@ -64,15 +66,14 @@ private:
 	QString _realName;
 	int _loginMethod;
 	QString _password;
-	QString _chanListStr;
-	QStringList _chanList;
 	bool _connectAtStart;
 	bool _useGlobalInfo;
 	bool _useSSL;
 	bool _acceptInvalidSSLCert;
+	QStringList _notices;
 
 	// Private Functions
-	void parseChannels(QStringList &data);
+	void parseChannels(const QStringList &data);
 
 	// Getting and handling data from server
 	// QTcpSocket _socket;
@@ -82,7 +83,7 @@ private:
 	//     QString topic for each channel
 
 signals:
-	void dataReady(QString network, QMultiMap<QString,QString> data);
+	void dataAvailable(Connection*);
 };
 
 #endif // _CONNECTION_H_

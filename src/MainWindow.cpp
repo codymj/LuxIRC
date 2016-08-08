@@ -71,7 +71,7 @@ void MainWindow::openNetworkDlg() {
    NetworkDlg *networkDlg = new NetworkDlg();
    networkDlg->exec();
 
-   this->receiveConnectObj(networkDlg->tempConnection);
+   this->getConnectObj(networkDlg->tempConnection);
 
    delete networkDlg;
 }
@@ -86,7 +86,7 @@ void MainWindow::openAboutDlg() {
 
 /*** SLOT - Receive Connection object from NetworkDlg ***/
 // I will have to handle when connection is loaded, but disconnected
-void MainWindow::receiveConnectObj(Connection *connObj) {
+void MainWindow::getConnectObj(Connection *connObj) {
    // Check if connObj is NULL (initial value), return to prevent segfault
    if (connObj == NULL) {
       return;
@@ -112,8 +112,8 @@ void MainWindow::receiveConnectObj(Connection *connObj) {
    else {
       // Connect Connection signals to slots in MainWindow first
       connect(
-         connObj, SIGNAL(dataReady(QString, QMultiMap<QString,QString>)),
-         this, SLOT(updateOutputTE(QString, QMultiMap<QString,QString>))
+         connObj, SIGNAL(dataAvailable(Connection*)),
+         this, SLOT(updateOutputTE(Connection*))
       );
       _connectionList << connObj;
    }
@@ -130,9 +130,9 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
    // Build top-level item for tree
    QTreeWidgetItem *connItem = new QTreeWidgetItem;
    connItem->setText(0, connObj->getNetwork());
-   for (int i=0; i<connObj->getChanList().size(); i++) {
+   for (int i=0; i<connObj->channels.size(); i++) {
       QTreeWidgetItem *chanChild = new QTreeWidgetItem;
-      chanChild->setText(0, connObj->getChanList().at(i));
+      chanChild->setText(0, connObj->channels.at(i).getName());
       connItem->addChild(chanChild);
    }
 
@@ -191,26 +191,55 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
 
 /*** SLOT - Updates widgets when different channel is clicked in tree ***/
 void MainWindow::updateTreeClick() {
-   // Get which channel the clicked tree item represents
-
-   // Update outputTE by getting the QStringList of messages parsed for that
-   // channel, stored in Connection object
-
-   // Update inputLE's target network and channel
-
-   // Update topicLE's text
-}
-
-void MainWindow::updateOutputTE(QString network, QMultiMap<QString,QString> data) {
-   QMultiMap<QString,QString>::iterator iter;
    QTreeWidgetItem *currTreeItem = this->networkTree->currentItem();
 
-   if (currTreeItem->parent()->text(0) == network) {
-      while (iter != data.end() && iter.key() == currTreeItem->text(0)) {
-         this->outputTE->append(iter.value());
+   // If tree item clicked is top level item (network itself)
+   if (currTreeItem->parent() == NULL) {
+      for (int i=0; i<_connectionList.size(); i++) {
+         if (currTreeItem->text(0) == _connectionList.at(i)->getNetwork())
+            // Send that Connection to update outputTE
+            this->updateOutputTE(_connectionList.at(i));
       }
    }
+
+   // Else if tree item is a channel, check network (parent)
    else {
-      return;
+      for (int i=0; i<_connectionList.size(); i++) {
+         if (currTreeItem->parent()->text(0) == _connectionList.at(i)->getNetwork())
+            // Send that Connection to update outputTE
+            this->updateOutputTE(_connectionList.at(i));
+      }
    }
+}
+
+void MainWindow::updateOutputTE(Connection *connObj) {
+   QTreeWidgetItem *currTreeItem = this->networkTree->currentItem();
+   this->outputTE->clear();
+
+   // If topLevelItem, write the notices for that network
+   if (currTreeItem->parent() == NULL && 
+   currTreeItem->text(0) == connObj->getNetwork()) {
+      QStringList notices = connObj->getNotices();
+      for (int i=0; i<notices.size(); i++) {
+         this->outputTE->append(notices.at(i));
+      }
+   }
+
+   // Else if tree item is a channel. Write messages for that channel
+   else if (currTreeItem->parent()->text(0) == connObj->getNetwork() &&
+   currTreeItem->text(0).at(0) == '#') {
+      for (int i=0; i<connObj->channels.size(); i++) {
+         if (connObj->channels.at(i).getName() == currTreeItem->text(0)) {
+            QStringList msgs = connObj->channels.at(i).getMsgs();
+            for (int j=0; j<msgs.size(); j++) {
+               this->outputTE->append(msgs.at(j));
+            }
+            break;
+         }
+      }
+   }
+
+   // Handle user pvt messages later
+
+   // Update all other widgets in MainWindow (nickname, userlist, etc)
 }

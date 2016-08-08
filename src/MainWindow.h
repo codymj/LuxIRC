@@ -31,13 +31,13 @@ public:
    virtual ~MainWindow();
 
 public slots:
-	void updateOutputTE(QString network, QMultiMap<QString,QString> data);
+	void updateOutputTE(Connection*);
 
 private:
    QString nickName;
    QList<Connection*> _connectionList;
    void connectActions();
-   void receiveConnectObj(Connection*);
+   void getConnectObj(Connection*);
    void keyPressEvent(QKeyEvent *e);
 
    // QTreeWidget (List of networks and channels) functions

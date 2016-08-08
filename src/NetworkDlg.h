@@ -39,9 +39,6 @@ private slots:
    void removeNetwork();
    void accept();
 
-signals:
-   void sendConnectObj(Connection*);
-
 };
 
 #endif /* _NETWORKDLG_H_ */

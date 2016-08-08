@@ -220,7 +220,14 @@ void NetworkDlg::buildConnection() {
             } else if (id == "P=") {
                connection->setPassword(lineData);
             } else if (id == "J=") {
-               connection->setChanList(lineData);
+               QStringList chans;
+               chans << lineData.split(",");
+               for (int i=0; i<chans.size(); i++) {
+                  Channel chan;
+                  chan.setName(chans.at(i));
+                  connection->channels.push_back(chan);
+               }
+               connection->chansStr = lineData;
             } else if (id == "c=") {
                bool cBool;
                int lineToInt = lineData.toInt();
