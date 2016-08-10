@@ -8,6 +8,7 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/08/10 - Fixed double spacing for QTextEdit. Fucked up something else. No idea what happend but now connecting doesn't work as expected. Also, I discovered segfaults if I'm offline and click the tree widget which makes no sense as it doesn't do that if I'm connected to the internet and a network. I wasted a whole day on this and if I don't fix it by the end of the week, I'm most likely going to redesign this program from scratch. I'm feeling like I have too much of the code tangled with each other.
 * 2016/08/08 - Successfully implemented data sharing between Connection objects and MainWindow. I created another object, Channel, to keep track of data specific to each channel and then used a QList&lt;Channel&gt; data member in the Connection object. Now, messages are stored in QStringLists one for network notices, and one for each channel connected. The next logical thing to tackle might be handling channel removals from the QTreeWidget, and basic commands to join/part channels.
 * 2016/08/05 - Threading and connecting are working. Had data written to QTextEdit but looking for a better way to accomplish it.
 * 2016/08/04 - I can now get a working connection, but having trouble with threads. I'll have to look into it more.
@@ -22,6 +23,6 @@ Current Progress:
 Libraries and modules used so far:
 ----------------------------------
 Qt5:
-   * QtWidgets
    * QtCore
    * QtNetwork
+   * QtWidgets
