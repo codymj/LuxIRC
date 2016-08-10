@@ -168,50 +168,38 @@ void MainWindow::rmConnectionFromTree(const QString &network) {
 /*** Removes a channel from the QTreeWidget's topLevelItem (network) ***/
 // void MainWindow::rmChannelFromTree(QString &channel) {}
 
-/*** Handles keyboard commands ***/
-void MainWindow::keyPressEvent(QKeyEvent *e) {
-   // Handle Ctrl+W
-   if (
-   (e->key() == Qt::Key_W) && (e->modifiers().testFlag(Qt::ControlModifier))) {
-      // Handle empty tree widget
-      if (this->networkTree->topLevelItemCount() == 0) {
-         return;
-      }
-      else if (!this->networkTree->currentItem()->parent()) {
-         rmConnectionFromTree(this->networkTree->currentItem()->text(0));
-      }
-      else {
-         return;
-      }
-   }
-   else {
-      return;
-   }
-}
-
 /*** SLOT - Updates widgets when different channel is clicked in tree ***/
 void MainWindow::updateTreeClick() {
    QTreeWidgetItem *currTreeItem = this->networkTree->currentItem();
 
    // If tree item clicked is top level item (network itself)
-   if (currTreeItem->parent() == NULL) {
+   if (!currTreeItem->parent()) {
       for (int i=0; i<_connectionList.size(); i++) {
-         if (currTreeItem->text(0) == _connectionList.at(i)->getNetwork())
+         if (currTreeItem->text(0) == _connectionList.at(i)->getNetwork()) {
             // Send that Connection to update outputTE
             this->updateOutputTE(_connectionList.at(i));
+         }
       }
    }
 
    // Else if tree item is a channel, check network (parent)
-   else {
+   else if (currTreeItem->text(0).at(0) == '#') {
       for (int i=0; i<_connectionList.size(); i++) {
-         if (currTreeItem->parent()->text(0) == _connectionList.at(i)->getNetwork())
+         if (currTreeItem->parent()->text(0) == 
+         _connectionList.at(i)->getNetwork()) {
             // Send that Connection to update outputTE
             this->updateOutputTE(_connectionList.at(i));
+         }
       }
+   }
+
+   // Else... return
+   else {
+      return;
    }
 }
 
+/*** SLOT - Updates the TextEdit with new data ***/
 void MainWindow::updateOutputTE(Connection *connObj) {
    QTreeWidgetItem *currTreeItem = this->networkTree->currentItem();
    QTextCursor outputTECursor(this->outputTE->textCursor());
@@ -219,7 +207,7 @@ void MainWindow::updateOutputTE(Connection *connObj) {
    this->outputTE->clear();
 
    // If topLevelItem, write the notices for that network
-   if (currTreeItem->parent() == NULL && 
+   if (!currTreeItem->parent() &&
    currTreeItem->text(0) == connObj->getNetwork()) {
       QStringList notices = connObj->getNotices();
       for (int i=0; i<notices.size(); i++) {
@@ -243,7 +231,32 @@ void MainWindow::updateOutputTE(Connection *connObj) {
       }
    }
 
+   else {
+      return;
+   }
+
    // Handle user pvt messages later
 
    // Update all other widgets in MainWindow (nickname, userlist, etc)
+}
+
+/*** Handles keyboard commands ***/
+void MainWindow::keyPressEvent(QKeyEvent *e) {
+   // Handle Ctrl+W
+   if (
+   (e->key() == Qt::Key_W) && (e->modifiers().testFlag(Qt::ControlModifier))) {
+      // Handle empty tree widget
+      if (this->networkTree->topLevelItemCount() == 0) {
+         return;
+      }
+      else if (!this->networkTree->currentItem()->parent()) {
+         rmConnectionFromTree(this->networkTree->currentItem()->text(0));
+      }
+      else {
+         return;
+      }
+   }
+   else {
+      return;
+   }
 }

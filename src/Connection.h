@@ -24,11 +24,13 @@ public:
 	Connection();
 	~Connection();
 
+	QTcpSocket *socket;
 	std::string response;
 	QStringList networkData;
 	QList<Channel> channels;
 	QString chansStr;
 	int bytesToRead = 0;
+	bool connected;
 
 	void connectionReady();
 

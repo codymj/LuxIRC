@@ -7,6 +7,7 @@
 
 #include <QtCore/QByteArray>
 #include <QtCore/QDebug>
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QRegExp>
 #include <QtCore/QString>
@@ -33,6 +34,12 @@ AddNetworkDlg::~AddNetworkDlg() {
 
 /*** Writes data from data widgets to file ***/
 void AddNetworkDlg::writeData() {
+   QDir config("./config");
+   if (!config.exists()) {
+      qDebug() << "Creating /config directory.";
+      config.mkdir("config");
+   }
+
    QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";

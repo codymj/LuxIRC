@@ -39,6 +39,13 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
+     <widget class="QPushButton" name="connectBtn">
+      <property name="text">
+       <string>Co&amp;nnect</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -59,9 +66,9 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="connectBtn">
+     <widget class="QPushButton" name="okBtn">
       <property name="text">
-       <string>Co&amp;nnect</string>
+       <string>&amp;Ok</string>
       </property>
      </widget>
     </item>

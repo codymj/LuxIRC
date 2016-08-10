@@ -27,6 +27,8 @@ Connection::Connection() {
 		this, SIGNAL(finished()),
 		this, SLOT(deleteLater())
 	);
+
+	this->connected = false;
 }
 
 /*** Destructor ***/
@@ -42,34 +44,42 @@ void Connection::connectionReady() {
 
 /*** Connects to network. This function is ran in a new thread. ***/
 void Connection::run() {
-	QTcpSocket _socket;
+	QTcpSocket *socket = new QTcpSocket;
+
 	// Attempt to connect to network
-	_socket.connectToHost(_server, _port);
-	if (_socket.waitForConnected(5000)) {
+	if (!this->connected) {
+		socket->connectToHost(_server, _port);	
+	}
+	
+	// Wait for successful connection
+	if (socket->waitForConnected(5000)) {
+		// Mark this as connected
+		this->connected = true;
+
 		// Send initial IRC information
-		_socket.write(QString(
+		socket->write(QString(
 			"NICK %1\r\n").arg(_nick).toUtf8()
 		);
-		_socket.write(QString(
+		socket->write(QString(
 			"USER %1 0 * :%2\r\n").arg(_username,_realName).toUtf8()
 		);
-		_socket.write(QString(
+		socket->write(QString(
 			"JOIN %1\r\n").arg(chansStr).toUtf8()
 		);
 
 		// Connection loop
 		while (true) {
 			// Wait for new data from network
-			_socket.waitForReadyRead();
+			socket->waitForReadyRead();
 
 			// Get number of bytes available to read
-			bytesToRead = _socket.bytesAvailable();
+			bytesToRead = socket->bytesAvailable();
 
 			// If data received
 			if (bytesToRead > 0) {
 				// Store data into a std::string, send to outputTE
 				response = QString::fromUtf8(
-					_socket.read(bytesToRead)).toStdString();
+					socket->read(bytesToRead)).toStdString();
 
 				networkData.prepend(QString::fromStdString(response));
 
@@ -82,14 +92,16 @@ void Connection::run() {
 				size_t spaceDelim = response.find(' ');
 				if (response.substr(0, spaceDelim).compare("PING") == 0) {
 					std::string pongStr = "PONG" + response.substr(spaceDelim);
-					_socket.write(pongStr.c_str());
+					socket->write(pongStr.c_str());
 				}
 			}
 			else {
 				continue;
 			}
 		}
-		_socket.close();
+		socket->close();
+		this->connected = false;
+		delete socket;
 	}
 	else {
 		networkData.push_back("Connection timed out...\n");

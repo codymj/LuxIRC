@@ -40,6 +40,7 @@ private:
    void connectActions();
    void getConnectObj(Connection*);
    void keyPressEvent(QKeyEvent *e);
+   QTextCursor outputTECursor;
 
 
    // QTreeWidget (List of networks and channels) functions

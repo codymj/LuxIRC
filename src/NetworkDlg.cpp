@@ -6,6 +6,7 @@
  ******************************************************************************/
 
 #include <QtCore/QDebug>
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QString>
 #include <QtCore/QTextStream>
@@ -23,6 +24,7 @@ NetworkDlg::NetworkDlg() {
       networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork())
    );
    connect(connectBtn, SIGNAL(clicked()), this, SLOT(buildConnection()));
+   connect(okBtn, SIGNAL(clicked()), this, SLOT(accept()));
    connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
 
    readData();
@@ -60,6 +62,12 @@ void NetworkDlg::selectNetwork() {
 
 /*** SLOT - Populates networkList with networks from 'networks.conf' file ***/
 void NetworkDlg::readData() {
+   QDir config("./config");
+   if (!config.exists()) {
+      qDebug() << "Creating /config directory.";
+      config.mkdir("config");
+   }
+
    // Open networks.conf for reading
    QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
