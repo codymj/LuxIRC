@@ -14,6 +14,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QTextCursor>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QTreeWidgetItem>
@@ -39,6 +40,7 @@ private:
    void connectActions();
    void getConnectObj(Connection*);
    void keyPressEvent(QKeyEvent *e);
+
 
    // QTreeWidget (List of networks and channels) functions
    void addConnectionToTree(Connection*);

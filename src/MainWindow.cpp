@@ -214,6 +214,8 @@ void MainWindow::updateTreeClick() {
 
 void MainWindow::updateOutputTE(Connection *connObj) {
    QTreeWidgetItem *currTreeItem = this->networkTree->currentItem();
+   QTextCursor outputTECursor(this->outputTE->textCursor());
+
    this->outputTE->clear();
 
    // If topLevelItem, write the notices for that network
@@ -221,7 +223,8 @@ void MainWindow::updateOutputTE(Connection *connObj) {
    currTreeItem->text(0) == connObj->getNetwork()) {
       QStringList notices = connObj->getNotices();
       for (int i=0; i<notices.size(); i++) {
-         this->outputTE->append(notices.at(i));
+         outputTECursor.insertText(notices.at(i));
+         // this->outputTE->ensureCursorVisible();
       }
    }
 
@@ -232,7 +235,8 @@ void MainWindow::updateOutputTE(Connection *connObj) {
          if (connObj->channels.at(i).getName() == currTreeItem->text(0)) {
             QStringList msgs = connObj->channels.at(i).getMsgs();
             for (int j=0; j<msgs.size(); j++) {
-               this->outputTE->append(msgs.at(j));
+               outputTECursor.insertText(msgs.at(j));
+               // this->outputTE->ensureCursorVisible();
             }
             break;
          }
