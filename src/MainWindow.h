@@ -16,6 +16,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QTextCursor>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QScrollBar>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QTreeWidgetItem>
 #include "ChangeNickDlg.h"
@@ -41,6 +42,7 @@ private:
    void getConnectObj(Connection*);
    void keyPressEvent(QKeyEvent *e);
    QTextCursor outputTECursor;
+   int vSliderPos;
 
 
    // QTreeWidget (List of networks and channels) functions
@@ -53,6 +55,7 @@ private slots:
    void openNetworkDlg();
    void openAboutDlg();
    void updateTreeClick();
+   void storeOutputSliderPos(int);
 };
 
 #endif   /* _MAINWINDOW_H_ */

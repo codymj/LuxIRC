@@ -47,6 +47,15 @@ void MainWindow::connectActions() {
       this->networkTree, SIGNAL(itemSelectionChanged()), 
       this, SLOT(updateTreeClick())
    );
+   connect(  // Need to expand this per network/channel
+      this->outputTE->verticalScrollBar(), SIGNAL(sliderMoved(int)),
+      this, SLOT(storeOutputSliderPos(int))
+   );
+}
+
+/*** SLOT - Store the vertical slider position to prevent auto sliding ***/
+void MainWindow::storeOutputSliderPos(int pos) {
+   this->vSliderPos = pos;
 }
 
 /*** SLOT - Change nickname ***/
@@ -212,6 +221,7 @@ void MainWindow::updateOutputTE(Connection *connObj) {
       QStringList notices = connObj->getNotices();
       for (int i=0; i<notices.size(); i++) {
          outputTECursor.insertText(notices.at(i));
+         this->outputTE->verticalScrollBar()->setSliderPosition(vSliderPos);
          // this->outputTE->ensureCursorVisible();
       }
    }
@@ -224,6 +234,7 @@ void MainWindow::updateOutputTE(Connection *connObj) {
             QStringList msgs = connObj->channels.at(i).getMsgs();
             for (int j=0; j<msgs.size(); j++) {
                outputTECursor.insertText(msgs.at(j));
+               this->outputTE->verticalScrollBar()->setSliderPosition(vSliderPos);
                // this->outputTE->ensureCursorVisible();
             }
             break;

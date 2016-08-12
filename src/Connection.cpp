@@ -112,7 +112,8 @@ void Connection::run() {
 /*** Separate messages by channel ***/
 void Connection::parseChannels(const QStringList &data) {
 	for (int i=0; i<this->channels.size(); i++) {
-		if (data.at(0).contains(QString("PRIVMSG " + this->channels.at(i).getName()), Qt::CaseInsensitive)) {
+		if (data.at(0).contains(QString("PRIVMSG " + 
+		this->channels.at(i).getName()), Qt::CaseInsensitive)) {
 			this->channels[i].pushMsg(data.at(0));
 		}
 		else if (data.at(0).contains(QString("NOTICE "), Qt::CaseInsensitive)) {
