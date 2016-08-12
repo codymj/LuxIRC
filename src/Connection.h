@@ -28,7 +28,6 @@ public:
 	std::string response;
 	QStringList networkData;
 	QList<Channel> channels;
-	QString chansStr;
 	int bytesToRead = 0;
 	bool connected;
 
@@ -37,6 +36,7 @@ public:
 	// Get'er and set'er functions
 	void setNetwork(QString &network);
 	void setServer(QString &server);
+	void setChans(QString &chans);
 	void setPort(int port);
 	void setNick(QString &nick);
 	void setNick2(QString &nick2);
@@ -59,9 +59,10 @@ protected:
 
 private:
 	// Data for network from networks.conf
-	QString _network;
-	QString _server;
-	int _port;
+	QString _network;			// Name of network
+	QString _server;			// Ex: irc.freenode.net
+	QString _chansStr;			// Comma separated list of channels
+	int _port;					// Port of server to connect to
 	QString _nick;
 	QString _nick2;
 	QString _username;

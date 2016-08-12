@@ -10,8 +10,9 @@
 /*** Default Constructor ***/
 Connection::Connection() {
 	// Initialize private data members to defaults
-	this->_network = "";
-	this->_server = "";
+	this->_network = "Freenode";
+	this->_server = "irc.freenode.net";
+	this->_chansStr = "#LuxIRC,#qt";
 	this->_port = 6667;
 	this->_nick = "LuxIRCUser";
 	this->_nick2 = "LuxIRCUser2";
@@ -39,7 +40,9 @@ Connection::~Connection() {
 /*** Connection is ready ***/
 void Connection::connectionReady() {
 	// Start thread for this Connection
-	this->start();
+	if (!this->connected) {
+		this->start();
+	}
 }
 
 /*** Connects to network. This function is ran in a new thread. ***/
@@ -47,12 +50,8 @@ void Connection::run() {
 	QTcpSocket *socket = new QTcpSocket;
 
 	// Attempt to connect to network
-	if (!this->connected) {
-		socket->connectToHost(_server, _port);	
-	}
-	
-	// Wait for successful connection
-	if (socket->waitForConnected(5000)) {
+	socket->connectToHost(_server, _port);	
+	if (socket->waitForConnected()) {
 		// Mark this as connected
 		this->connected = true;
 
@@ -64,7 +63,7 @@ void Connection::run() {
 			"USER %1 0 * :%2\r\n").arg(_username,_realName).toUtf8()
 		);
 		socket->write(QString(
-			"JOIN %1\r\n").arg(chansStr).toUtf8()
+			"JOIN %1\r\n").arg(_chansStr).toUtf8()
 		);
 
 		// Connection loop
@@ -77,15 +76,15 @@ void Connection::run() {
 
 			// If data received
 			if (bytesToRead > 0) {
-				// Store data into a std::string, send to outputTE
+				// Store data into a std::string
 				response = QString::fromUtf8(
 					socket->read(bytesToRead)).toStdString();
 
+				// Use prepend to stick new data at the top
 				networkData.prepend(QString::fromStdString(response));
 
-				// Parse data into QMultiMap<channel,message>
+				// Parse data by channel
 				parseChannels(networkData);
-
 				emit dataAvailable(this);
 
 				// Handle PING/PONG messages
@@ -104,8 +103,7 @@ void Connection::run() {
 		delete socket;
 	}
 	else {
-		networkData.push_back("Connection timed out...\n");
-		emit dataAvailable(this);
+		// Handle unable to connect
 	}
 }
 
@@ -119,6 +117,9 @@ void Connection::parseChannels(const QStringList &data) {
 		else if (data.at(0).contains(QString("NOTICE "), Qt::CaseInsensitive)) {
 			this->pushNotice(data.at(0));
 		}
+		else {
+			return;
+		}
 	}
 }
 
@@ -128,6 +129,10 @@ void Connection::setNetwork(QString &network) {
 
 void Connection::setServer(QString &server) {
 	this->_server = server;
+}
+
+void Connection::setChans(QString &chans) {
+	this->_chansStr = chans;
 }
 
 void Connection::setPort(int port) {

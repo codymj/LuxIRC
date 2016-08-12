@@ -14,7 +14,7 @@
 #include "NetworkDlg.h"
 
 /*** Constructor ***/
-NetworkDlg::NetworkDlg() {
+NetworkDlg::NetworkDlg(QWidget *MainWindow) {
    setupUi(this);
 
    connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
@@ -26,6 +26,10 @@ NetworkDlg::NetworkDlg() {
    connect(connectBtn, SIGNAL(clicked()), this, SLOT(buildConnection()));
    connect(okBtn, SIGNAL(clicked()), this, SLOT(accept()));
    connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
+   connect(
+      this, SIGNAL(connectionReady(Connection*)),
+      MainWindow, SLOT(addConnectionObj(Connection*))
+   );
 
    readData();
 }
@@ -192,6 +196,11 @@ void NetworkDlg::accept() {
 void NetworkDlg::buildConnection() {
    Connection *connection = new Connection;
 
+   QDir config("./config");
+   if (!config.exists()) {
+      qDebug() << "ERROR: ./config directory is gone.";
+   }
+
    QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening 'networks.conf'";
@@ -232,10 +241,14 @@ void NetworkDlg::buildConnection() {
                chans << lineData.split(",");
                for (int i=0; i<chans.size(); i++) {
                   Channel chan;
+                  chans.at(i).trimmed();     // Trim whitespace
+                  if (chans.at(i) == "") {   // Skip blank strings
+                     continue;
+                  }
                   chan.setName(chans.at(i));
-                  connection->channels.push_back(chan);
+                  connection->channels.append(chan);
                }
-               connection->chansStr = lineData;
+               connection->setChans(lineData);
             } else if (id == "c=") {
                bool cBool;
                int lineToInt = lineData.toInt();
@@ -285,7 +298,6 @@ void NetworkDlg::buildConnection() {
    }
    networks.close();
 
-   // Store connection object in public data member so MainWindow can grab it
-   tempConnection = connection;
-   this->accept();
+   emit connectionReady(connection);
+   this->close();
 }

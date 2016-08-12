@@ -20,10 +20,8 @@ class NetworkDlg : public QDialog, public Ui::NetworkDlg {
     Q_OBJECT
 
 public:
-   NetworkDlg();
+   NetworkDlg(QWidget *MainWindow);
    virtual ~NetworkDlg();
-
-   Connection *tempConnection = NULL;
 
 public slots:
    void buildConnection();
@@ -38,6 +36,9 @@ private slots:
    void readData();
    void removeNetwork();
    void accept();
+
+signals:
+   void connectionReady(Connection*);
 
 };
 

@@ -34,12 +34,12 @@ public:
 
 public slots:
 	void updateOutputTE(Connection*);
+   void addConnectionObj(Connection*);
 
 private:
    QString nickName;
    QList<Connection*> _connectionList;
    void connectActions();
-   void getConnectObj(Connection*);
    void keyPressEvent(QKeyEvent *e);
    QTextCursor outputTECursor;
    int vSliderPos;
