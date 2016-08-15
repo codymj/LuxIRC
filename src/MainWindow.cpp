@@ -48,14 +48,32 @@ void MainWindow::connectActions() {
       this, SLOT(updateTreeClick())
    );
    connect(  // Need to expand this per network/channel
-      this->outputTE->verticalScrollBar(), SIGNAL(sliderMoved(int)),
+      this->outputTE->verticalScrollBar(), SIGNAL(valueChanged(int)),
       this, SLOT(storeOutputSliderPos(int))
    );
 }
 
 /*** SLOT - Store the vertical slider position to prevent auto sliding ***/
 void MainWindow::storeOutputSliderPos(int pos) {
-   vSliderPos = pos;
+   int max = outputTE->verticalScrollBar()->maximum();
+   if (selectedChan != NULL) {
+      if (max == pos) {
+         selectedChan->setSliderMaxed(true);
+      }
+      else {
+         selectedChan->setSliderMaxed(false);
+      }
+      selectedChan->setSliderVal(pos);
+   }
+   else {
+      if (max == pos) {
+         selectedConn->setSliderMaxed(true);
+      }
+      else {
+         selectedConn->setSliderMaxed(false);
+      }
+      selectedConn->setSliderVal(pos);
+   }
 }
 
 /*** SLOT - Change nickname ***/
@@ -119,8 +137,8 @@ void MainWindow::addConnectionObj(Connection *connObj) {
    else {
       // Connect Connection signals to slots in MainWindow first
       connect(
-         connObj, SIGNAL(dataAvailable(Connection*)),
-         this, SLOT(updateOutputTE(Connection*))
+         connObj, SIGNAL(dataAvailable()),
+         this, SLOT(updateOutputTE())
       );
       _connectionList << connObj;
    }
@@ -139,37 +157,58 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
    connItem->setText(0, connObj->getNetwork());
    for (int i=0; i<connObj->channels.size(); i++) {
       QTreeWidgetItem *chanChild = new QTreeWidgetItem;
-      chanChild->setText(0, connObj->channels.at(i).getName());
+      chanChild->setText(0, connObj->channels.at(i)->getName());
       connItem->addChild(chanChild);
    }
 
    // Add top-level item to tree, along with children
    networkTree->addTopLevelItem(connItem);
    connItem->setExpanded(true);
+   networkTree->setCurrentItem(connItem);
 }
 
 /*** Removes a connection from the QTreeWidget ***/
-void MainWindow::rmConnectionFromTree(const QString &network) {
-   // Find network (top-level item) in the QTreeWidget
-   int childCount = networkTree->topLevelItemCount();
-   for (int i=0; i<childCount; i++) {
-      if (networkTree->topLevelItem(i)->text(0) == network) {
-         // Delete all channel widget items in the network widget parent item
-         int childCount = networkTree->topLevelItem(i)->childCount();
-         for (int j=0; j<childCount; j++) {
-            delete networkTree->topLevelItem(i)->child(j);
+void MainWindow::rmConnectionFromTree() {
+   QTreeWidgetItem *currItem = networkTree->currentItem();
+   QString conn = selectedConn->getNetwork();
+   QString chan = selectedChan->getName();
+
+   // If currItem is Channel item, find channel to remove from networkTree
+   if (currItem->parent()) {
+      for (int i=0; i<currItem->childCount(); i++) {
+         if (currItem->child(i)->text(0) == chan) {
+            delete currItem->takeChild(i);
+            break;
          }
-         // Delete network tree widget item
-         delete networkTree->topLevelItem(i);
+      }
+      // And remove from Connection's list of Channels
+      for (int i=0; i<selectedConn->channels.size(); i++) {
+         if (selectedConn->channels.at(i)->getName() == chan) {
+            delete selectedConn->channels.takeAt(i);
+            selectedChan = NULL;
+            break;
+         }
       }
    }
-   // Remove Connection from _connectionList
-   for (int i=0; i<_connectionList.size(); i++) {
-      if (_connectionList.at(i)->getNetwork() == network) {
-         _connectionList.at(i)->channels.clear();
-         delete _connectionList.at(i);
-         _connectionList.removeAt(i);
+
+   // Otherwise, currItem is Connection item, delete all channels & Connection
+   else {
+      for (int i=0; i<currItem->childCount(); i++) {
+         delete selectedConn->channels.takeAt(i);
       }
+      // And remove from Connection's list of Channels
+      for (int i=0; i<selectedConn->channels.size(); i++) {
+         delete selectedConn->channels.takeAt(i);
+      }
+      int index = networkTree->indexOfTopLevelItem(currItem);
+      delete networkTree->takeTopLevelItem(index);
+      for (int i=0; i<_connectionList.size(); i++) {
+         if (_connectionList.at(i)->getNetwork() == conn) {
+            delete _connectionList.takeAt(i);
+         }
+      }
+      selectedConn = NULL;
+      selectedChan = NULL;
    }
 }
 
@@ -179,86 +218,66 @@ void MainWindow::rmConnectionFromTree(const QString &network) {
 /*** SLOT - Updates widgets when different channel is clicked in tree ***/
 void MainWindow::updateTreeClick() {
    QTreeWidgetItem *currTreeItem = networkTree->currentItem();
-   QString networkItemStr;
-   QString chanItemStr;
+   QString network;
+   QString chan;
 
-   // Set some variables
-   if (currTreeItem->parent()) {
-      networkItemStr = currTreeItem->parent()->text(0);
-      chanItemStr = currTreeItem->text(0);
+   if (networkTree->currentItem()->parent()) {
+      network = currTreeItem->parent()->text(0);
+      chan = currTreeItem->text(0);
+      for (int i=0; i<_connectionList.size(); i++) {
+         if (_connectionList.at(i)->getNetwork() == network) {
+            for (int j=0; j<_connectionList.at(i)->channels.size(); j++) {
+               if (_connectionList.at(i)->channels.at(j)->getName() == chan) {
+                  selectedChan = _connectionList.at(i)->channels.at(j);
+                  selectedConn = _connectionList.at(i);
+               }
+            }
+         }
+      }
    }
    else {
-      networkItemStr = currTreeItem->text(0);
-   }
-
-   // If tree item clicked is top level item (network itself)
-   if (!currTreeItem->parent()) {
+      network = currTreeItem->text(0);
       for (int i=0; i<_connectionList.size(); i++) {
-         if (networkItemStr == _connectionList.at(i)->getNetwork()) {
-            // Send that Connection to update outputTE
-            updateOutputTE(_connectionList.at(i));
+         if (_connectionList.at(i)->getNetwork() == network) {
+            selectedConn = _connectionList.at(i);
+            selectedChan = NULL;
          }
       }
    }
 
-   // Else if tree item is a channel, check network (parent)
-   else if (chanItemStr.at(0) == '#') {
-      for (int i=0; i<_connectionList.size(); i++) {
-         if (networkItemStr == _connectionList.at(i)->getNetwork()) {
-            // Send that Connection to update outputTE
-            updateOutputTE(_connectionList.at(i));
-         }
-      }
-   }
-
-   // Else... return
-   else {
-      return;
-   }
+   updateOutputTE();
 }
 
 /*** SLOT - Updates the TextEdit with new data ***/
-void MainWindow::updateOutputTE(Connection *connObj) {
-   QTreeWidgetItem *currTreeItem = networkTree->currentItem();
-   QTextCursor outputTECursor(outputTE->textCursor());
-   QString networkStr = connObj->getNetwork();
-   QString networkItemStr;
-   QString chanItemStr;
+void MainWindow::updateOutputTE() {
+   QTextCursor _outputTECursor(outputTE->textCursor());
 
-   // If currTreeItem is a channel, set some variables
-   if (currTreeItem->parent()) {
-      networkItemStr = currTreeItem->parent()->text(0);
-      chanItemStr = currTreeItem->text(0);
-   }
-
-   // Clear QTextEdit to prevent double-posting
-   outputTE->clear();
-
-   // If topLevelItem (network), write the notices for that network
-   if (!currTreeItem->parent() && currTreeItem->text(0) == networkStr) {
-      QStringList notices = connObj->getNotices();
+   // If selectedChan = NULL then topLevelItem is selected, show notices
+   if (selectedChan == NULL) {
+      QStringList notices = selectedConn->getNotices();
+      int sliderVal = selectedConn->getSliderVal();
+      outputTE->clear();
       for (int i=0; i<notices.size(); i++) {
-         outputTECursor.insertText(notices.at(i));
-         outputTE->verticalScrollBar()->setSliderPosition(vSliderPos);
+         _outputTECursor.insertText(notices.at(i));
       }
+      if (selectedConn->isSliderMaxed()) {
+         sliderVal = outputTE->verticalScrollBar()->maximum();
+      }
+      outputTE->verticalScrollBar()->setSliderPosition(sliderVal);
    }
 
-   // Else if tree item is a channel. Write messages for that channel
-   else if (networkItemStr == networkStr && chanItemStr.at(0) == '#') {
-      for (int i=0; i<connObj->channels.size(); i++) {
-         if (connObj->channels.at(i).getName() == chanItemStr) {
-            QStringList msgs = connObj->channels.at(i).getMsgs();
-            for (int j=0; j<msgs.size(); j++) {
-               outputTECursor.insertText(msgs.at(j));
-               outputTE->verticalScrollBar()->setSliderPosition(vSliderPos);
-            }
-            break;
-         }
-      }
-   }
-
+   // Otherwise, a child is selected. Show messages for channel/user
    else {
-      return;
+      QStringList msgs = selectedChan->getMsgs();
+      int sliderVal = selectedChan->getSliderVal();
+      outputTE->clear();
+      for (int i=0; i<msgs.size(); i++) {
+         _outputTECursor.insertText(msgs.at(i));
+      }
+      if (selectedChan->isSliderMaxed()) {
+         sliderVal = outputTE->verticalScrollBar()->maximum();
+      }
+      outputTE->verticalScrollBar()->setSliderPosition(sliderVal);
    }
 
    // Handle user pvt messages later
@@ -275,11 +294,8 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
       if (networkTree->topLevelItemCount() == 0) {
          return;
       }
-      else if (!networkTree->currentItem()->parent()) {
-         rmConnectionFromTree(networkTree->currentItem()->text(0));
-      }
       else {
-         return;
+         rmConnectionFromTree();
       }
    }
    else {

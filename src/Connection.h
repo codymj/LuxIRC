@@ -27,7 +27,7 @@ public:
 	QTcpSocket *socket;
 	std::string response;
 	QStringList networkData;
-	QList<Channel> channels;
+	QList<Channel*> channels;
 	int bytesToRead = 0;
 	bool connected;
 
@@ -53,6 +53,10 @@ public:
 	QString getServer() const;
 	void pushNotice(const QString msg);
 	QStringList getNotices() const;
+	void setSliderVal(int);
+	int getSliderVal() const;
+	void setSliderMaxed(bool);
+	bool isSliderMaxed() const;
 
 protected:
 	void run();
@@ -74,6 +78,8 @@ private:
 	bool _useSSL;
 	bool _acceptInvalidSSLCert;
 	QStringList _notices;
+	int _sliderVal = 0;
+	bool _sliderMaxed = true;
 
 	// Private Functions
 	void parseChannels(const QStringList &data);
@@ -86,7 +92,7 @@ private:
 	//     QString topic for each channel
 
 signals:
-	void dataAvailable(Connection*);
+	void dataAvailable();
 };
 
 #endif // _CONNECTION_H_

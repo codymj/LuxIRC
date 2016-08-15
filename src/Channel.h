@@ -21,12 +21,18 @@ public:
 	QString getName() const;
 	void pushMsg(const QString msg);
 	QStringList getMsgs() const;
+	void setSliderVal(int val);
+	int getSliderVal() const;
+	void setSliderMaxed(bool);
+	bool isSliderMaxed() const;
 
 private:
 	QString _name;
 	QStringList _msgs;
 	QString _topic;
 	QList<QString> _userList;
+	int _sliderVal = 0;
+	bool _sliderMaxed = true;
 
 };
 

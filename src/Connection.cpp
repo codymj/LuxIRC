@@ -85,7 +85,7 @@ void Connection::run() {
 
 				// Parse data by channel
 				parseChannels(networkData);
-				emit dataAvailable(this);
+				emit dataAvailable();
 
 				// Handle PING/PONG messages
 				size_t spaceDelim = response.find(' ');
@@ -110,9 +110,9 @@ void Connection::run() {
 /*** Separate messages by channel ***/
 void Connection::parseChannels(const QStringList &data) {
 	for (int i=0; i<this->channels.size(); i++) {
-		if (data.at(0).contains(QString("PRIVMSG " + 
-		this->channels.at(i).getName()), Qt::CaseInsensitive)) {
-			this->channels[i].pushMsg(data.at(0));
+		if (data.at(0).contains(QString(
+		"PRIVMSG " + this->channels.at(i)->getName()), Qt::CaseInsensitive)) {
+			this->channels.at(i)->pushMsg(data.at(0));
 		}
 		else if (data.at(0).contains(QString("NOTICE "), Qt::CaseInsensitive)) {
 			this->pushNotice(data.at(0));
@@ -193,4 +193,20 @@ void Connection::pushNotice(const QString msg) {
 
 QStringList Connection::getNotices() const {
 	return this->_notices;
+}
+
+void Connection::setSliderVal(int val) {
+	this->_sliderVal = val;
+}
+
+int Connection::getSliderVal() const {
+	return this->_sliderVal;
+}
+
+void Connection::setSliderMaxed(bool b) {
+	this->_sliderMaxed = b;
+}
+
+bool Connection::isSliderMaxed() const {
+	return this->_sliderMaxed;
 }

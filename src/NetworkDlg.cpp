@@ -240,12 +240,12 @@ void NetworkDlg::buildConnection() {
                QStringList chans;
                chans << lineData.split(",");
                for (int i=0; i<chans.size(); i++) {
-                  Channel chan;
+                  Channel *chan = new Channel;
                   chans.at(i).trimmed();     // Trim whitespace
                   if (chans.at(i) == "") {   // Skip blank strings
                      continue;
                   }
-                  chan.setName(chans.at(i));
+                  chan->setName(chans.at(i));
                   connection->channels.append(chan);
                }
                connection->setChans(lineData);

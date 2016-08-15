@@ -30,3 +30,19 @@ void Channel::pushMsg(const QString msg) {
 QStringList Channel::getMsgs() const {
 	return this->_msgs;
 }
+
+void Channel::setSliderVal(int val) {
+	this->_sliderVal = val;
+}
+
+int Channel::getSliderVal() const {
+	return this->_sliderVal;
+}
+
+void Channel::setSliderMaxed(bool b) {
+	this->_sliderMaxed = b;
+}
+
+bool Channel::isSliderMaxed() const {
+	return this->_sliderMaxed;
+}

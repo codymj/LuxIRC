@@ -33,7 +33,7 @@ public:
    virtual ~MainWindow();
 
 public slots:
-	void updateOutputTE(Connection*);
+	void updateOutputTE();
    void addConnectionObj(Connection*);
 
 private:
@@ -41,13 +41,14 @@ private:
    QList<Connection*> _connectionList;
    void connectActions();
    void keyPressEvent(QKeyEvent *e);
-   QTextCursor outputTECursor;
-   int vSliderPos;
+   QTextCursor _outputTECursor;
+   Connection *selectedConn = NULL;
+   Channel *selectedChan = NULL;
 
 
    // QTreeWidget (List of networks and channels) functions
    void addConnectionToTree(Connection*);
-   void rmConnectionFromTree(const QString &network);
+   void rmConnectionFromTree();
    // void rmChannelFromTree(QString &channel);
 
 private slots:
