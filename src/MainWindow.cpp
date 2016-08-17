@@ -7,6 +7,9 @@
 
 #include "MainWindow.h"
 
+/*******************************************************************************
+Constructor
+*******************************************************************************/
 MainWindow::MainWindow() {
    setupUi(this);
 
@@ -22,10 +25,15 @@ MainWindow::MainWindow() {
    splitter->setSizes(sizeList);
 }
 
+/*******************************************************************************
+Destructor
+*******************************************************************************/
 MainWindow::~MainWindow() {
 }
 
-/*** Create menu actions ***/
+/*******************************************************************************
+Create menu actions
+*******************************************************************************/
 void MainWindow::connectActions() {
    connect(
       openNetworkDlgAction, SIGNAL(triggered()), 
@@ -53,7 +61,9 @@ void MainWindow::connectActions() {
    );
 }
 
-/*** SLOT - Store the vertical slider position to prevent auto sliding ***/
+/*******************************************************************************
+SLOT - Store the vertical slider position to prevent auto sliding
+*******************************************************************************/
 void MainWindow::storeOutputSliderPos(int pos) {
    int max = outputTE->verticalScrollBar()->maximum();
    if (selectedChan != NULL) {
@@ -76,7 +86,9 @@ void MainWindow::storeOutputSliderPos(int pos) {
    }
 }
 
-/*** SLOT - Change nickname ***/
+/*******************************************************************************
+SLOT - Change nickname
+*******************************************************************************/
 void MainWindow::changeNick() {
    ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
    changeNickDlg->newNickLE->setText(nickName);
@@ -93,7 +105,9 @@ void MainWindow::changeNick() {
    delete changeNickDlg;
 }
 
-/*** SLOT - Open the Network Dialog ***/
+/*******************************************************************************
+SLOT - Open the Network Dialog
+*******************************************************************************/
 void MainWindow::openNetworkDlg() {
    NetworkDlg *networkDlg = new NetworkDlg(this);
    networkDlg->exec();
@@ -101,7 +115,9 @@ void MainWindow::openNetworkDlg() {
    delete networkDlg;
 }
 
-/*** SLOT - Open the About Dialog ***/
+/*******************************************************************************
+SLOT - Open the About Dialog
+*******************************************************************************/
 void MainWindow::openAboutDlg() {
    AboutDlg *aboutDlg = new AboutDlg();
    aboutDlg->exec();
@@ -109,8 +125,10 @@ void MainWindow::openAboutDlg() {
    delete aboutDlg;
 }
 
-/*** SLOT - Receive Connection object from NetworkDlg ***/
-// I will have to handle when connection is loaded, but disconnected
+/*******************************************************************************
+SLOT - Receive Connection object from NetworkDlg
+I will have to handle when connection is loaded, but disconnected
+*******************************************************************************/
 void MainWindow::addConnectionObj(Connection *connObj) {
    // Check if connObj is NULL (initial value), return to prevent segfault
    if (connObj == NULL) {
@@ -150,7 +168,9 @@ void MainWindow::addConnectionObj(Connection *connObj) {
    connObj->connectionReady();
 }
 
-/*** Adds a connection to the QTreeWidget ***/
+/*******************************************************************************
+Adds a connection to the QTreeWidget
+*******************************************************************************/
 void MainWindow::addConnectionToTree(Connection *connObj) {
    // Build top-level item for tree
    QTreeWidgetItem *connItem = new QTreeWidgetItem;
@@ -167,25 +187,24 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
    networkTree->setCurrentItem(connItem);
 }
 
-/*** Removes a connection from the QTreeWidget ***/
-void MainWindow::rmConnectionFromTree() {
+/*******************************************************************************
+Removes a connection from the QTreeWidget
+*******************************************************************************/
+void MainWindow::removeItemFromTree() {
+   qDebug() << "1";
    QTreeWidgetItem *currItem = networkTree->currentItem();
    QString conn = selectedConn->getNetwork();
-   QString chan = selectedChan->getName();
 
    // If currItem is Channel item, find channel to remove from networkTree
    if (currItem->parent()) {
-      for (int i=0; i<currItem->childCount(); i++) {
-         if (currItem->child(i)->text(0) == chan) {
-            delete currItem->takeChild(i);
-            break;
-         }
-      }
+      QString chan = selectedChan->getName();
+      delete currItem;
+
       // And remove from Connection's list of Channels
       for (int i=0; i<selectedConn->channels.size(); i++) {
          if (selectedConn->channels.at(i)->getName() == chan) {
+            // TODO: Handle /part for channel
             delete selectedConn->channels.takeAt(i);
-            selectedChan = NULL;
             break;
          }
       }
@@ -193,37 +212,56 @@ void MainWindow::rmConnectionFromTree() {
 
    // Otherwise, currItem is Connection item, delete all channels & Connection
    else {
-      for (int i=0; i<currItem->childCount(); i++) {
-         delete selectedConn->channels.takeAt(i);
+      qDebug() << "2";
+      int index = networkTree->indexOfTopLevelItem(currItem);
+      int childCount = currItem->childCount();
+
+      // Delete all Channel items belonging to the parent Connection item
+      if (childCount > 0) {
+         for (int i=0; i<childCount; i++) {
+            delete currItem->child(i);
+         }
       }
+qDebug() << "3";
       // And remove from Connection's list of Channels
       for (int i=0; i<selectedConn->channels.size(); i++) {
          delete selectedConn->channels.takeAt(i);
       }
-      int index = networkTree->indexOfTopLevelItem(currItem);
+
+      // Delete the Connection item
       delete networkTree->takeTopLevelItem(index);
+qDebug() << "4";
+      // Delete the Connection in the list of Connection objects.
       for (int i=0; i<_connectionList.size(); i++) {
          if (_connectionList.at(i)->getNetwork() == conn) {
             delete _connectionList.takeAt(i);
          }
       }
-      selectedConn = NULL;
-      selectedChan = NULL;
+      qDebug() << "5";
    }
 }
 
-/*** Removes a channel from the QTreeWidget's topLevelItem (network) ***/
+/*******************************************************************************
+Removes a channel from the QTreeWidget's topLevelItem (network)
+*******************************************************************************/
 // void MainWindow::rmChannelFromTree(QString &channel) {}
 
-/*** SLOT - Updates widgets when different channel is clicked in tree ***/
+/*******************************************************************************
+Updates widgets when different channel is clicked in tree
+*******************************************************************************/
 void MainWindow::updateTreeClick() {
-   QTreeWidgetItem *currTreeItem = networkTree->currentItem();
+   QTreeWidgetItem *currItem = networkTree->currentItem();
    QString network;
    QString chan;
 
-   if (networkTree->currentItem()->parent()) {
-      network = currTreeItem->parent()->text(0);
-      chan = currTreeItem->text(0);
+   // Handle an empty networkTree
+   if (currItem == NULL) {
+      return;
+   }
+
+   if (currItem->parent()) {
+      network = currItem->parent()->text(0);
+      chan = currItem->text(0);
       for (int i=0; i<_connectionList.size(); i++) {
          if (_connectionList.at(i)->getNetwork() == network) {
             for (int j=0; j<_connectionList.at(i)->channels.size(); j++) {
@@ -236,7 +274,7 @@ void MainWindow::updateTreeClick() {
       }
    }
    else {
-      network = currTreeItem->text(0);
+      network = currItem->text(0);
       for (int i=0; i<_connectionList.size(); i++) {
          if (_connectionList.at(i)->getNetwork() == network) {
             selectedConn = _connectionList.at(i);
@@ -244,11 +282,12 @@ void MainWindow::updateTreeClick() {
          }
       }
    }
-
    updateOutputTE();
 }
 
-/*** SLOT - Updates the TextEdit with new data ***/
+/*******************************************************************************
+SLOT - Updates the TextEdit with new data
+*******************************************************************************/
 void MainWindow::updateOutputTE() {
    QTextCursor _outputTECursor(outputTE->textCursor());
 
@@ -285,7 +324,9 @@ void MainWindow::updateOutputTE() {
    // Update all other widgets in MainWindow (nickname, userlist, etc)
 }
 
-/*** Handles keyboard commands ***/
+/*******************************************************************************
+Handles keyboard commands
+*******************************************************************************/
 void MainWindow::keyPressEvent(QKeyEvent *e) {
    // Handle Ctrl+W
    if (
@@ -295,10 +336,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
          return;
       }
       else {
-         rmConnectionFromTree();
+         removeItemFromTree();
       }
-   }
-   else {
-      return;
    }
 }

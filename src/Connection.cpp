@@ -34,7 +34,6 @@ Connection::Connection() {
 
 /*** Destructor ***/
 Connection::~Connection() {
-
 }
 
 /*** Connection is ready ***/
@@ -98,7 +97,6 @@ void Connection::run() {
 				continue;
 			}
 		}
-		socket->close();
 		this->connected = false;
 		delete socket;
 	}

@@ -48,7 +48,7 @@ private:
 
    // QTreeWidget (List of networks and channels) functions
    void addConnectionToTree(Connection*);
-   void rmConnectionFromTree();
+   void removeItemFromTree();
    // void rmChannelFromTree(QString &channel);
 
 private slots:
