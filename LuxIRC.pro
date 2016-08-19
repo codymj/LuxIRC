@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = LuxIRC
 INCLUDEPATH += .
-QT += core widgets network
+QT += core widgets network gui
 OBJECTS_DIR = ./obj
 MOC_DIR = ./moc
 UI_DIR = ./src
