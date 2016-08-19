@@ -49,7 +49,6 @@ private:
    // QTreeWidget (List of networks and channels) functions
    void addConnectionToTree(Connection*);
    void removeItemFromTree();
-   // void rmChannelFromTree(QString &channel);
 
 private slots:
    void changeNick();
@@ -57,6 +56,7 @@ private slots:
    void openAboutDlg();
    void updateTreeClick();
    void storeOutputSliderPos(int);
+   void deleteConnection(Connection*);
 };
 
 #endif   /* _MAINWINDOW_H_ */

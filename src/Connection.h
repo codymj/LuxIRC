@@ -32,6 +32,7 @@ public:
 	bool connected;
 
 	void connectionReady();
+	void disconnect();
 
 	// Get'er and set'er functions
 	void setNetwork(QString &network);
@@ -93,6 +94,7 @@ private:
 
 signals:
 	void dataAvailable();
+	void deleteMe(Connection*);
 };
 
 #endif // _CONNECTION_H_

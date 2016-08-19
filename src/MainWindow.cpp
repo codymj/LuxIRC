@@ -158,6 +158,10 @@ void MainWindow::addConnectionObj(Connection *connObj) {
          connObj, SIGNAL(dataAvailable()),
          this, SLOT(updateOutputTE())
       );
+      connect(
+         connObj, SIGNAL(deleteMe(Connection*)),
+         this, SLOT(deleteConnection(Connection*))
+      );
       _connectionList << connObj;
    }
 
@@ -166,6 +170,17 @@ void MainWindow::addConnectionObj(Connection *connObj) {
 
    // Ready to connect to network
    connObj->connectionReady();
+}
+
+/*******************************************************************************
+SLOT - Must wait for thread to finish, then delete object from connection list
+*******************************************************************************/
+void MainWindow::deleteConnection(Connection *connObj) {
+   for (int i=0; i<_connectionList.size(); i++) {
+      if (_connectionList.at(i) == connObj) {
+         delete _connectionList.takeAt(i);
+      }
+   }
 }
 
 /*******************************************************************************
@@ -191,7 +206,6 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
 Removes a connection from the QTreeWidget
 *******************************************************************************/
 void MainWindow::removeItemFromTree() {
-   qDebug() << "1";
    QTreeWidgetItem *currItem = networkTree->currentItem();
    QString conn = selectedConn->getNetwork();
 
@@ -212,7 +226,7 @@ void MainWindow::removeItemFromTree() {
 
    // Otherwise, currItem is Connection item, delete all channels & Connection
    else {
-      qDebug() << "2";
+
       int index = networkTree->indexOfTopLevelItem(currItem);
       int childCount = currItem->childCount();
 
@@ -222,7 +236,7 @@ void MainWindow::removeItemFromTree() {
             delete currItem->child(i);
          }
       }
-qDebug() << "3";
+
       // And remove from Connection's list of Channels
       for (int i=0; i<selectedConn->channels.size(); i++) {
          delete selectedConn->channels.takeAt(i);
@@ -230,21 +244,18 @@ qDebug() << "3";
 
       // Delete the Connection item
       delete networkTree->takeTopLevelItem(index);
-qDebug() << "4";
+
       // Delete the Connection in the list of Connection objects.
       for (int i=0; i<_connectionList.size(); i++) {
          if (_connectionList.at(i)->getNetwork() == conn) {
-            delete _connectionList.takeAt(i);
+            if (_connectionList.at(i)->connected) {
+               _connectionList.at(i)->disconnect();
+               outputTE->append("Disconnected.");
+            }
          }
       }
-      qDebug() << "5";
    }
 }
-
-/*******************************************************************************
-Removes a channel from the QTreeWidget's topLevelItem (network)
-*******************************************************************************/
-// void MainWindow::rmChannelFromTree(QString &channel) {}
 
 /*******************************************************************************
 Updates widgets when different channel is clicked in tree
@@ -295,10 +306,16 @@ void MainWindow::updateOutputTE() {
    if (selectedChan == NULL) {
       QStringList notices = selectedConn->getNotices();
       int sliderVal = selectedConn->getSliderVal();
+
+      // Clear outputTE for appending data
       outputTE->clear();
+
+      // Show notices
       for (int i=0; i<notices.size(); i++) {
          _outputTECursor.insertText(notices.at(i));
       }
+
+      // Set scrollbar to last set position (bottom by default)
       if (selectedConn->isSliderMaxed()) {
          sliderVal = outputTE->verticalScrollBar()->maximum();
       }
@@ -309,10 +326,16 @@ void MainWindow::updateOutputTE() {
    else {
       QStringList msgs = selectedChan->getMsgs();
       int sliderVal = selectedChan->getSliderVal();
+
+      // Clear outputTE for appending data
       outputTE->clear();
+
+      // Show messages
       for (int i=0; i<msgs.size(); i++) {
          _outputTECursor.insertText(msgs.at(i));
       }
+
+      // Set scrollbar to last set position (bottom by default)
       if (selectedChan->isSliderMaxed()) {
          sliderVal = outputTE->verticalScrollBar()->maximum();
       }

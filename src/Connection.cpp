@@ -67,8 +67,12 @@ void Connection::run() {
 
 		// Connection loop
 		while (true) {
+			if (!this->connected) {
+				break;
+			}
+
 			// Wait for new data from network
-			socket->waitForReadyRead();
+			socket->waitForReadyRead(1000);
 
 			// Get number of bytes available to read
 			bytesToRead = socket->bytesAvailable();
@@ -93,32 +97,45 @@ void Connection::run() {
 					socket->write(pongStr.c_str());
 				}
 			}
+
+			// Otherwise, keep waiting for data
 			else {
 				continue;
 			}
 		}
-		this->connected = false;
 		delete socket;
 	}
 	else {
 		// Handle unable to connect
 	}
+	this->quit();
+	emit deleteMe(this);
 }
 
 /*** Separate messages by channel ***/
 void Connection::parseChannels(const QStringList &data) {
 	for (int i=0; i<this->channels.size(); i++) {
+		// If data is a channel/user message
 		if (data.at(0).contains(QString(
 		"PRIVMSG " + this->channels.at(i)->getName()), Qt::CaseInsensitive)) {
 			this->channels.at(i)->pushMsg(data.at(0));
 		}
+
+		// Otherwise, it is a server notice. Break to prevent duplicate lines
 		else if (data.at(0).contains(QString("NOTICE "), Qt::CaseInsensitive)) {
 			this->pushNotice(data.at(0));
+			break;
 		}
+
+		// Handle any other data here if necessary
 		else {
 			return;
 		}
 	}
+}
+
+void Connection::disconnect() {
+	this->connected = false;
 }
 
 void Connection::setNetwork(QString &network) {
