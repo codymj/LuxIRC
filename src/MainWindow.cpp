@@ -98,7 +98,28 @@ void MainWindow::storeOutputSliderPos(int pos) {
 }
 
 /*******************************************************************************
-SLOT - Change nickname
+Change nick name
+*******************************************************************************/
+void MainWindow::changeNick(const QString &nick) {
+   // Set nick name in for changeNickBtn
+   changeNickBtn->setText(nick);
+
+   // Set the nick name for the selected Connection
+   if (networkTree->topLevelItemCount() == 0) {
+      return;
+   }
+   else {
+      if (selectedConn->getNick() == nick) {
+         return;
+      }
+      else {
+         selectedConn->setNick(nick);
+      }
+   }
+}
+
+/*******************************************************************************
+SLOT - Change nick name
 *******************************************************************************/
 void MainWindow::changeNick() {
    ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
@@ -232,6 +253,9 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
    networkTree->addTopLevelItem(connItem);
    connItem->setExpanded(true);
    networkTree->setCurrentItem(connItem);
+
+   // Make sure nick name from connObj updates changeNickBtn
+   changeNick(selectedConn->getNick());
 }
 
 /*******************************************************************************

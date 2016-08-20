@@ -50,6 +50,7 @@ private:
    void keyPressEvent(QKeyEvent *e);
    void addConnectionToTree(Connection*);
    void removeItemFromTree();
+   void changeNick(const QString&);
 
 private slots:
    void changeNick();

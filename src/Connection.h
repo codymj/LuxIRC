@@ -40,7 +40,7 @@ public:
 	void setServer(QString &server);
 	void setChans(QString &chans);
 	void setPort(int port);
-	void setNick(QString &nick);
+	void setNick(const QString &nick);
 	void setNick2(QString &nick2);
 	void setUsername(QString &username);
 	void setRealName(QString &realName);

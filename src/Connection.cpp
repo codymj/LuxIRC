@@ -170,7 +170,7 @@ void Connection::setPort(int port) {
 	this->_port = port;
 }
 
-void Connection::setNick(QString &nick) {
+void Connection::setNick(const QString &nick) {
 	this->_nick = nick;
 }
 
