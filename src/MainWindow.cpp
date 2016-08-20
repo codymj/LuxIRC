@@ -15,8 +15,15 @@ MainWindow::MainWindow() {
 
    connectActions();
 
-   // I'll create a method to handle initial data settings later.
-   nickName = changeNickBtn->text();
+   // Initialize nickname
+   QTime time = QTime::currentTime();
+   qsrand((uint)time.msec());
+   int low = 10000;
+   int high = 99999;
+   QString prefix = "LuxIRC-";
+   QString suffix = QString::number(qrand() % ((high + 1) - low) + low);
+   _initialNick = prefix + suffix;
+   changeNickBtn->setText(_initialNick);
 
    // Resize the splitter so the widgets look more aesthetic.
    // sizeList << chanView size << centralWidget size << nickView size;
@@ -66,6 +73,8 @@ SLOT - Store the vertical slider position to prevent auto sliding
 *******************************************************************************/
 void MainWindow::storeOutputSliderPos(int pos) {
    int max = outputTE->verticalScrollBar()->maximum();
+
+   // Set scroll slider value for each Channel
    if (selectedChan != NULL) {
       if (max == pos) {
          selectedChan->setSliderMaxed(true);
@@ -75,6 +84,8 @@ void MainWindow::storeOutputSliderPos(int pos) {
       }
       selectedChan->setSliderVal(pos);
    }
+
+   // Set scroll slider value for each topLevelItem (server notices)
    else {
       if (max == pos) {
          selectedConn->setSliderMaxed(true);
@@ -91,13 +102,34 @@ SLOT - Change nickname
 *******************************************************************************/
 void MainWindow::changeNick() {
    ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
+   QString nickName;
+
+   if (networkTree->topLevelItemCount() == 0) {
+      nickName = _initialNick;
+   }
+   else {
+      nickName = selectedConn->getNick();
+   }
+
    changeNickDlg->newNickLE->setText(nickName);
    changeNickDlg->newNickLE->selectAll();
 
    if (changeNickDlg->exec()) {
-      // TODO: Handle blank line edit...
       nickName = changeNickDlg->newNickLE->text();
+      _initialNick = nickName;
+
+      // Handle empty field
+      if (nickName == "") {
+         return;
+      }
+
       changeNickBtn->setText(nickName);
+      if (networkTree->topLevelItemCount() == 0) {
+         return;
+      }
+      else {
+         selectedConn->setNick(nickName);
+      }
    }
 
    // TODO:  Handle method to change nick via IRC protocol.

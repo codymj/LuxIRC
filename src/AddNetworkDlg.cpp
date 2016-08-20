@@ -28,6 +28,8 @@ AddNetworkDlg::AddNetworkDlg() {
    portLE->setValidator(portValidator);
    portLE->setText("6667");
 
+   // TODO: Set a nick name validator
+
    // Ticking 'Use Global Information' disables per-network user info
    connect(globalInfoCkb, SIGNAL(toggled(bool)), this, SLOT(toggleUserInfo()));
 }

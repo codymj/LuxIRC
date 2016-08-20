@@ -53,6 +53,7 @@ public:
 	void setAcceptInvalidSSLCert(bool &b);
 	QString getNetwork() const;
 	QString getServer() const;
+	QString getNick() const;
 	void pushNotice(const QString msg);
 	QStringList getNotices() const;
 	void setSliderVal(int);

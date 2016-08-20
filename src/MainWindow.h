@@ -9,10 +9,12 @@
 #define _MAINWINDOW_H_
 
 #include <QtCore/QDebug>
+#include <QtCore/QtGlobal>
 #include <QtCore/QList>
 #include <QtCore/QSet>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
+#include <QtCore/QTime>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QTextCursor>
 #include <QtWidgets/QMessageBox>
@@ -37,16 +39,15 @@ public slots:
    void addConnectionObj(Connection*);
 
 private:
-   QString nickName;
+   QString _initialNick;
    QList<Connection*> _connectionList;
-   void connectActions();
-   void keyPressEvent(QKeyEvent *e);
    QTextCursor _outputTECursor;
    Connection *selectedConn = NULL;
    Channel *selectedChan = NULL;
 
-
-   // QTreeWidget (List of networks and channels) functions
+   // Private functions
+   void connectActions();
+   void keyPressEvent(QKeyEvent *e);
    void addConnectionToTree(Connection*);
    void removeItemFromTree();
 

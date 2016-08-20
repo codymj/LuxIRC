@@ -218,6 +218,10 @@ QString Connection::getServer() const {
 	return this->_server;
 }
 
+QString Connection::getNick() const {
+	return this->_nick;
+}
+
 void Connection::pushNotice(const QString msg) {
 	this->_notices << msg;
 }
