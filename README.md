@@ -8,6 +8,7 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/08/20 - I did some testing and I could not create a segfault. I also added some small functions to facilitate changing nick between the changeNickBtn and the nick stored in Connection objects. I want to add a regular expression to make sure the nick name fields comply with IRC protocal, but that has proven to be difficult as I am not good with regex. If nothing else comes up, I'll start with expanding my data parsing and socket->write() next week.
 * 2016/08/19 - Fixed segfaults dealing with QTcpSockets. I read from a Qt source that QTcpSockets do something behind the scenes AFTER disconnecting from host, but since I was deleting the entire Connection object before that happens, the socket pointer is no longer accessible, causing the segfault. I also implemented another signal to tell the main thread when the Connection thread is finished, calling another implemented slot to delete that Connection. This makes the Connection thread exit safely and thus, no more "Thread destroyed while running" warnings. Tomorrow, I am going to go through the code and try to modularize it a bit more because I think I can do a few things in the Connection class which I'm doing in the MainWindow class, such as deleting Channels in the Connection class itself rather than doing it in MainWindow. I will also do some "stress" testing and see if I can break the program some how. After that, I should be ready to implement some of the fun things, like parsing message formats and implementing some socket->write() functions.
 * 2016/08/17 - Segfaults dealing with removing Channels/Connections are fixed. Still need to call QTcpSocket->disconnectFromHost() some how. Calling it from the MainWindow before deleting the Connection caused a segfault, no idea why yet. Currently, the Connection is deleted while its thread is running which throws a "Thread destroyed while running" warning. I'll probably have to set up a signal/slot to stop the thread first since if I delete the Connection, then try to reconnect to the same network, it seems like I'm still logged in (ident issues). I still need to check if the offline issues persist, I wonder if those segfaults have anything to do with the QTcpSocket::disconnectFromHost() segfault...
 * 2016/08/15 - I made MainWindow::updateOutputTE() more modular and fixed everything regarding that to this point. I did not bother testing offline problems. There are issues removing channels/connections from the QTreeWidget which is causing segfaults, but I'm sure it has something to do with my order of deleting objects.
@@ -28,5 +29,6 @@ Libraries and modules used so far:
 ----------------------------------
 Qt5:
    * QtCore
+   * QtGui
    * QtNetwork
    * QtWidgets
