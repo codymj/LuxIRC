@@ -16,6 +16,9 @@
 #include <QtWidgets/QMessageBox>
 #include "AddNetworkDlg.h"
 
+/*******************************************************************************
+Constructor
+*******************************************************************************/
 AddNetworkDlg::AddNetworkDlg() {
    setupUi(this);
 
@@ -29,10 +32,15 @@ AddNetworkDlg::AddNetworkDlg() {
    connect(globalInfoCkb, SIGNAL(toggled(bool)), this, SLOT(toggleUserInfo()));
 }
 
+/*******************************************************************************
+Destructor
+*******************************************************************************/
 AddNetworkDlg::~AddNetworkDlg() {
 }
 
-/*** Writes data from data widgets to file ***/
+/*******************************************************************************
+Writes data from data widgets to file
+*******************************************************************************/
 void AddNetworkDlg::writeData() {
    QDir config("./config");
    if (!config.exists()) {
@@ -106,7 +114,9 @@ void AddNetworkDlg::writeData() {
    temp.rename("config/networks.conf");
 }
 
-/*** Helper method to stream data into a file ***/
+/*******************************************************************************
+Helper method to stream data into a file
+*******************************************************************************/
 void AddNetworkDlg::streamDataIntoFile(QTextStream &write) {
    write << '\n';
    write << "N=" + networkLE->text() + '\n';
@@ -125,13 +135,17 @@ void AddNetworkDlg::streamDataIntoFile(QTextStream &write) {
    write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n";
 }
 
-/*** SLOT - Called when 'save' button is clicked ***/
+/*******************************************************************************
+SLOT - Called when 'save' button is clicked
+*******************************************************************************/
 void AddNetworkDlg::accept() {
    writeData();
    this->close();
 }
 
-/*** SLOT - Use global user info or per-server info ***/
+/*******************************************************************************
+SLOT - Use global user info or per-server info
+*******************************************************************************/
 void AddNetworkDlg::toggleUserInfo() {
    // Open luxirc.conf for reading
    QFile luxirc("config/luxirc.conf");

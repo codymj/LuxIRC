@@ -15,6 +15,9 @@
 #include "EditNetworkDlg.h"
 #include "NetworkDlg.h"
 
+/*******************************************************************************
+Constructor
+*******************************************************************************/
 EditNetworkDlg::EditNetworkDlg(QString &networkName) {
    setupUi(this);
 
@@ -34,10 +37,16 @@ EditNetworkDlg::EditNetworkDlg(QString &networkName) {
    networkLE->setEnabled(false);
 }
 
+/*******************************************************************************
+Destructor
+*******************************************************************************/
 EditNetworkDlg::~EditNetworkDlg() {
 }
 
-/*** Reads data from file for specific network, loads data into data fields ***/
+/*******************************************************************************
+Reads data from file for specific network, loads data into data fields
+*******************************************************************************/
+/***  ***/
 void EditNetworkDlg::readData(QString &networkName) {
    QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -64,7 +73,9 @@ void EditNetworkDlg::readData(QString &networkName) {
    networks.close();
 }
 
-/*** Inputs data from file into data widgets ***/
+/*******************************************************************************
+Inputs data from file into data widgets
+*******************************************************************************/
 void EditNetworkDlg::populateData(QString &line) {
    QString id = line.left(2);      // First two chars in line (ex. N=)
    QString lineData = line.mid(2); // The data on the rest of the line
@@ -133,7 +144,9 @@ void EditNetworkDlg::populateData(QString &line) {
    }
 }
 
-/*** Writes data from data widgets to file ***/
+/*******************************************************************************
+Writes data from data widgets to file
+*******************************************************************************/
 void EditNetworkDlg::writeData() {
    QFile networks("config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -175,7 +188,9 @@ void EditNetworkDlg::writeData() {
    temp.rename("config/networks.conf");
 }
 
-/*** Helper method to stream data into a file ***/
+/*******************************************************************************
+Helper method to stream data into a file
+*******************************************************************************/
 void EditNetworkDlg::streamDataIntoFile(QTextStream &write) {
    write << "N=" + networkLE->text() + '\n';
    write << "S=" + serverLE->text() + '\n';
@@ -193,13 +208,17 @@ void EditNetworkDlg::streamDataIntoFile(QTextStream &write) {
    write << "g=" + QString::number(globalInfoCkb->isChecked()) + "\n\n";
 }
 
-/*** SLOT - Called when 'save' button is clicked ***/
+/*******************************************************************************
+SLOT - Called when 'save' button is clicked
+*******************************************************************************/
 void EditNetworkDlg::accept() {
    writeData();
    this->close();
 }
 
-/*** SLOT - Use global user info or per-server info ***/
+/*******************************************************************************
+SLOT - Use global user info or per-server info
+*******************************************************************************/
 void EditNetworkDlg::toggleUserInfo() {
    // Open luxirc.conf for reading
    QFile luxirc("config/luxirc.conf");

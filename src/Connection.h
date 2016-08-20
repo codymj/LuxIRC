@@ -31,6 +31,7 @@ public:
 	int bytesToRead = 0;
 	bool connected;
 
+	// Public functions
 	void connectionReady();
 	void disconnect();
 
@@ -84,13 +85,6 @@ private:
 
 	// Private Functions
 	void parseChannels(const QStringList &data);
-
-	// Getting and handling data from server
-	// QTcpSocket _socket;
-	// Must be dynamically created:
-	//     QList userList for each channel
-	//     QStringList channelData messages separated for each channel
-	//     QString topic for each channel
 
 signals:
 	void dataAvailable();

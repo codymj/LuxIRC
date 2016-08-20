@@ -7,7 +7,9 @@
 
 #include "Connection.h"
 
-/*** Default Constructor ***/
+/*******************************************************************************
+Constructor
+*******************************************************************************/
 Connection::Connection() {
 	// Initialize private data members to defaults
 	this->_network = "Freenode";
@@ -32,11 +34,15 @@ Connection::Connection() {
 	this->connected = false;
 }
 
-/*** Destructor ***/
+/*******************************************************************************
+Destructor
+*******************************************************************************/
 Connection::~Connection() {
 }
 
-/*** Connection is ready ***/
+/*******************************************************************************
+Connection is ready, start thread
+*******************************************************************************/
 void Connection::connectionReady() {
 	// Start thread for this Connection
 	if (!this->connected) {
@@ -44,7 +50,9 @@ void Connection::connectionReady() {
 	}
 }
 
-/*** Connects to network. This function is ran in a new thread. ***/
+/*******************************************************************************
+Connects to network. This function is ran in a new thread
+*******************************************************************************/
 void Connection::run() {
 	QTcpSocket *socket = new QTcpSocket;
 
@@ -112,7 +120,9 @@ void Connection::run() {
 	emit deleteMe(this);
 }
 
-/*** Separate messages by channel ***/
+/*******************************************************************************
+Separate messages by channel
+*******************************************************************************/
 void Connection::parseChannels(const QStringList &data) {
 	for (int i=0; i<this->channels.size(); i++) {
 		// If data is a channel/user message
@@ -134,10 +144,16 @@ void Connection::parseChannels(const QStringList &data) {
 	}
 }
 
+/*******************************************************************************
+Sets the Connection to disconnected status
+*******************************************************************************/
 void Connection::disconnect() {
 	this->connected = false;
 }
 
+/*******************************************************************************
+Get'ers & set'ers
+*******************************************************************************/
 void Connection::setNetwork(QString &network) {
 	this->_network = network;
 }
