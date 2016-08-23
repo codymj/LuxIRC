@@ -8,6 +8,7 @@
 #ifndef _CONNECTION_H_
 #define _CONNECTION_H_
 
+#include <QtCore/QByteArray>
 #include <QtCore/QDebug>
 #include <QtCore/QList>
 #include <QtCore/QMultiMap>
@@ -25,10 +26,11 @@ public:
 	~Connection();
 
 	QTcpSocket *socket;
-	std::string response;
+	QByteArray data;
 	QStringList networkData;
 	QList<Channel*> channels;
 	int bytesToRead = 0;
+	int bytesRemaining = 0;
 	bool connected;
 
 	// Public functions
@@ -85,10 +87,12 @@ private:
 	bool _sliderMaxed = true;
 
 	// Private Functions
-	void parseChannels(const QStringList &data);
+	void parseData(const QStringList &data);
+	void processData(const QStringList &data);
 
 signals:
 	void dataAvailable();
+	void newChannel(Connection*, Channel*);
 	void deleteMe(Connection*);
 };
 

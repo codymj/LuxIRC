@@ -215,6 +215,10 @@ void MainWindow::addConnectionObj(Connection *connObj) {
          connObj, SIGNAL(deleteMe(Connection*)),
          this, SLOT(deleteConnection(Connection*))
       );
+      connect(
+         connObj, SIGNAL(newChannel(Connection*, Channel*)),
+         this, SLOT(createChannel(Connection*, Channel*))
+      );
       _connectionList << connObj;
    }
 
@@ -223,6 +227,20 @@ void MainWindow::addConnectionObj(Connection *connObj) {
 
    // Ready to connect to network
    connObj->connectionReady();
+}
+
+/*******************************************************************************
+SLOT - Creates a new channel when user sends a message
+*******************************************************************************/
+void MainWindow::createChannel(Connection *connObj, Channel *chan) {
+   QTreeWidgetItem *newChan = new QTreeWidgetItem;
+   newChan->setText(0, chan->getName());
+
+   for (int i=0; i<networkTree->topLevelItemCount(); i++) {
+      if (networkTree->topLevelItem(i)->text(0) == connObj->getNetwork()) {
+         networkTree->topLevelItem(i)->addChild(newChan);
+      }
+   }
 }
 
 /*******************************************************************************
@@ -306,7 +324,6 @@ void MainWindow::removeItemFromTree() {
          if (_connectionList.at(i)->getNetwork() == conn) {
             if (_connectionList.at(i)->connected) {
                _connectionList.at(i)->disconnect();
-               outputTE->append("Disconnected.");
             }
          }
       }

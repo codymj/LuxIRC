@@ -59,6 +59,7 @@ private slots:
    void updateTreeClick();
    void storeOutputSliderPos(int);
    void deleteConnection(Connection*);
+   void createChannel(Connection*, Channel*);
 };
 
 #endif   /* _MAINWINDOW_H_ */
