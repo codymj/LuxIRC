@@ -9,7 +9,6 @@ I have recently started working on the project again and I will try to finish th
 Current Progress:
 -----------------
 * 2016/08/24 - I fixed the Connection loop algorithm. It now waits and appends data until each block of data receieved is terminated with "\r\n" which makes it much easier to parse. Here is an example of how I parsed the data:
-![alt tag](http://i.imgur.com/k36VH1c.png)
 <p align="center">
   <img src="http://i.imgur.com/k36VH1c.png"/>
 </p>
