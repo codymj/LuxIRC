@@ -9,9 +9,7 @@ I have recently started working on the project again and I will try to finish th
 Current Progress:
 -----------------
 * 2016/08/24 - I fixed the Connection loop algorithm. It now waits and appends data until each block of data receieved is terminated with "\r\n" which makes it much easier to parse. Here is an example of how I parsed the data:
-
 ![alt tag](http://i.imgur.com/k36VH1c.png)
-
 I have also impelemented the topic signal/slot for the Channel object. Now, when viewing a Channel, the topic is displayed in the QLineEdit at the top of MainWindow.
 
 * 2016/08/22 - Overhauled Connection::parseData() and made Connection::processData() to do all of the data sorting for various IRC commands (JOIN, PRIVMSG, NOTICE, etc) and it seems to be working okay. Fun stuff will begin soon.
