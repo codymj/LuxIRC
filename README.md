@@ -10,26 +10,7 @@ Current Progress:
 -----------------
 * 2016/08/24 - I fixed the Connection loop algorithm. It now waits and appends data until each block of data receieved is terminated with "\r\n" which makes it much easier to parse. Here is an example of how I parsed the data:
 
-// Raw data:
-":niven.freenode.net 005 user6789 CASEMAPPING=rfc1459 CHARSET=ascii NICKLEN=16 CHANNELLEN=50 TOPICLEN=390 ETRACE CPRIVMSG CNOTICE DEAF=D MONITOR=100 FNC TARGMAX=NAMES:1,LIST:1,KICK:1,WHOIS:1,PRIVMSG:4,NOTICE:4,ACCEPT:,MONITOR: :are supported by this server"
-
-// Parsed data:             Index:      Info:
-"niven.freenode.net"        // 0        source
-"005"                       // 1        command
-"user6789"                  // 2        target
-"CASEMAPPING=rfc1459"       // 3+       args
-"CHARSET=ascii"
-"NICKLEN=16"
-"CHANNELLEN=50"
-"TOPICLEN=390"
-"ETRACE"
-"CPRIVMSG"
-"CNOTICE"
-"DEAF=D"
-"MONITOR=100"
-"FNC"
-"TARGMAX=NAMES:1,LIST:1,KICK:1,WHOIS:1,PRIVMSG:4,NOTICE:4,ACCEPT:,MONITOR:"
-"are supported by this server"
+![alt tag](http://i.imgur.com/k36VH1c.png)
 
 I have also impelemented the topic signal/slot for the Channel object. Now, when viewing a Channel, the topic is displayed in the QLineEdit at the top of MainWindow.
 
