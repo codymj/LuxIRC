@@ -25,12 +25,8 @@ public:
 	Connection();
 	~Connection();
 
-	QTcpSocket *socket;
-	QByteArray data;
-	QStringList networkData;
-	QList<Channel*> channels;
-	int bytesToRead = 0;
-	int bytesRemaining = 0;
+	// Public data
+	QList<Channel*> channels;	
 	bool connected;
 
 	// Public functions
@@ -86,7 +82,14 @@ private:
 	int _sliderVal = 0;
 	bool _sliderMaxed = true;
 
-	// Private Functions
+	// Private data
+	QTcpSocket *socket;
+	int bytesToRead = 0;
+	int bytesRemaining = 0;
+	QByteArray data;
+	QStringList networkData;
+
+	// Private functions
 	void parseData(const QStringList &data);
 	void processData(const QStringList &data);
 

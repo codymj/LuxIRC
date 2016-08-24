@@ -91,17 +91,24 @@ void Connection::run() {
 				bytesRemaining -= data.size();
 			}
 
+			// If waitForReadyRead() times out, blank data is written
+			if (data.isEmpty()) {
+				continue;
+			}
+
 			// Handle PING
 			if (data.contains("PING")) {
-				qDebug() << "PING!";
-				std::string str = data.toStdString();
-				size_t spaceDelim = str.find(' ');
-				if (str.substr(0, spaceDelim).compare("PING") == 0) {
-					std::string pongStr = "PONG" + str.substr(spaceDelim);
-					socket->write(pongStr.c_str());
-					qDebug() << "PONG!";
-					continue;
-				}
+				// "PING :message" -> ["PING", ":message\r\n"]
+				QList<QByteArray> pingSplit = data.split(' ');
+
+				QByteArray pong = "PONG ";
+
+				// Send in format: "PONG :message\r\n"
+				pong.append(pingSplit.at(1));
+				socket->write(QString(pong).toUtf8());
+
+				// Restart loop, no need to parse this further
+				continue;
 			}
 
 			// Use prepend to stick new data at the top
@@ -116,6 +123,7 @@ void Connection::run() {
 	else {
 		// Handle unable to connect
 	}
+	
 	this->quit();
 	emit deleteMe(this);
 }
@@ -131,12 +139,6 @@ void Connection::parseData(const QStringList &data) {
 	QString command;
 	QStringList trailing;
 	QStringList args;
-
-	// Handle empty string
-	if (data.at(0).isEmpty()) {
-		qDebug() << "ERROR: Cannot parse empty line.";
-		return;
-	}
 
 	// Get prefix
 	if (data.at(0).at(0) == ':') {
@@ -159,9 +161,15 @@ void Connection::parseData(const QStringList &data) {
 	}
 
 	QStringList parsedData;
-	parsedData << prefix;
-	parsedData << command;
-	parsedData << args;
+	if (!prefix.isEmpty()) {
+		parsedData << prefix;
+	}
+	if (!command.isEmpty()) {
+		parsedData << command;
+	}
+	if (!args.isEmpty()) {
+		parsedData << args;
+	}
 	processData(parsedData);
 }
 
