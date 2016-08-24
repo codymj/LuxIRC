@@ -87,10 +87,10 @@ private:
 	int bytesToRead = 0;
 	int bytesRemaining = 0;
 	QByteArray data;
-	QStringList networkData;
+	QStringList dataLines;
 
 	// Private functions
-	void parseData(const QStringList &data);
+	void parseData(const QString &data);
 	void processData(const QStringList &data);
 
 signals:

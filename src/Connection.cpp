@@ -78,17 +78,16 @@ void Connection::run() {
 			// Wait for new data from network
 			socket->waitForReadyRead();
 
-			// Make sure all data was received
+			// Make sure all data was received by checking "\r\n" at end
 			bytesToRead = socket->bytesAvailable();
 			data = socket->read(bytesToRead);
-			bytesRemaining = bytesToRead - data.size();
-			while (bytesRemaining > 0) {
+			while (!data.endsWith("\r\n")) {
 				if (!socket->waitForReadyRead()) {
 					qDebug() << "ERROR: WaitForReadyRead timed out.";
 					return;
 				}
-				data = socket->read(bytesRemaining);
-				bytesRemaining -= data.size();
+				bytesToRead = socket->bytesAvailable();
+				data.append(socket->read(bytesToRead));
 			}
 
 			// If waitForReadyRead() times out, blank data is written
@@ -97,13 +96,12 @@ void Connection::run() {
 			}
 
 			// Handle PING
-			if (data.contains("PING")) {
+			if (data.contains("PING :")) {
 				// "PING :message" -> ["PING", ":message\r\n"]
 				QList<QByteArray> pingSplit = data.split(' ');
 
-				QByteArray pong = "PONG ";
-
 				// Send in format: "PONG :message\r\n"
+				QByteArray pong = "PONG ";
 				pong.append(pingSplit.at(1));
 				socket->write(QString(pong).toUtf8());
 
@@ -112,18 +110,24 @@ void Connection::run() {
 			}
 
 			// Use prepend to stick new data at the top
-			networkData.prepend(QString::fromUtf8(data));
+			//networkData.prepend(QString::fromUtf8(data));
 
 			// Parse data
-			parseData(networkData);
-			emit dataAvailable();
+			QString dataStr = QString::fromUtf8(data);
+			dataLines = dataStr.split("\r\n");
+			for (int i=0; i<dataLines.size(); i++) {
+				if (!dataLines.at(i).isEmpty()) {
+					parseData(dataLines.at(i));
+					emit dataAvailable();
+				}
+			}
 		}
 		delete socket;
 	}
 	else {
 		// Handle unable to connect
 	}
-	
+
 	this->quit();
 	emit deleteMe(this);
 }
@@ -133,34 +137,48 @@ Parse data into prefix, command and args for processing
 ":test!~test@test.com PRIVMSG #channel :Hi!"
  -------prefix------- command ----args-----
 *******************************************************************************/
-void Connection::parseData(const QStringList &data) {
-	qDebug() << data.at(0);
+void Connection::parseData(const QString &data) {
+	qDebug() << data;
 	QString prefix;
 	QString command;
 	QStringList trailing;
 	QStringList args;
+	QStringList parsedData;
 
 	// Get prefix
-	if (data.at(0).at(0) == ':') {
-		prefix = data.at(0).section(' ', 0, 0); // :test!~test@test.com
-		prefix.remove(':');						// test!~test@test.com
+	if (data.at(0) == ':') {
+		prefix = data.section(' ', 0, 0);	// :test!~test@test.com
+		prefix.remove(':');					// test!~test@test.com
+	}
+	else {
+		qDebug() << data;
+		this->pushNotice(data);
+		return;
 	}
 
 	// Get command & args
-	if (data.at(0).contains(" :", Qt::CaseInsensitive)) {
-		trailing = data.at(0).split(" :");
-		// [":test!~test@test.com PRIVMSG #channel", "Hi!"]
+	if (data.contains(" :", Qt::CaseInsensitive)) {
+		trailing = data.split(" :");
+		// [":test!~test@test.com PRIVMSG #channel", "Hi!", ...]
 		
 		QStringList temp = trailing.at(0).split(' ');
 		// [":test!~test@test.com", "PRIVMSG", "#channel"]
 		
 		temp.removeFirst();				// ["PRIVMSG", "#channel"]
 		command = temp.takeFirst();		// "PRIVMSG"
-		trailing.removeFirst();			// ["Hi!"]
-		args << temp << trailing;		// ["#channel", "Hi!"]
+		trailing.removeFirst();			// ["Hi!", ...]
+		args << temp << trailing;		// ["#channel", "Hi!", ...]
+	}
+	else {
+		// [":test!~test@test.com", "JOIN", "#channel", ...]
+		trailing = data.split(' ');
+		
+		trailing.removeFirst();			// ["JOIN", "#channel", ...]
+		command = trailing.takeFirst();	// "JOIN"
+		args << trailing;				// ["#channel", ...]
 	}
 
-	QStringList parsedData;
+	// Assemble parsed data for processing. Empty/NULL = segfault!
 	if (!prefix.isEmpty()) {
 		parsedData << prefix;
 	}
@@ -178,6 +196,11 @@ Processes the data that has been parsed
 data = ["test!~test@test.com", "PRIVMSG", "#channel", "Hi!", ...]
 *******************************************************************************/
 void Connection::processData(const QStringList &data) {
+	if (data.size() == 1) {
+		qDebug() << "ERROR: " << data.at(0);
+		return;
+	}
+
 	// Command = "PRIVMSG"
 	if (data.at(1) == "PRIVMSG") {
 		bool found = false;
@@ -190,6 +213,7 @@ void Connection::processData(const QStringList &data) {
 				QString msg = data.at(0);
 				msg += ": ";
 				msg += data.at(3);
+				msg += '\n';
 				this->channels.at(i)->pushMsg(msg);
 				break;
 			}
@@ -202,6 +226,7 @@ void Connection::processData(const QStringList &data) {
 			QString msg = data.at(0);
 			msg += ": ";
 			msg += data.at(3);
+			msg += '\n';
 			chan->pushMsg(msg);
 			this->channels.append(chan);
 			emit newChannel(this, chan);
@@ -213,11 +238,46 @@ void Connection::processData(const QStringList &data) {
 		QString notice = data.at(0);
 		notice += ": ";
 		notice += data.at(3);
+		notice += '\n';
 		this->pushNotice(notice);
 	}
 
-	// Command = "PING"
-	
+	// Command = "JOIN"
+	else if (data.at(1) == "JOIN") {
+		for (int i=0; i<this->channels.size(); i++) {
+			if (data.at(2) == this->channels.at(i)->getName()) {
+				QString msg = "*** ";
+				msg += data.at(0);
+				msg += " joined ";
+				msg += this->channels.at(i)->getName();
+				msg += " ***";
+				msg += '\n';
+				this->channels.at(i)->pushMsg(msg);
+				break;
+			}
+		}
+	}
+
+	// Command = "PART"
+	else if (data.at(1) == "PART") {
+		for (int i=0; i<this->channels.size(); i++) {
+			if (data.at(2) == this->channels.at(i)->getName()) {
+				QString msg = "*** ";
+				msg += data.at(0);
+				msg += " left ";
+				msg += this->channels.at(i)->getName();
+				msg += " ***";
+				msg += '\n';
+				this->channels.at(i)->pushMsg(msg);
+				break;
+			}
+		}
+	}
+
+	// Otherwise ?
+	else {
+		return;
+	}
 }
 
 /*******************************************************************************
