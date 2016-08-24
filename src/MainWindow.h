@@ -60,6 +60,7 @@ private slots:
    void storeOutputSliderPos(int);
    void deleteConnection(Connection*);
    void createChannel(Connection*, Channel*);
+   void updateTopic(Channel*);
 };
 
 #endif   /* _MAINWINDOW_H_ */

@@ -265,6 +265,10 @@ void NetworkDlg::buildConnection() {
                      continue;
                   }
                   chan->setName(chans.at(i));
+                  connect(
+                     chan, SIGNAL(topicChanged(chan)),
+                     connection, SIGNAL(topicChanged(chan))
+                  );
                   connection->channels.append(chan);
                }
                connection->setChans(lineData);

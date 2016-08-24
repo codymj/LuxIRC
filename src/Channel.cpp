@@ -22,7 +22,7 @@ Channel::~Channel() {
 /*******************************************************************************
 Get'ers and set'ers
 *******************************************************************************/
-void Channel::setName(const QString name) {
+void Channel::setName(const QString &name) {
 	this->_name = name;
 }
 
@@ -30,7 +30,7 @@ QString Channel::getName() const {
 	return this->_name;
 }
 
-void Channel::pushMsg(const QString msg) {
+void Channel::pushMsg(const QString &msg) {
 	this->_msgs << msg;
 }
 
@@ -52,4 +52,12 @@ void Channel::setSliderMaxed(bool b) {
 
 bool Channel::isSliderMaxed() const {
 	return this->_sliderMaxed;
+}
+
+void Channel::setTopic(const QString &topic) {
+	this->_topic = topic;
+}
+
+QString Channel::getTopic() const {
+	return this->_topic;
 }

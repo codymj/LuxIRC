@@ -219,6 +219,10 @@ void MainWindow::addConnectionObj(Connection *connObj) {
          connObj, SIGNAL(newChannel(Connection*, Channel*)),
          this, SLOT(createChannel(Connection*, Channel*))
       );
+      connect(
+         connObj, SIGNAL(topicChanged(Channel*)),
+         this, SLOT(updateTopic(Channel*))
+      );
       _connectionList << connObj;
    }
 
@@ -227,6 +231,15 @@ void MainWindow::addConnectionObj(Connection *connObj) {
 
    // Ready to connect to network
    connObj->connectionReady();
+}
+
+/*******************************************************************************
+SLOT - Updates topic in topicLE for Channel
+*******************************************************************************/
+void MainWindow::updateTopic(Channel *chan) {
+   if (selectedChan == chan) {
+      topicLE->setText(chan->getTopic());
+   }
 }
 
 /*******************************************************************************
@@ -343,6 +356,7 @@ void MainWindow::updateTreeClick() {
       return;
    }
 
+   // If Channel in tree is selected
    if (currItem->parent()) {
       network = currItem->parent()->text(0);
       chan = currItem->text(0);
@@ -350,14 +364,21 @@ void MainWindow::updateTreeClick() {
          if (_connectionList.at(i)->getNetwork() == network) {
             for (int j=0; j<_connectionList.at(i)->channels.size(); j++) {
                if (_connectionList.at(i)->channels.at(j)->getName() == chan) {
+                  // Update selected Channel and Channel's info
                   selectedChan = _connectionList.at(i)->channels.at(j);
+                  topicLE->setText(selectedChan->getTopic());
+
+                  // Update selected Connection
                   selectedConn = _connectionList.at(i);
                }
             }
          }
       }
    }
+
+   // Otherwise, a Connection is selected
    else {
+      topicLE->clear();
       network = currItem->text(0);
       for (int i=0; i<_connectionList.size(); i++) {
          if (_connectionList.at(i)->getNetwork() == network) {

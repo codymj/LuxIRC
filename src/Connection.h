@@ -95,6 +95,7 @@ private:
 
 signals:
 	void dataAvailable();
+	void topicChanged(Channel*);
 	void newChannel(Connection*, Channel*);
 	void deleteMe(Connection*);
 };

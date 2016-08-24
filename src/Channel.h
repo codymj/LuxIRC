@@ -9,22 +9,27 @@
 #define _CHANNEL_H_
 
 #include <QtCore/QList>
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
-class Channel {
+class Channel : public QObject {
+	Q_OBJECT
+
 public:
 	Channel();
 	~Channel();
 
-	void setName(const QString name);
+	void setName(const QString &name);
 	QString getName() const;
-	void pushMsg(const QString msg);
+	void pushMsg(const QString &msg);
 	QStringList getMsgs() const;
 	void setSliderVal(int val);
 	int getSliderVal() const;
 	void setSliderMaxed(bool);
 	bool isSliderMaxed() const;
+	void setTopic(const QString &topic);
+	QString getTopic() const;
 
 private:
 	QString _name;
@@ -33,6 +38,9 @@ private:
 	QList<QString> _userList;
 	int _sliderVal = 0;
 	bool _sliderMaxed = true;
+
+signals:
+	void topicChanged(Channel*);
 
 };
 

@@ -196,9 +196,28 @@ Processes the data that has been parsed
 data = ["test!~test@test.com", "PRIVMSG", "#channel", "Hi!", ...]
 *******************************************************************************/
 void Connection::processData(const QStringList &data) {
-	if (data.size() == 1) {
-		qDebug() << "ERROR: " << data.at(0);
-		return;
+	// qDebug() << "---";
+	// for (int i=0; i<data.size(); i++) {
+	// 	qDebug() << data.at(i);
+	// }
+	// qDebug() << "---";
+
+	// Command = 375 (Start of MOTD)
+	// Command = 376 (End of MOTD)
+	// Command = 372 (MOTD)
+	if (data.at(1) == "375" || data.at(1) == "376" || data.at(1) == "372") {
+		this->pushNotice(QString(data.at(3) + "\n"));
+	}
+
+	// Command = 332 (Topic)
+	if (data.at(1) == "332") {
+		for (int i=0; i<this->channels.size(); i++) {
+			if (data.at(3) == this->channels.at(i)->getName()) {
+				this->channels.at(i)->setTopic(data.at(4));
+				emit topicChanged(this->channels.at(i));
+				break;
+			}
+		}
 	}
 
 	// Command = "PRIVMSG"
@@ -265,13 +284,25 @@ void Connection::processData(const QStringList &data) {
 				QString msg = "*** ";
 				msg += data.at(0);
 				msg += " left ";
-				msg += this->channels.at(i)->getName();
-				msg += " ***";
-				msg += '\n';
+				msg += data.at(2);
+				msg += " [";
+				msg += data.at(3);
+				msg += "] ***\n";
 				this->channels.at(i)->pushMsg(msg);
 				break;
 			}
 		}
+	}
+
+	// Command = "QUIT"
+	// Pushing as notice for now until I implement user list
+	else if (data.at(1) == "QUIT") {
+		QString msg = "*** ";
+		msg += data.at(0);
+		msg += " quit. [";
+		msg += data.at(2);
+		msg += "] ***\n";
+		this->pushNotice(msg);
 	}
 
 	// Otherwise ?

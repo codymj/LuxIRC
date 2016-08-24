@@ -59,6 +59,7 @@ SOURCES       = src/AboutDlg.cpp \
 		src/NetworkDlg.cpp moc/moc_AboutDlg.cpp \
 		moc/moc_AddNetworkDlg.cpp \
 		moc/moc_ChangeNickDlg.cpp \
+		moc/moc_Channel.cpp \
 		moc/moc_Connection.cpp \
 		moc/moc_EditNetworkDlg.cpp \
 		moc/moc_MainWindow.cpp \
@@ -75,6 +76,7 @@ OBJECTS       = obj/AboutDlg.o \
 		obj/moc_AboutDlg.o \
 		obj/moc_AddNetworkDlg.o \
 		obj/moc_ChangeNickDlg.o \
+		obj/moc_Channel.o \
 		obj/moc_Connection.o \
 		obj/moc_EditNetworkDlg.o \
 		obj/moc_MainWindow.o \
@@ -116,8 +118,6 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/modules/qt_lib_core_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_dbus.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_dbus_private.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_declarative.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_declarative_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designer.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designer_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designercomponents_private.pri \
@@ -211,6 +211,7 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/qt_config.prf \
 		/usr/lib/qt/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/qt/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/qt/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/qt/mkspecs/features/default_pre.prf \
 		/usr/lib/qt/mkspecs/features/resolve_config.prf \
@@ -297,8 +298,6 @@ Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 		/usr/lib/qt/mkspecs/modules/qt_lib_core_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_dbus.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_dbus_private.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_declarative.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_declarative_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designer.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designer_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designercomponents_private.pri \
@@ -392,6 +391,7 @@ Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 		/usr/lib/qt/mkspecs/features/qt_config.prf \
 		/usr/lib/qt/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/qt/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/qt/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/qt/mkspecs/features/default_pre.prf \
 		/usr/lib/qt/mkspecs/features/resolve_config.prf \
@@ -451,8 +451,6 @@ Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 /usr/lib/qt/mkspecs/modules/qt_lib_core_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_dbus.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_dbus_private.pri:
-/usr/lib/qt/mkspecs/modules/qt_lib_declarative.pri:
-/usr/lib/qt/mkspecs/modules/qt_lib_declarative_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_designer.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_designer_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_designercomponents_private.pri:
@@ -546,6 +544,7 @@ Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 /usr/lib/qt/mkspecs/features/qt_config.prf:
 /usr/lib/qt/mkspecs/linux-g++/qmake.conf:
 /usr/lib/qt/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/qt/mkspecs/features/exclusive_builds.prf:
 /usr/lib/qt/mkspecs/features/default_pre.prf:
 /usr/lib/qt/mkspecs/features/resolve_config.prf:
@@ -609,9 +608,9 @@ benchmark: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc/moc_AboutDlg.cpp moc/moc_AddNetworkDlg.cpp moc/moc_ChangeNickDlg.cpp moc/moc_Connection.cpp moc/moc_EditNetworkDlg.cpp moc/moc_MainWindow.cpp moc/moc_NetworkDlg.cpp
+compiler_moc_header_make_all: moc/moc_AboutDlg.cpp moc/moc_AddNetworkDlg.cpp moc/moc_ChangeNickDlg.cpp moc/moc_Channel.cpp moc/moc_Connection.cpp moc/moc_EditNetworkDlg.cpp moc/moc_MainWindow.cpp moc/moc_NetworkDlg.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_AboutDlg.cpp moc/moc_AddNetworkDlg.cpp moc/moc_ChangeNickDlg.cpp moc/moc_Connection.cpp moc/moc_EditNetworkDlg.cpp moc/moc_MainWindow.cpp moc/moc_NetworkDlg.cpp
+	-$(DEL_FILE) moc/moc_AboutDlg.cpp moc/moc_AddNetworkDlg.cpp moc/moc_ChangeNickDlg.cpp moc/moc_Channel.cpp moc/moc_Connection.cpp moc/moc_EditNetworkDlg.cpp moc/moc_MainWindow.cpp moc/moc_NetworkDlg.cpp
 moc/moc_AboutDlg.cpp: src/ui_AboutDlg.h \
 		src/AboutDlg.h \
 		/usr/lib/qt/bin/moc
@@ -626,6 +625,10 @@ moc/moc_ChangeNickDlg.cpp: src/ui_ChangeNickDlg.h \
 		src/ChangeNickDlg.h \
 		/usr/lib/qt/bin/moc
 	/usr/lib/qt/bin/moc $(DEFINES) -I/usr/lib/qt/mkspecs/linux-g++ -I/home/ismann/Documents/Projects/LuxIRC -I/home/ismann/Documents/Projects/LuxIRC -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtCore -I/usr/include/c++/6.1.1 -I/usr/include/c++/6.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/6.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/6.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/6.1.1/include-fixed -I/usr/include src/ChangeNickDlg.h -o moc/moc_ChangeNickDlg.cpp
+
+moc/moc_Channel.cpp: src/Channel.h \
+		/usr/lib/qt/bin/moc
+	/usr/lib/qt/bin/moc $(DEFINES) -I/usr/lib/qt/mkspecs/linux-g++ -I/home/ismann/Documents/Projects/LuxIRC -I/home/ismann/Documents/Projects/LuxIRC -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtCore -I/usr/include/c++/6.1.1 -I/usr/include/c++/6.1.1/x86_64-pc-linux-gnu -I/usr/include/c++/6.1.1/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/6.1.1/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/6.1.1/include-fixed -I/usr/include src/Channel.h -o moc/moc_Channel.cpp
 
 moc/moc_Connection.cpp: src/Channel.h \
 		src/Connection.h \
@@ -783,6 +786,9 @@ obj/moc_AddNetworkDlg.o: moc/moc_AddNetworkDlg.cpp
 
 obj/moc_ChangeNickDlg.o: moc/moc_ChangeNickDlg.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_ChangeNickDlg.o moc/moc_ChangeNickDlg.cpp
+
+obj/moc_Channel.o: moc/moc_Channel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_Channel.o moc/moc_Channel.cpp
 
 obj/moc_Connection.o: moc/moc_Connection.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_Connection.o moc/moc_Connection.cpp
