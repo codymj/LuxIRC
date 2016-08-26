@@ -61,6 +61,7 @@ private slots:
    void deleteConnection(Connection*);
    void createChannel(Connection*, Channel*);
    void updateTopic(Channel*);
+   void updateUserList(Channel*);
 };
 
 #endif   /* _MAINWINDOW_H_ */

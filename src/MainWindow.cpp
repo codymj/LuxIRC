@@ -223,6 +223,10 @@ void MainWindow::addConnectionObj(Connection *connObj) {
          connObj, SIGNAL(topicChanged(Channel*)),
          this, SLOT(updateTopic(Channel*))
       );
+      connect(
+         connObj, SIGNAL(userListChanged(Channel*)),
+         this, SLOT(updateUserList(Channel*))
+      );
       _connectionList << connObj;
    }
 
@@ -231,6 +235,32 @@ void MainWindow::addConnectionObj(Connection *connObj) {
 
    // Ready to connect to network
    connObj->connectionReady();
+}
+
+/*******************************************************************************
+SLOT - Updates topic in topicLE for Channel
+*******************************************************************************/
+void MainWindow::updateUserList(Channel *chan) {
+   if (selectedChan == chan) {
+      // Get user list from Channel
+      QStringList userList = chan->getUserList();
+      qDebug() << "userList size:" << userList.size();
+
+      // Clear MainWindow's QListWidget for populating/updating
+      nickList->clear();
+
+      // Populate data
+      for (int i=0; i<userList.size(); i++) {
+         nickList->addItem(userList.at(i));
+      }
+      qDebug() << "nickList size:" << nickList->count();
+      
+      // Update userCountLbl
+      userCountLbl->setText(QString::number(userList.count()) + " total");
+
+      // Sort the list
+      nickList->sortItems(Qt::AscendingOrder);
+   }
 }
 
 /*******************************************************************************
@@ -366,7 +396,8 @@ void MainWindow::updateTreeClick() {
                if (_connectionList.at(i)->channels.at(j)->getName() == chan) {
                   // Update selected Channel and Channel's info
                   selectedChan = _connectionList.at(i)->channels.at(j);
-                  topicLE->setText(selectedChan->getTopic());
+                  updateTopic(selectedChan);
+                  updateUserList(selectedChan);
 
                   // Update selected Connection
                   selectedConn = _connectionList.at(i);
@@ -378,7 +409,14 @@ void MainWindow::updateTreeClick() {
 
    // Otherwise, a Connection is selected
    else {
+      // Clear MainWindow data for Channels
       topicLE->clear();
+      nickList->clearSelection();
+      nickList->clearFocus();
+      nickList->clear();
+      userCountLbl->clear();
+
+      // Update MainWindow data for selected Connection
       network = currItem->text(0);
       for (int i=0; i<_connectionList.size(); i++) {
          if (_connectionList.at(i)->getNetwork() == network) {

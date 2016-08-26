@@ -8,6 +8,7 @@
 #ifndef _CHANNEL_H_
 #define _CHANNEL_H_
 
+#include <QtCore/QDebug>
 #include <QtCore/QList>
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -20,6 +21,7 @@ public:
 	Channel();
 	~Channel();
 
+	// Get'er & set'er
 	void setName(const QString &name);
 	QString getName() const;
 	void pushMsg(const QString &msg);
@@ -30,17 +32,25 @@ public:
 	bool isSliderMaxed() const;
 	void setTopic(const QString &topic);
 	QString getTopic() const;
+	QStringList getUserList() const;
+
+	// Public functions
+	void populateUserList(const QString &list);
+	void addUserToList(const QString &nick);
+	bool removeFromUserList(const QString &user);
+	bool changeUserNick(const QString &user, const QString &newNick);
 
 private:
 	QString _name;
 	QStringList _msgs;
 	QString _topic;
-	QList<QString> _userList;
+	QStringList _userList;
 	int _sliderVal = 0;
 	bool _sliderMaxed = true;
 
 signals:
 	void topicChanged(Channel*);
+	void userListChanged(Channel*);
 
 };
 

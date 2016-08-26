@@ -92,10 +92,12 @@ private:
 	// Private functions
 	void parseData(const QString &data);
 	void processData(const QStringList &data);
+	QString parseNick(const QString &user) const;
 
 signals:
 	void dataAvailable();
 	void topicChanged(Channel*);
+	void userListChanged(Channel*);
 	void newChannel(Connection*, Channel*);
 	void deleteMe(Connection*);
 };

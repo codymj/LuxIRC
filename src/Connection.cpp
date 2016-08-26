@@ -81,23 +81,24 @@ void Connection::run() {
 			// Make sure all data was received by checking "\r\n" at end
 			bytesToRead = socket->bytesAvailable();
 			data = socket->read(bytesToRead);
-			while (!data.endsWith("\r\n")) {
-				if (!socket->waitForReadyRead()) {
-					qDebug() << "ERROR: WaitForReadyRead timed out.";
-					return;
-				}
-				bytesToRead = socket->bytesAvailable();
-				data.append(socket->read(bytesToRead));
-			}
-
+			
 			// If waitForReadyRead() times out, blank data is written
 			if (data.isEmpty()) {
 				continue;
 			}
 
+			while (!data.endsWith("\r\n")) {
+				if (!socket->waitForReadyRead(60000)) {
+					qDebug() << "WaitForReadyRead timed out...";
+					continue;
+				}
+				bytesToRead = socket->bytesAvailable();
+				data.append(socket->read(bytesToRead));
+			}
+
 			// Handle PING
 			if (data.contains("PING :")) {
-				// "PING :message" -> ["PING", ":message\r\n"]
+				// "PING :message\r\n" -> ["PING", ":message\r\n"]
 				QList<QByteArray> pingSplit = data.split(' ');
 
 				// Send in format: "PONG :message\r\n"
@@ -108,9 +109,6 @@ void Connection::run() {
 				// Restart loop, no need to parse this further
 				continue;
 			}
-
-			// Use prepend to stick new data at the top
-			//networkData.prepend(QString::fromUtf8(data));
 
 			// Parse data
 			QString dataStr = QString::fromUtf8(data);
@@ -192,6 +190,15 @@ void Connection::parseData(const QString &data) {
 }
 
 /*******************************************************************************
+Parses user's nick name from source string:
+test!~testing@tested.com -> test
+*******************************************************************************/
+QString Connection::parseNick(const QString &user) const {
+	QString nick = user.section('!', 0, 0);
+	return nick;
+}
+
+/*******************************************************************************
 Processes the data that has been parsed
 data = ["test!~test@test.com", "PRIVMSG", "#channel", "Hi!", ...]
 *******************************************************************************/
@@ -220,6 +227,35 @@ void Connection::processData(const QStringList &data) {
 		}
 	}
 
+	// Command = 353 (/NAMES list)
+	// ":asimov.freenode.net 353 user6789 = ##math :name0 name1 name2 ..."
+	//  ----------0--------- -1- ----2--- 3 --4--- --------5-------------
+	if (data.at(1) == "353") {
+		QString userListStr = data.at(5);
+		for (int i=0; i<this->channels.size(); i++) {
+			if (data.at(4) == this->channels.at(i)->getName()) {
+				this->channels.at(i)->populateUserList(userListStr);
+				break;
+			}
+		}
+	}
+
+	// Command = "NICK"
+	if (data.at(1) == "NICK") {
+		QString nick = parseNick(data.at(0));
+		QString msg = nick;
+		msg += " changed name to ";
+		msg += data.at(2);
+		msg += "\n";
+
+		// Loop through each Channel
+		for (int i=0; i<this->channels.size(); i++) {
+			if (this->channels.at(i)->changeUserNick(nick, data.at(2))) {
+				this->channels.at(i)->pushMsg(msg);
+			}
+		}
+	}
+
 	// Command = "PRIVMSG"
 	if (data.at(1) == "PRIVMSG") {
 		bool found = false;
@@ -229,7 +265,7 @@ void Connection::processData(const QStringList &data) {
 			// If so, append messages for that channel
 			if (data.at(2) == this->channels.at(i)->getName()) {
 				found = true;
-				QString msg = data.at(0);
+				QString msg = parseNick(data.at(0));
 				msg += ": ";
 				msg += data.at(3);
 				msg += '\n';
@@ -241,8 +277,9 @@ void Connection::processData(const QStringList &data) {
 		// Message from Channel not already in the channel list
 		if (!found) {
 			Channel *chan = new Channel;
-			chan->setName(data.at(2));
-			QString msg = data.at(0);
+			QString nick = parseNick(data.at(0));
+			chan->setName(nick);
+			QString msg = nick;
 			msg += ": ";
 			msg += data.at(3);
 			msg += '\n';
@@ -263,6 +300,11 @@ void Connection::processData(const QStringList &data) {
 
 	// Command = "JOIN"
 	else if (data.at(1) == "JOIN") {
+		// Prevent double-adding ourself to the user/nick list
+		if (parseNick(data.at(0)) == this->_nick) {
+			return;
+		}
+
 		for (int i=0; i<this->channels.size(); i++) {
 			if (data.at(2) == this->channels.at(i)->getName()) {
 				QString msg = "*** ";
@@ -271,6 +313,11 @@ void Connection::processData(const QStringList &data) {
 				msg += this->channels.at(i)->getName();
 				msg += " ***";
 				msg += '\n';
+
+				// Add new user to Channel's user list
+				QString nick = parseNick(data.at(0));
+				this->channels.at(i)->addUserToList(nick);
+
 				this->channels.at(i)->pushMsg(msg);
 				break;
 			}
@@ -288,21 +335,32 @@ void Connection::processData(const QStringList &data) {
 				msg += " [";
 				msg += data.at(3);
 				msg += "] ***\n";
-				this->channels.at(i)->pushMsg(msg);
-				break;
+
+				// Remove user from Channel's user list
+				QString nick = parseNick(data.at(0));
+				if (this->channels.at(i)->removeFromUserList(nick)) {
+					this->channels.at(i)->pushMsg(msg);
+					break;
+				}
 			}
 		}
 	}
 
 	// Command = "QUIT"
-	// Pushing as notice for now until I implement user list
 	else if (data.at(1) == "QUIT") {
 		QString msg = "*** ";
 		msg += data.at(0);
 		msg += " quit. [";
 		msg += data.at(2);
 		msg += "] ***\n";
-		this->pushNotice(msg);
+
+		// Loop through all Channels and remove user if it exists
+		QString nick = parseNick(data.at(0));
+		for (int i=0; i<this->channels.size(); i++) {
+			if (this->channels.at(i)->removeFromUserList(nick)) {
+				this->channels.at(i)->pushMsg(msg);
+			}
+		}
 	}
 
 	// Otherwise ?

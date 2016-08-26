@@ -260,14 +260,21 @@ void NetworkDlg::buildConnection() {
                chans << lineData.split(",");
                for (int i=0; i<chans.size(); i++) {
                   Channel *chan = new Channel;
+
                   chans.at(i).trimmed();     // Trim whitespace
                   if (chans.at(i) == "") {   // Skip blank strings
                      continue;
                   }
                   chan->setName(chans.at(i));
+
+                  // Connect signals/slots
                   connect(
-                     chan, SIGNAL(topicChanged(chan)),
-                     connection, SIGNAL(topicChanged(chan))
+                     chan, SIGNAL(topicChanged(Channel*)),
+                     connection, SIGNAL(topicChanged(Channel*))
+                  );
+                  connect(
+                     chan, SIGNAL(userListChanged(Channel*)),
+                     connection, SIGNAL(userListChanged(Channel*))
                   );
                   connection->channels.append(chan);
                }
