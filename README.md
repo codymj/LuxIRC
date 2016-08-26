@@ -8,6 +8,8 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/08/26 - I have implemented user lists for each Channel, however another segfault exists. If a user joins a channel and parts twice in a row, it causes a segfault. Unsure why at this point. I'll have to look into it further, maybe tomorrow.
+
 * 2016/08/24 - I fixed the Connection loop algorithm. It now waits and appends data until each block of data receieved is terminated with "\r\n" which makes it much easier to parse. Here is an example of how I parsed the data:
 <p align="center">
   <img src="http://i.imgur.com/k36VH1c.png"/>
