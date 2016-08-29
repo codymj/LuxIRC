@@ -24,6 +24,8 @@ Connection::Connection() {
 	this->_password = "";
 	this->_connectAtStart = false;
 	this->_useGlobalInfo = true;
+	this->_partMsg = "Leaving.";
+	this->_quitMsg = "Quitting.";
 
 	// Connect signals/slots
 	connect(
@@ -51,10 +53,39 @@ void Connection::connectionReady() {
 }
 
 /*******************************************************************************
+Leaves a Channel
+*******************************************************************************/
+void Connection::partChannel(Channel *chan) {
+	// QByteArray data = (QString(
+	// 	"PART %1 %2\r\n").arg(chan->getName(),_partMsg).toUtf8()
+	// );
+
+	// TODO: handle /PART
+
+	// Remove Channel from channels list
+	for (int i=0; i<channels.size(); i++) {
+		if (channels.at(i) == chan) {
+			delete channels.takeAt(i);
+			break;
+		}
+	}
+}
+
+/*******************************************************************************
+Delete all Channels for this Connection
+*******************************************************************************/
+void Connection::deleteAllChannels() {
+	for (int i=0; i<channels.size(); i++) {
+		// TODO: handle /PART
+		delete channels.takeAt(i);
+	}
+}
+
+/*******************************************************************************
 Connects to network. This function is ran in a new thread
 *******************************************************************************/
 void Connection::run() {
-	QTcpSocket *socket = new QTcpSocket;
+	socket = new QTcpSocket;
 
 	// Attempt to connect to network
 	socket->connectToHost(_server, _port);	

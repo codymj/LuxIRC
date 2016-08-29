@@ -32,6 +32,8 @@ public:
 	// Public functions
 	void connectionReady();
 	void disconnect();
+	void partChannel(Channel *chan);
+	void deleteAllChannels();
 
 	// Get'er and set'er functions
 	void setNetwork(QString &network);
@@ -88,13 +90,19 @@ private:
 	int bytesRemaining = 0;
 	QByteArray data;
 	QStringList dataLines;
+	QString _partMsg;
+	QString _quitMsg;
 
 	// Private functions
 	void parseData(const QString &data);
 	void processData(const QStringList &data);
 	QString parseNick(const QString &user) const;
 
+private slots:
+	
+
 signals:
+	void writeData(const QByteArray &data);
 	void dataAvailable();
 	void topicChanged(Channel*);
 	void userListChanged(Channel*);

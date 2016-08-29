@@ -332,18 +332,11 @@ void MainWindow::removeItemFromTree() {
       delete currItem;
 
       // And remove from Connection's list of Channels
-      for (int i=0; i<selectedConn->channels.size(); i++) {
-         if (selectedConn->channels.at(i)->getName() == chan) {
-            // TODO: Handle /part for channel
-            delete selectedConn->channels.takeAt(i);
-            break;
-         }
-      }
+      selectedConn->partChannel(selectedChan);
    }
 
    // Otherwise, currItem is Connection item, delete all channels & Connection
    else {
-
       int index = networkTree->indexOfTopLevelItem(currItem);
       int childCount = currItem->childCount();
 
@@ -355,21 +348,24 @@ void MainWindow::removeItemFromTree() {
       }
 
       // And remove from Connection's list of Channels
-      for (int i=0; i<selectedConn->channels.size(); i++) {
-         delete selectedConn->channels.takeAt(i);
-      }
+      selectedConn->deleteAllChannels();
 
       // Delete the Connection item
       delete networkTree->takeTopLevelItem(index);
 
       // Delete the Connection in the list of Connection objects.
-      for (int i=0; i<_connectionList.size(); i++) {
-         if (_connectionList.at(i)->getNetwork() == conn) {
-            if (_connectionList.at(i)->connected) {
-               _connectionList.at(i)->disconnect();
-            }
-         }
+      if (selectedConn->connected) {
+         selectedConn->disconnect();
       }
+      deleteConnection(selectedConn);
+
+      if (networkTree->topLevelItemCount() > 0) {
+         networkTree->setCurrentItem(networkTree->topLevelItem(0));
+      }
+      else {
+         selectedConn = NULL;
+      }
+
    }
 }
 
