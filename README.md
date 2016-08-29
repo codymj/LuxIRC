@@ -8,6 +8,9 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/08/29 - I tracked the segfault down to a null PART message in the arg index (data.at(3) in Connection::parseData()). If it didn't crash on the first part from channel, which it did maybe 20% of the time, it would always crash on the second part from channel. The argument data.at(3) represents the PART message in the form of QString. I'm guessing it is NULL and should be set manually in a settings widget when I implement that.
+Writing with the socket created in Connection::run() has proven to be a challenge. I have a few ideas to try and hopefully one works. I will first try subclassing QTcpSocket to create a custom slot for writing inside of run().
+
 * 2016/08/26 - I have implemented user lists for each Channel, however another segfault exists. If a user joins a channel and parts twice in a row, it causes a segfault. Unsure why at this point. I'll have to look into it further, maybe tomorrow.
 
 * 2016/08/24 - I fixed the Connection loop algorithm. It now waits and appends data until each block of data receieved is terminated with "\r\n" which makes it much easier to parse. Here is an example of how I parsed the data:
