@@ -194,7 +194,9 @@ Parses user's nick name from source string:
 test!~testing@tested.com -> test
 *******************************************************************************/
 QString Connection::parseNick(const QString &user) const {
+	qDebug() << user;
 	QString nick = user.section('!', 0, 0);
+	qDebug() << nick;
 	return nick;
 }
 
@@ -243,10 +245,11 @@ void Connection::processData(const QStringList &data) {
 	// Command = "NICK"
 	if (data.at(1) == "NICK") {
 		QString nick = parseNick(data.at(0));
-		QString msg = nick;
+		QString msg = "*** ";
+		msg += nick;
 		msg += " changed name to ";
 		msg += data.at(2);
-		msg += "\n";
+		msg += " ***\n";
 
 		// Loop through each Channel
 		for (int i=0; i<this->channels.size(); i++) {
@@ -325,6 +328,8 @@ void Connection::processData(const QStringList &data) {
 	}
 
 	// Command = "PART"
+	// ["test!~test@test.com", "PART", "#channel", "msg"]
+	// ----------0-----------  --1--   ----2----   --3--
 	else if (data.at(1) == "PART") {
 		for (int i=0; i<this->channels.size(); i++) {
 			if (data.at(2) == this->channels.at(i)->getName()) {
@@ -333,7 +338,10 @@ void Connection::processData(const QStringList &data) {
 				msg += " left ";
 				msg += data.at(2);
 				msg += " [";
-				msg += data.at(3);
+				// Prevent segfault if there is no PART msg appended to data
+				if (data.size() > 3) {
+					msg += data.at(3);
+				}
 				msg += "] ***\n";
 
 				// Remove user from Channel's user list

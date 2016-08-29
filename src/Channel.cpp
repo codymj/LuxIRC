@@ -56,7 +56,6 @@ bool Channel::changeUserNick(const QString &user, const QString &newNick) {
 Remove a user from user list for Channel. Returns true if user was found
 *******************************************************************************/
 bool Channel::removeFromUserList(const QString &user) {
-	qDebug() << "Removing: " << user;
 	bool found = false;
 	for (int i=0; i<_userList.size(); i++) {
 		if (_userList.at(i) == user) {
