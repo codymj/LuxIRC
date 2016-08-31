@@ -63,7 +63,7 @@ void MainWindow::connectActions() {
       this, SLOT(updateTreeClick())
    );
    connect(  // Need to expand this per network/channel
-      this->outputTE->verticalScrollBar(), SIGNAL(valueChanged(int)),
+      this->outputTE->verticalScrollBar(), SIGNAL(sliderMoved(int)),
       this, SLOT(storeOutputSliderPos(int))
    );
 }
@@ -72,6 +72,12 @@ void MainWindow::connectActions() {
 SLOT - Store the vertical slider position to prevent auto sliding
 *******************************************************************************/
 void MainWindow::storeOutputSliderPos(int pos) {
+   // Handle empty networkTree
+   if (selectedConn == NULL) {
+      return;
+   }
+
+   // Store maximum scroll value for current Channel or Connection
    int max = outputTE->verticalScrollBar()->maximum();
 
    // Set scroll slider value for each Channel
@@ -180,7 +186,6 @@ void MainWindow::openAboutDlg() {
 
 /*******************************************************************************
 SLOT - Receive Connection object from NetworkDlg
-I will have to handle when connection is loaded, but disconnected
 *******************************************************************************/
 void MainWindow::addConnectionObj(Connection *connObj) {
    // Check if connObj is NULL (initial value), return to prevent segfault
@@ -244,7 +249,6 @@ void MainWindow::updateUserList(Channel *chan) {
    if (selectedChan == chan) {
       // Get user list from Channel
       QStringList userList = chan->getUserList();
-      qDebug() << "userList size:" << userList.size();
 
       // Clear MainWindow's QListWidget for populating/updating
       nickList->clear();
@@ -253,7 +257,6 @@ void MainWindow::updateUserList(Channel *chan) {
       for (int i=0; i<userList.size(); i++) {
          nickList->addItem(userList.at(i));
       }
-      qDebug() << "nickList size:" << nickList->count();
       
       // Update userCountLbl
       userCountLbl->setText(QString::number(userList.count()) + " total");
@@ -329,16 +332,19 @@ void MainWindow::removeItemFromTree() {
    // If currItem is Channel item, find channel to remove from networkTree
    if (currItem->parent()) {
       QString chan = selectedChan->getName();
-      delete currItem;
 
       // And remove from Connection's list of Channels
       selectedConn->partChannel(selectedChan);
+      delete currItem;
    }
 
    // Otherwise, currItem is Connection item, delete all channels & Connection
    else {
       int index = networkTree->indexOfTopLevelItem(currItem);
       int childCount = currItem->childCount();
+
+      // Quit from the network
+      selectedConn->sendQuit();
 
       // Delete all Channel items belonging to the parent Connection item
       if (childCount > 0) {
@@ -347,25 +353,16 @@ void MainWindow::removeItemFromTree() {
          }
       }
 
-      // And remove from Connection's list of Channels
-      selectedConn->deleteAllChannels();
-
       // Delete the Connection item
       delete networkTree->takeTopLevelItem(index);
 
-      // Delete the Connection in the list of Connection objects.
-      if (selectedConn->connected) {
-         selectedConn->disconnect();
-      }
-      deleteConnection(selectedConn);
-
+      // If any more Connections exist in tree, update currentItem to the first
       if (networkTree->topLevelItemCount() > 0) {
          networkTree->setCurrentItem(networkTree->topLevelItem(0));
       }
       else {
          selectedConn = NULL;
       }
-
    }
 }
 
@@ -429,6 +426,12 @@ SLOT - Updates the TextEdit with new data
 *******************************************************************************/
 void MainWindow::updateOutputTE() {
    QTextCursor _outputTECursor(outputTE->textCursor());
+
+   // Handle empty networkTree
+   if (selectedConn == NULL) {
+      outputTE->clear();
+      return;
+   }
 
    // If selectedChan = NULL then topLevelItem is selected, show notices
    if (selectedChan == NULL) {

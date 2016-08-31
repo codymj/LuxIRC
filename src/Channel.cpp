@@ -64,7 +64,6 @@ bool Channel::removeFromUserList(const QString &user) {
 			break;
 		}
 	}
-	qDebug() << _userList;
 	emit userListChanged(this);
 	return found;
 }

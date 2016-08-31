@@ -12,6 +12,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QList>
 #include <QtCore/QMultiMap>
+#include <QtCore/QQueue>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
@@ -28,10 +29,12 @@ public:
 	// Public data
 	QList<Channel*> channels;	
 	bool connected;
+	QQueue<QByteArray> dataForWriting;
 
 	// Public functions
 	void connectionReady();
 	void disconnect();
+	void sendQuit();
 	void partChannel(Channel *chan);
 	void deleteAllChannels();
 
@@ -86,6 +89,7 @@ private:
 
 	// Private data
 	QTcpSocket *socket;
+
 	int bytesToRead = 0;
 	int bytesRemaining = 0;
 	QByteArray data;
@@ -102,7 +106,7 @@ private slots:
 	
 
 signals:
-	void writeData(const QByteArray &data);
+	void writeData();
 	void dataAvailable();
 	void topicChanged(Channel*);
 	void userListChanged(Channel*);

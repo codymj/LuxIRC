@@ -28,10 +28,10 @@ Connection::Connection() {
 	this->_quitMsg = "Quitting.";
 
 	// Connect signals/slots
-	connect(
-		this, SIGNAL(finished()),
-		this, SLOT(deleteLater())
-	);
+	// connect(
+	// 	this, SIGNAL(finished()),
+	// 	this, SLOT(deleteLater())
+	// );
 
 	this->connected = false;
 }
@@ -53,18 +53,28 @@ void Connection::connectionReady() {
 }
 
 /*******************************************************************************
+Delete all Channels for this Connection
+*******************************************************************************/
+void Connection::sendQuit() {
+	QByteArray data = (QString(
+		"QUIT %1\r\n").arg(_partMsg).toUtf8()
+	);
+	dataForWriting.enqueue(data);
+	disconnect();
+}
+
+/*******************************************************************************
 Leaves a Channel
 *******************************************************************************/
 void Connection::partChannel(Channel *chan) {
-	// QByteArray data = (QString(
-	// 	"PART %1 %2\r\n").arg(chan->getName(),_partMsg).toUtf8()
-	// );
-
-	// TODO: handle /PART
+	QByteArray data = (QString(
+		"PART %1 %2\r\n").arg(chan->getName(),_partMsg).toUtf8()
+	);
 
 	// Remove Channel from channels list
 	for (int i=0; i<channels.size(); i++) {
 		if (channels.at(i) == chan) {
+			dataForWriting.enqueue(data);
 			delete channels.takeAt(i);
 			break;
 		}
@@ -76,7 +86,10 @@ Delete all Channels for this Connection
 *******************************************************************************/
 void Connection::deleteAllChannels() {
 	for (int i=0; i<channels.size(); i++) {
-		// TODO: handle /PART
+		QByteArray data = (QString(
+			"PART %1 %2\r\n").arg(channels.at(i)->getName(),_partMsg).toUtf8()
+		);
+		dataForWriting.enqueue(data);
 		delete channels.takeAt(i);
 	}
 }
@@ -105,9 +118,17 @@ void Connection::run() {
 		);
 
 		// Connection loop
-		while (this->connected) {
+		while (true) {
 			// Wait for new data from network
-			socket->waitForReadyRead();
+			socket->waitForReadyRead(1000);
+
+			// Check if we have any data to write, and if so, send to host
+			if (!dataForWriting.isEmpty()) {
+				while (!dataForWriting.isEmpty()) {
+					QByteArray data = dataForWriting.dequeue();
+					socket->write(data);
+				}
+			}
 
 			// Make sure all data was received by checking "\r\n" at end
 			bytesToRead = socket->bytesAvailable();
@@ -118,6 +139,7 @@ void Connection::run() {
 				continue;
 			}
 
+			// Ensure all data received is in full chunks ending with "\r\n"
 			while (!data.endsWith("\r\n")) {
 				if (!socket->waitForReadyRead(60000)) {
 					qDebug() << "WaitForReadyRead timed out...";
@@ -150,13 +172,19 @@ void Connection::run() {
 					emit dataAvailable();
 				}
 			}
+
+			// Check if we're still connected
+			if (!connected) {
+				socket->disconnectFromHost();
+				break;
+			}
 		}
-		delete socket;
 	}
 	else {
 		// Handle unable to connect
 	}
 
+	delete socket;
 	this->quit();
 	emit deleteMe(this);
 }
@@ -225,9 +253,7 @@ Parses user's nick name from source string:
 test!~testing@tested.com -> test
 *******************************************************************************/
 QString Connection::parseNick(const QString &user) const {
-	qDebug() << user;
 	QString nick = user.section('!', 0, 0);
-	qDebug() << nick;
 	return nick;
 }
 
@@ -236,12 +262,6 @@ Processes the data that has been parsed
 data = ["test!~test@test.com", "PRIVMSG", "#channel", "Hi!", ...]
 *******************************************************************************/
 void Connection::processData(const QStringList &data) {
-	// qDebug() << "---";
-	// for (int i=0; i<data.size(); i++) {
-	// 	qDebug() << data.at(i);
-	// }
-	// qDebug() << "---";
-
 	// Command = 375 (Start of MOTD)
 	// Command = 376 (End of MOTD)
 	// Command = 372 (MOTD)
