@@ -9,6 +9,7 @@ QT += core widgets network gui
 OBJECTS_DIR = ./obj
 MOC_DIR = ./moc
 UI_DIR = ./src
+CONFIG += debug
 
 # Input
 HEADERS += src/AboutDlg.h \
