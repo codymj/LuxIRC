@@ -86,16 +86,17 @@ void NetworkDlg::readData() {
    }
 
    // Open networks.conf for reading
-   QFile networks("config/networks.conf");
+   QFile networks("./config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening networks.conf";
       return;
    }
 
    // Open luxirc.conf for reading
-   QFile luxirc("config/luxirc.conf");
+   QFile luxirc("./config/luxirc.conf");
    if (!luxirc.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening luxirc.conf.";
+      return;
    }
 
    QString line;
@@ -140,13 +141,13 @@ SLOT - Removes a network from the network list
 *******************************************************************************/
 void NetworkDlg::removeNetwork() {
    // Open networks.conf for reading
-   QFile networks("config/networks.conf");
+   QFile networks("./config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Creating networks.conf file since it did not exist.";
    }
 
    // Open temp file for writing
-   QFile temp("config/temp");
+   QFile temp("./config/temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -183,13 +184,13 @@ SLOT - Accept override to save global user info into file luxirc.conf
 *******************************************************************************/
 void NetworkDlg::accept() {
    // Open luxirc.conf for reading
-   QFile luxirc("config/luxirc.conf");
+   QFile luxirc("./config/luxirc.conf");
    if (!luxirc.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Unable to open luxirc.conf";
    }
 
    // Open temp file for writing
-   QFile temp("config/temp");
+   QFile temp("./config/temp");
    if (!temp.open(QIODevice::WriteOnly | QIODevice::Text)) {
       qDebug() << "Creating temp file for writing.";
    }
@@ -220,7 +221,7 @@ void NetworkDlg::buildConnection() {
       qDebug() << "ERROR: ./config directory is gone.";
    }
 
-   QFile networks("config/networks.conf");
+   QFile networks("./config/networks.conf");
    if (!networks.open(QIODevice::ReadOnly | QIODevice::Text)) {
       qDebug() << "Error opening 'networks.conf'";
    }
