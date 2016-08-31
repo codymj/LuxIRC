@@ -355,6 +355,7 @@ void MainWindow::removeItemFromTree() {
 
       // Delete the Connection item
       delete networkTree->takeTopLevelItem(index);
+      outputTE->clear();
 
       // If any more Connections exist in tree, update currentItem to the first
       if (networkTree->topLevelItemCount() > 0) {
@@ -429,7 +430,6 @@ void MainWindow::updateOutputTE() {
 
    // Handle empty networkTree
    if (selectedConn == NULL) {
-      outputTE->clear();
       return;
    }
 
