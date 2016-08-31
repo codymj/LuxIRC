@@ -248,21 +248,25 @@ SLOT - Updates topic in topicLE for Channel
 void MainWindow::updateUserList(Channel *chan) {
    if (selectedChan == chan) {
       // Get user list from Channel
-      QStringList userList = chan->getUserList();
+      QList<QStringList> userList = chan->getUserList();
 
       // Clear MainWindow's QListWidget for populating/updating
       nickList->clear();
 
       // Populate data
+      // for (int i=0; i<userList.size(); i++) {
+      //    nickList->addItem(userList.at(i));
+      // }
+      int userCount = 0;
       for (int i=0; i<userList.size(); i++) {
-         nickList->addItem(userList.at(i));
+         for (int j=0; j<userList.at(i).size(); j++) {
+            nickList->addItem(userList.at(i).at(j));
+         }
+         userCount += userList.at(i).size();
       }
       
       // Update userCountLbl
-      userCountLbl->setText(QString::number(userList.count()) + " total");
-
-      // Sort the list
-      nickList->sortItems(Qt::AscendingOrder);
+      userCountLbl->setText(QString::number(userCount) + " users here");
    }
 }
 

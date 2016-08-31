@@ -270,7 +270,7 @@ void Connection::processData(const QStringList &data) {
 	}
 
 	// Command = 332 (Topic)
-	if (data.at(1) == "332") {
+	else if (data.at(1) == "332") {
 		for (int i=0; i<this->channels.size(); i++) {
 			if (data.at(3) == this->channels.at(i)->getName()) {
 				this->channels.at(i)->setTopic(data.at(4));
@@ -283,7 +283,7 @@ void Connection::processData(const QStringList &data) {
 	// Command = 353 (/NAMES list)
 	// ":asimov.freenode.net 353 user6789 = ##math :name0 name1 name2 ..."
 	//  ----------0--------- -1- ----2--- 3 --4--- --------5-------------
-	if (data.at(1) == "353") {
+	else if (data.at(1) == "353") {
 		QString userListStr = data.at(5);
 		for (int i=0; i<this->channels.size(); i++) {
 			if (data.at(4) == this->channels.at(i)->getName()) {
@@ -293,8 +293,20 @@ void Connection::processData(const QStringList &data) {
 		}
 	}
 
+	// Command = 366 (End of /NAMES list)
+	// ":leguin.freenode.net 366 user6789 ##math :End of /NAMES list."
+	//  -----------0-------- -1- ----2--- --3--- ---------4----------
+	else if (data.at(1) == "366") {
+		for (int i=0; i<this->channels.size(); i++) {
+			if (data.at(3) == this->channels.at(i)->getName()) {
+				this->channels.at(i)->parseUserList();
+				break;
+			}
+		}
+	}
+
 	// Command = "NICK"
-	if (data.at(1) == "NICK") {
+	else if (data.at(1) == "NICK") {
 		QString nick = parseNick(data.at(0));
 		QString msg = "*** ";
 		msg += nick;
@@ -311,7 +323,7 @@ void Connection::processData(const QStringList &data) {
 	}
 
 	// Command = "PRIVMSG"
-	if (data.at(1) == "PRIVMSG") {
+	else if (data.at(1) == "PRIVMSG") {
 		bool found = false;
 
 		// Check if Channel already exists

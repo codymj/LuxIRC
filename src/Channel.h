@@ -32,19 +32,22 @@ public:
 	bool isSliderMaxed() const;
 	void setTopic(const QString &topic);
 	QString getTopic() const;
-	QStringList getUserList() const;
+	QList<QStringList> getUserList() const;
 
 	// Public functions
 	void populateUserList(const QString &list);
 	void addUserToList(const QString &nick);
 	bool removeFromUserList(const QString &user);
+	void parseUserList();
 	bool changeUserNick(const QString &user, const QString &newNick);
 
 private:
 	QString _name;
 	QStringList _msgs;
 	QString _topic;
-	QStringList _userList;
+	QStringList _rawUserList;
+	QStringList _owners, _sops, _ops, _hops, _voiced, _users;
+	QList<QStringList> _userList;
 	int _sliderVal = 0;
 	bool _sliderMaxed = true;
 
