@@ -198,9 +198,16 @@ void Connection::parseData(const QString &data) {
 	qDebug() << data;
 	QString prefix;
 	QString command;
+	QString hostnameMatcher = QString(":" + _nick + "!~" + _username + "@");
 	QStringList trailing;
 	QStringList args;
 	QStringList parsedData;
+
+	// Store hostname
+	if (data.contains(hostnameMatcher, Qt::CaseInsensitive)) {
+		_myHostname = data.section(' ', 0, 0);
+		qDebug() << _myHostname;
+	}
 
 	// Get prefix
 	if (data.at(0) == ':') {
@@ -558,4 +565,8 @@ void Connection::setSliderMaxed(bool b) {
 
 bool Connection::isSliderMaxed() const {
 	return this->_sliderMaxed;
+}
+
+QString Connection::getHostname() const {
+	return this->_myHostname;
 }

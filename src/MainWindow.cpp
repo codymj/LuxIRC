@@ -93,12 +93,15 @@ void MainWindow::updateCharsLeftLbl(const QString &msg) {
       return;
    }
 
-   int chanChars = selectedChan->getName().size(); // Num of chars: #<channel>
-   int commandChars = 12;  // "PRIVMSG [#<channel>] :<msg>\r\n"
+   // Num of chars: #<channel>
+   int chanChars = selectedChan->getName().size();
+   // "<hostname> PRIVMSG #<channel> :<msg>\r\n"
+   int commandChars = 14;
    int msgChars = msg.size();
+   int hostnameChars = selectedConn->getHostname().size();
 
-   int charsLeft = 512 - chanChars - commandChars - msgChars;
-   inputLE->setMaxLength(512 - chanChars - commandChars);
+   int charsLeft = 512 - hostnameChars - chanChars - commandChars - msgChars;
+   inputLE->setMaxLength(512 - hostnameChars - chanChars - commandChars);
    QString charsLeftStr = QString::number(charsLeft);
    charsLeftLbl->setText("Characters left: " + charsLeftStr);
 }

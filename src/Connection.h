@@ -57,6 +57,7 @@ public:
 	QString getNetwork() const;
 	QString getServer() const;
 	QString getNick() const;
+	QString getHostname() const;
 	void pushNotice(const QString msg);
 	QStringList getNotices() const;
 	void setSliderVal(int);
@@ -89,6 +90,7 @@ private:
 
 	// Private data
 	QTcpSocket *socket;
+	QString _myHostname;
 
 	int bytesToRead = 0;
 	int bytesRemaining = 0;
