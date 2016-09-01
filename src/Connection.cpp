@@ -493,6 +493,9 @@ void Connection::setPort(int port) {
 
 void Connection::setNick(const QString &nick) {
 	this->_nick = nick;
+	QByteArray sendNick = "NICK ";
+	sendNick.append(QString(_nick + "\r\n").toUtf8());
+	this->dataForWriting.enqueue(sendNick);
 }
 
 void Connection::setNick2(QString &nick2) {
