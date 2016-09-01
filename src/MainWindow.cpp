@@ -337,8 +337,12 @@ void MainWindow::removeItemFromTree() {
    if (currItem->parent()) {
       QString chan = selectedChan->getName();
 
-      // And remove from Connection's list of Channels
-      selectedConn->partChannel(selectedChan);
+      // If it is not a user private message, leave the Channel
+      if (chan.startsWith('#')) {
+         selectedConn->partChannel(selectedChan);
+      }
+
+      // And remove from networkTree's list of Channels
       delete currItem;
    }
 

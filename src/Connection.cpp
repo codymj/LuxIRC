@@ -323,27 +323,45 @@ void Connection::processData(const QStringList &data) {
 	}
 
 	// Command = "PRIVMSG"
+	// ":ismann!~ismann@unaffiliated/ismann PRIVMSG user6789 :sup"
+	// ":ismann!~ismann@unaffiliated/ismann PRIVMSG #channel :sup"
+	//  --------------0-------------------- ---1--- ----2--- --3-
 	else if (data.at(1) == "PRIVMSG") {
+		QString nick = parseNick(data.at(0));
 		bool found = false;
+		bool pvtMsg = false;
 
 		// Check if Channel already exists
 		for (int i=0; i<this->channels.size(); i++) {
 			// If so, append messages for that channel
 			if (data.at(2) == this->channels.at(i)->getName()) {
 				found = true;
-				QString msg = parseNick(data.at(0));
+				QString msg = nick;
 				msg += ": ";
 				msg += data.at(3);
 				msg += '\n';
 				this->channels.at(i)->pushMsg(msg);
 				break;
 			}
+
+			// Check if message is a private message
+			else if (!data.at(2).startsWith('#')) {
+				pvtMsg = true;
+				if (nick == this->channels.at(i)->getName()) {
+					found = true;
+					QString msg = nick;
+					msg += ": ";
+					msg += data.at(3);
+					msg += '\n';
+					this->channels.at(i)->pushMsg(msg);
+					break;
+				}
+			}
 		}
 
 		// Message from Channel not already in the channel list
-		if (!found) {
+		if (!found && pvtMsg) {
 			Channel *chan = new Channel;
-			QString nick = parseNick(data.at(0));
 			chan->setName(nick);
 			QString msg = nick;
 			msg += ": ";
