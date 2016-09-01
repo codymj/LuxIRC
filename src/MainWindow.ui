@@ -59,7 +59,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="lagLbl">
+           <widget class="QLabel" name="charsLeftLbl">
             <property name="text">
              <string>TextLabel</string>
             </property>

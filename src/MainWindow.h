@@ -53,6 +53,7 @@ private:
    void changeNick(const QString&);
 
 private slots:
+   void updateCharsLeftLbl(const QString&);
    void changeNick();
    void openNetworkDlg();
    void openAboutDlg();
@@ -62,6 +63,7 @@ private slots:
    void createChannel(Connection*, Channel*);
    void updateTopic(Channel*);
    void updateUserList(Channel*);
+   void sendData();
 };
 
 #endif   /* _MAINWINDOW_H_ */

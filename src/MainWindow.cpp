@@ -30,6 +30,8 @@ MainWindow::MainWindow() {
    QList<int> sizeList;
    sizeList << 150 << 450 << 150;
    splitter->setSizes(sizeList);
+
+   updateCharsLeftLbl(inputLE->text());
 }
 
 /*******************************************************************************
@@ -62,10 +64,80 @@ void MainWindow::connectActions() {
       this->networkTree, SIGNAL(itemSelectionChanged()), 
       this, SLOT(updateTreeClick())
    );
-   connect(  // Need to expand this per network/channel
-      this->outputTE->verticalScrollBar(), SIGNAL(sliderMoved(int)),
+   connect(
+      outputTE->verticalScrollBar(), SIGNAL(sliderMoved(int)),
       this, SLOT(storeOutputSliderPos(int))
    );
+   connect(
+      inputLE, SIGNAL(returnPressed()),
+      this, SLOT(sendData())
+   );
+   connect(
+      inputLE, SIGNAL(textEdited(const QString&)),
+      this, SLOT(updateCharsLeftLbl(const QString &))
+   );
+}
+
+/*******************************************************************************
+SLOT - Updates the amount of characters left for typing a message
+*******************************************************************************/
+void MainWindow::updateCharsLeftLbl(const QString &msg) {
+   // If msg begins with '/', command is being typed
+   if (msg.startsWith('/')) {
+      charsLeftLbl->setText("Characters left: n/a");
+      return;
+   }
+
+   if (selectedChan == NULL) {
+      charsLeftLbl->setText("Characters left: n/a");
+      return;
+   }
+
+   int chanChars = selectedChan->getName().size(); // Num of chars: #<channel>
+   int commandChars = 12;  // "PRIVMSG [#<channel>] :<msg>\r\n"
+   int msgChars = msg.size();
+
+   int charsLeft = 512 - chanChars - commandChars - msgChars;
+   inputLE->setMaxLength(512 - chanChars - commandChars);
+   QString charsLeftStr = QString::number(charsLeft);
+   charsLeftLbl->setText("Characters left: " + charsLeftStr);
+}
+
+/*******************************************************************************
+SLOT - When <enter> is pressed for inputLE, sends message to target Channel
+*******************************************************************************/
+void MainWindow::sendData() {
+   QByteArray data, localDisplay;
+
+   // If no text to send, return
+   if (inputLE->text().isEmpty()) {
+      return;
+   }
+   // Otherwise, get text to send then reset inputLE
+   else {
+      data = inputLE->text().toUtf8();
+      localDisplay = data;
+      inputLE->clear();
+      updateCharsLeftLbl(inputLE->text());
+   }
+
+   // If a Channel is not selected
+   if (selectedChan == NULL) {
+      return;
+   }
+   // Otherwise, send data
+   else {
+      data.append("\r\n");
+      data.prepend(" :");
+      data.prepend(selectedChan->getName().toUtf8());
+      data.prepend("PRIVMSG ");
+      selectedConn->dataForWriting.enqueue(data);
+      localDisplay.append("\n");
+      localDisplay.prepend(": ");
+      localDisplay.prepend(selectedConn->getNick().toUtf8());
+      selectedChan->pushMsg(QString::fromUtf8(localDisplay));
+      updateOutputTE();
+   }
 }
 
 /*******************************************************************************
@@ -107,7 +179,7 @@ void MainWindow::storeOutputSliderPos(int pos) {
 Change nick name
 *******************************************************************************/
 void MainWindow::changeNick(const QString &nick) {
-   // Set nick name in for changeNickBtn
+   // Set nick name text for changeNickBtn
    changeNickBtn->setText(nick);
 
    // Set the nick name for the selected Connection
@@ -253,10 +325,6 @@ void MainWindow::updateUserList(Channel *chan) {
       // Clear MainWindow's QListWidget for populating/updating
       nickList->clear();
 
-      // Populate data
-      // for (int i=0; i<userList.size(); i++) {
-      //    nickList->addItem(userList.at(i));
-      // }
       int userCount = 0;
       for (int i=0; i<userList.size(); i++) {
          for (int j=0; j<userList.at(i).size(); j++) {
@@ -400,6 +468,7 @@ void MainWindow::updateTreeClick() {
                   selectedChan = _connectionList.at(i)->channels.at(j);
                   updateTopic(selectedChan);
                   updateUserList(selectedChan);
+                  updateCharsLeftLbl(inputLE->text());
 
                   // Update selected Connection
                   selectedConn = _connectionList.at(i);
@@ -424,6 +493,7 @@ void MainWindow::updateTreeClick() {
          if (_connectionList.at(i)->getNetwork() == network) {
             selectedConn = _connectionList.at(i);
             selectedChan = NULL;
+            updateCharsLeftLbl(inputLE->text());
          }
       }
    }
