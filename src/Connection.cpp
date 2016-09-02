@@ -26,13 +26,6 @@ Connection::Connection() {
 	this->_useGlobalInfo = true;
 	this->_partMsg = "Leaving.";
 	this->_quitMsg = "Quitting.";
-
-	// Connect signals/slots
-	// connect(
-	// 	this, SIGNAL(finished()),
-	// 	this, SLOT(deleteLater())
-	// );
-
 	this->connected = false;
 }
 
@@ -130,11 +123,11 @@ void Connection::run() {
 				}
 			}
 
-			// Make sure all data was received by checking "\r\n" at end
+			// Check for available data and read
 			bytesToRead = socket->bytesAvailable();
 			data = socket->read(bytesToRead);
 			
-			// If waitForReadyRead() times out, blank data is written
+			// If waitForReadyRead() times out, no data is received
 			if (data.isEmpty()) {
 				continue;
 			}
@@ -142,7 +135,7 @@ void Connection::run() {
 			// Ensure all data received is in full chunks ending with "\r\n"
 			while (!data.endsWith("\r\n")) {
 				if (!socket->waitForReadyRead(60000)) {
-					qDebug() << "WaitForReadyRead timed out...";
+					qDebug() << "WaitForReadyRead timed out.";
 					continue;
 				}
 				bytesToRead = socket->bytesAvailable();
