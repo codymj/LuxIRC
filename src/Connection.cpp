@@ -191,12 +191,18 @@ void Connection::parseData(const QString &data) {
 	qDebug() << data;
 	QString prefix;
 	QString command;
-	QString hostnameMatcher = QString(":" + _nick + "!~" + _username + "@");
 	QStringList trailing;
 	QStringList args;
 	QStringList parsedData;
 
+	// Get network's max nick length to pad nicks with spaces (for style)
+	if (data.contains("NICKLEN=", Qt::CaseInsensitive)) {
+		QString temp = data.section("NICKLEN=", 1, 1);
+		maxNickLength = temp.section(' ', 0, 0).toInt();
+	}
+
 	// Store hostname
+	QString hostnameMatcher = QString(":" + _nick + "!~" + _username + "@");
 	if (data.contains(hostnameMatcher, Qt::CaseInsensitive)) {
 		_myHostname = data.section(' ', 0, 0);
 		qDebug() << _myHostname;
@@ -328,16 +334,21 @@ void Connection::processData(const QStringList &data) {
 	//  --------------0-------------------- ---1--- ----2--- --3-
 	else if (data.at(1) == "PRIVMSG") {
 		QString nick = parseNick(data.at(0));
-		bool found = false;
-		bool pvtMsg = false;
+		QString rawNick = nick;
+		int numOfSpaces = maxNickLength - nick.size();
+		for (int i=0; i<numOfSpaces; i++) {
+			nick.prepend(' ');
+		}
+		nick += "| ";
 
 		// Check if Channel already exists
+		bool found = false;
+		bool pvtMsg = false;
 		for (int i=0; i<this->channels.size(); i++) {
 			// If so, append messages for that channel
 			if (data.at(2) == this->channels.at(i)->getName()) {
 				found = true;
 				QString msg = nick;
-				msg += ": ";
 				msg += data.at(3);
 				msg += '\n';
 				this->channels.at(i)->pushMsg(msg);
@@ -350,7 +361,6 @@ void Connection::processData(const QStringList &data) {
 				if (nick == this->channels.at(i)->getName()) {
 					found = true;
 					QString msg = nick;
-					msg += ": ";
 					msg += data.at(3);
 					msg += '\n';
 					this->channels.at(i)->pushMsg(msg);
@@ -362,9 +372,8 @@ void Connection::processData(const QStringList &data) {
 		// Message from Channel not already in the channel list
 		if (!found && pvtMsg) {
 			Channel *chan = new Channel;
-			chan->setName(nick);
+			chan->setName(rawNick);
 			QString msg = nick;
-			msg += ": ";
 			msg += data.at(3);
 			msg += '\n';
 			chan->pushMsg(msg);
@@ -375,33 +384,46 @@ void Connection::processData(const QStringList &data) {
 
 	// Command = "NOTICE"
 	else if (data.at(1) == "NOTICE") {
-		QString notice = data.at(0);
-		notice += ": ";
+		QString nick = parseNick(data.at(0));
+		QString rawNick = nick;
+		int numOfSpaces = maxNickLength - nick.size();
+		for (int i=0; i<numOfSpaces; i++) {
+			nick.prepend(' ');
+		}
+		nick += "| ";
+
+		QString notice = nick;
 		notice += data.at(3);
 		notice += '\n';
 		this->pushNotice(notice);
 	}
 
 	// Command = "JOIN"
+	// ["test!~test@test.com", "JOIN", "#channel"]
+	// ----------0-----------  --1--   ----2----
 	else if (data.at(1) == "JOIN") {
+		QString nick = parseNick(data.at(0));
 		// Prevent double-adding ourself to the user/nick list
-		if (parseNick(data.at(0)) == this->_nick) {
+		if (nick == this->_nick) {
 			return;
 		}
 
 		for (int i=0; i<this->channels.size(); i++) {
 			if (data.at(2) == this->channels.at(i)->getName()) {
-				QString msg = "*** ";
-				msg += data.at(0);
+				QString msg;
+				for (int i=0; i<maxNickLength; i++) {
+					msg.prepend(' ');
+				}
+				msg += ">> ";
+				msg += nick;
 				msg += " joined ";
 				msg += this->channels.at(i)->getName();
-				msg += " ***";
 				msg += '\n';
 
 				// Add new user to Channel's user list
-				QString nick = parseNick(data.at(0));
 				this->channels.at(i)->addUserToList(nick);
 
+				// Push message to correct Channel
 				this->channels.at(i)->pushMsg(msg);
 				break;
 			}
@@ -412,21 +434,25 @@ void Connection::processData(const QStringList &data) {
 	// ["test!~test@test.com", "PART", "#channel", "msg"]
 	// ----------0-----------  --1--   ----2----   --3--
 	else if (data.at(1) == "PART") {
+		QString nick = parseNick(data.at(0));
 		for (int i=0; i<this->channels.size(); i++) {
 			if (data.at(2) == this->channels.at(i)->getName()) {
-				QString msg = "*** ";
-				msg += data.at(0);
-				msg += " left ";
+				QString msg;
+				for (int i=0; i<=maxNickLength; i++) {
+					msg.prepend(' ');
+				}
+				msg += "<< ";
+				msg += nick;
+				msg += " left. ";
 				msg += data.at(2);
 				msg += " [";
 				// Prevent segfault if there is no PART msg appended to data
 				if (data.size() > 3) {
 					msg += data.at(3);
 				}
-				msg += "] ***\n";
+				msg += "]\n";
 
 				// Remove user from Channel's user list
-				QString nick = parseNick(data.at(0));
 				if (this->channels.at(i)->removeFromUserList(nick)) {
 					this->channels.at(i)->pushMsg(msg);
 					break;
@@ -437,14 +463,18 @@ void Connection::processData(const QStringList &data) {
 
 	// Command = "QUIT"
 	else if (data.at(1) == "QUIT") {
-		QString msg = "*** ";
-		msg += data.at(0);
+		QString nick = parseNick(data.at(0));
+		QString msg;
+		for (int i=0; i<maxNickLength; i++) {
+			msg.prepend(' ');
+		}
+		msg += "<< ";
+		msg += nick;
 		msg += " quit. [";
 		msg += data.at(2);
-		msg += "] ***\n";
+		msg += "]\n";
 
 		// Loop through all Channels and remove user if it exists
-		QString nick = parseNick(data.at(0));
 		for (int i=0; i<this->channels.size(); i++) {
 			if (this->channels.at(i)->removeFromUserList(nick)) {
 				this->channels.at(i)->pushMsg(msg);
@@ -565,4 +595,8 @@ bool Connection::isSliderMaxed() const {
 
 QString Connection::getHostname() const {
 	return this->_myHostname;
+}
+
+int Connection::getMaxNickLength() const {
+	return this->maxNickLength;
 }

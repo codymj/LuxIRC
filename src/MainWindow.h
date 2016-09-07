@@ -16,6 +16,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QTime>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QTextBlockFormat>
 #include <QtGui/QTextCursor>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QScrollBar>
@@ -41,6 +42,7 @@ public slots:
 private:
    QString _initialNick;
    QList<Connection*> _connectionList;
+   QTextBlockFormat _outputTEFormat;
    QTextCursor _outputTECursor;
    Connection *selectedConn = NULL;
    Channel *selectedChan = NULL;

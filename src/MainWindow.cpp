@@ -28,7 +28,7 @@ MainWindow::MainWindow() {
    // Resize the splitter so the widgets look more aesthetic.
    // sizeList << chanView size << centralWidget size << nickView size;
    QList<int> sizeList;
-   sizeList << 150 << 450 << 150;
+   sizeList << 175 << 650 << 175;
    splitter->setSizes(sizeList);
 
    updateCharsLeftLbl(inputLE->text());
@@ -130,14 +130,22 @@ void MainWindow::sendData() {
    }
    // Otherwise, send data
    else {
+      // Data sent to server
       data.append("\r\n");
       data.prepend(" :");
       data.prepend(selectedChan->getName().toUtf8());
       data.prepend("PRIVMSG ");
       selectedConn->dataForWriting.enqueue(data);
+
+      // Data shown locally
       localDisplay.append("\n");
-      localDisplay.prepend(": ");
+      localDisplay.prepend("| ");
       localDisplay.prepend(selectedConn->getNick().toUtf8());
+      int spaces = selectedConn->getMaxNickLength() - 
+         selectedConn->getNick().size();
+      for (int i=0; i<=spaces; i++) {
+         localDisplay.prepend(' ');
+      }
       selectedChan->pushMsg(QString::fromUtf8(localDisplay));
       updateOutputTE();
    }
@@ -347,6 +355,7 @@ SLOT - Updates topic in topicLE for Channel
 void MainWindow::updateTopic(Channel *chan) {
    if (selectedChan == chan) {
       topicLE->setText(chan->getTopic());
+      topicLE->setCursorPosition(0);
    }
 }
 
@@ -516,6 +525,7 @@ void MainWindow::updateOutputTE() {
 
    // If selectedChan = NULL then topLevelItem is selected, show notices
    if (selectedChan == NULL) {
+      outputTE->setLineWrapMode(QTextEdit::WidgetWidth);
       QStringList notices = selectedConn->getNotices();
       int sliderVal = selectedConn->getSliderVal();
 

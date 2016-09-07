@@ -123,8 +123,6 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/modules/qt_lib_designercomponents_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_enginio.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_enginio_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_gui.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_gui_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_help.pri \
@@ -303,8 +301,6 @@ Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 		/usr/lib/qt/mkspecs/modules/qt_lib_designercomponents_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_enginio.pri \
-		/usr/lib/qt/mkspecs/modules/qt_lib_enginio_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_gui.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_gui_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_help.pri \
@@ -456,8 +452,6 @@ Makefile: LuxIRC.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 /usr/lib/qt/mkspecs/modules/qt_lib_designercomponents_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri:
-/usr/lib/qt/mkspecs/modules/qt_lib_enginio.pri:
-/usr/lib/qt/mkspecs/modules/qt_lib_enginio_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_gui.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_gui_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_help.pri:

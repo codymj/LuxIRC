@@ -30,6 +30,7 @@ public:
 	QList<Channel*> channels;	
 	bool connected;
 	QQueue<QByteArray> dataForWriting;
+	int maxNickLength;
 
 	// Public functions
 	void connectionReady();
@@ -64,6 +65,7 @@ public:
 	int getSliderVal() const;
 	void setSliderMaxed(bool);
 	bool isSliderMaxed() const;
+	int getMaxNickLength() const;
 
 protected:
 	void run();

@@ -117,7 +117,7 @@ bool Channel::removeFromUserList(const QString &user) {
 		}
 	}
 
-	// No need to parse since order doesn't change by removing items
+	parseUserList();
 	emit userListChanged(this);
 	return found;
 }
