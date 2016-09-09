@@ -143,7 +143,7 @@ void MainWindow::sendData() {
       localDisplay.prepend(selectedConn->getNick().toUtf8());
       int spaces = selectedConn->getMaxNickLength() - 
          selectedConn->getNick().size();
-      for (int i=0; i<=spaces; i++) {
+      for (int i=0; i<spaces; i++) {
          localDisplay.prepend(' ');
       }
       selectedChan->pushMsg(QString::fromUtf8(localDisplay));
@@ -517,6 +517,7 @@ SLOT - Updates the TextEdit with new data
 *******************************************************************************/
 void MainWindow::updateOutputTE() {
    QTextCursor _outputTECursor(outputTE->textCursor());
+   outputTE->setCursorWidth(0);
 
    // Handle empty networkTree
    if (selectedConn == NULL) {
@@ -525,7 +526,6 @@ void MainWindow::updateOutputTE() {
 
    // If selectedChan = NULL then topLevelItem is selected, show notices
    if (selectedChan == NULL) {
-      outputTE->setLineWrapMode(QTextEdit::WidgetWidth);
       QStringList notices = selectedConn->getNotices();
       int sliderVal = selectedConn->getSliderVal();
 
@@ -551,10 +551,10 @@ void MainWindow::updateOutputTE() {
 
       // Clear outputTE for appending data
       outputTE->clear();
-
+      
       // Show messages
       for (int i=0; i<msgs.size(); i++) {
-         _outputTECursor.insertText(msgs.at(i));
+         _outputTECursor.insertText(formatMsg(msgs.at(i)));
       }
 
       // Set scrollbar to last set position (bottom by default)
@@ -567,6 +567,59 @@ void MainWindow::updateOutputTE() {
    // Handle user pvt messages later
 
    // Update all other widgets in MainWindow (nickname, userlist, etc)
+}
+
+/*******************************************************************************
+Format messages to indent wrapped lines
+*******************************************************************************/
+QString MainWindow::formatMsg(const QString &msg) const {
+   QString msgCopy = msg;
+   msgCopy.remove('\n');
+   qDebug() << msgCopy;
+
+   QFont font;
+   font.setFamily("monospace");
+   font.setStyleHint(QFont::Monospace);
+   font.setFixedPitch(true);
+   font.setPointSize(10);
+
+   QFontMetrics fontMetric(font);
+   int tabStop = selectedConn->getMaxNickLength() + 2;
+   int tabStopWidth = tabStop * fontMetric.width(' ');
+   outputTE->setTabStopWidth(tabStopWidth);
+   int docWidth = outputTE->document()->size().width();
+   int wrapWidth = docWidth - tabStopWidth;
+   int wrapChars = wrapWidth / fontMetric.width(' ');
+
+   if (msgCopy.size() > wrapChars) {
+      QStringList temp;
+
+      // Split msg into substrings of size equal to the number of chars to wrap
+      while (msgCopy.size() > 0) {
+         temp << msgCopy.left(wrapChars);
+         msgCopy.remove(0, wrapChars);
+      }
+
+      for (int i=0; i<temp.size(); i++) {
+         qDebug() << temp.at(i);
+      }
+
+      // Prepend a tab to all but the first string
+      for (int i=1; i<temp.size(); i++) {
+         temp[i].prepend('\t');
+      }
+
+      // Join the strings back together
+      QString formattedMsg;
+      for (int i=0; i<temp.size(); i++) {
+         formattedMsg += temp.at(i);
+      }
+      qDebug() << formattedMsg;
+      return formattedMsg;
+   }
+   else {
+      return msg;
+   }
 }
 
 /*******************************************************************************

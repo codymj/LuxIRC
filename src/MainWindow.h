@@ -15,6 +15,8 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QTime>
+#include <QtGui/QFont>
+ #include <QtGui/QFontMetrics>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QTextBlockFormat>
 #include <QtGui/QTextCursor>
@@ -35,6 +37,9 @@ public:
    MainWindow();
    virtual ~MainWindow();
 
+   // Public data
+   QFont *font;
+
 public slots:
 	void updateOutputTE();
    void addConnectionObj(Connection*);
@@ -53,6 +58,7 @@ private:
    void addConnectionToTree(Connection*);
    void removeItemFromTree();
    void changeNick(const QString&);
+   QString formatMsg(const QString&) const;
 
 private slots:
    void updateCharsLeftLbl(const QString&);
