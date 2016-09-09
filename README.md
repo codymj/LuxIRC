@@ -8,6 +8,8 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/09/09 - Still messing around with the hanging indent issue. I almost have it figured out.
+
 * 2016/09/07 - Today I edited the format of the QTextEdit outputTE. I have introduced left padding all nick names with spaces and set the font to the monospace family. The number of spaces is a function of the "NICKLEN" attribute given to clients upon connection from the IRC server and also the length of the nick itself. I want to implement a hanging indent for wrapped lines but that is going to take some creativity as I don't see how to do it immediately from the reference pages on QTextEdit or QTextBlockFormat classes.
 
 * 2016/09/01 - I've implemented basic message writing, finally. I've also added a feature which determines how many characters left for typing. IRC protocol has a max amount of 512 characters for all data including command, parameters and CR-LF chars. I've also noticed when trying to run the program on Windows 10, there is an issue with QFile::open() due to not being able to find the specified path. I messed around with it in vain. It really should not be this difficult to fix but since it works in Linux just fine, I blame Qt. I remember having this issue before as well but I forgot how to resolve it. I've tried using native separators and absolute paths, but nothing seems to work. Sometimes the file saves, but won't read from it also, again only on Windows.
