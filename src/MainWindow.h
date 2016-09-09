@@ -38,7 +38,7 @@ public:
    virtual ~MainWindow();
 
    // Public data
-   QFont *font;
+   QFont font;
 
 public slots:
 	void updateOutputTE();
