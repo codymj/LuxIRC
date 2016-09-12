@@ -112,6 +112,11 @@ SLOT - When <enter> is pressed for inputLE, sends message to target Channel
 void MainWindow::sendData() {
    QByteArray data, localDisplay;
 
+   // Can't send data without a Connection
+   if (selectedConn == NULL) {
+      return;
+   }
+
    // If no text to send, return
    if (inputLE->text().isEmpty()) {
       return;
@@ -124,11 +129,17 @@ void MainWindow::sendData() {
       updateCharsLeftLbl(inputLE->text());
    }
 
-   // If a Channel is not selected
+   // If a command is typed, send to Connection object to parse and send
+   if (data.startsWith('/')) {
+      selectedConn->sendCmd(data);
+      return;
+   }
+
+   // If a Channel is not selected, can't send data (PRIVMSG)
    if (selectedChan == NULL) {
       return;
    }
-   // Otherwise, send data
+   // Otherwise, send message to Channel
    else {
       // Data sent to server
       data.append("\r\n");
@@ -304,8 +315,8 @@ void MainWindow::addConnectionObj(Connection *connObj) {
          this, SLOT(deleteConnection(Connection*))
       );
       connect(
-         connObj, SIGNAL(newChannel(Connection*, Channel*)),
-         this, SLOT(createChannel(Connection*, Channel*))
+         connObj, SIGNAL(channelListChanged(Connection*)),
+         this, SLOT(updateChannels(Connection*))
       );
       connect(
          connObj, SIGNAL(topicChanged(Channel*)),
@@ -362,15 +373,54 @@ void MainWindow::updateTopic(Channel *chan) {
 /*******************************************************************************
 SLOT - Creates a new channel when user sends a message
 *******************************************************************************/
-void MainWindow::createChannel(Connection *connObj, Channel *chan) {
-   QTreeWidgetItem *newChan = new QTreeWidgetItem;
-   newChan->setText(0, chan->getName());
-
+void MainWindow::updateChannels(Connection *connObj) {
+   // First check if any Channels in Connection need to be added to tree
+   bool found = false;
    for (int i=0; i<networkTree->topLevelItemCount(); i++) {
-      if (networkTree->topLevelItem(i)->text(0) == connObj->getNetwork()) {
-         networkTree->topLevelItem(i)->addChild(newChan);
+      if (connObj->getNetwork() == networkTree->topLevelItem(i)->text(0)) {
+         for (int j=0; j<connObj->channels.size(); j++) {
+            for (int k=0; k<networkTree->topLevelItem(i)->childCount(); k++) {
+               found = false;
+               if (networkTree->topLevelItem(i)->child(k)->text(0) ==
+               connObj->channels.at(j)->getName()) {
+                  found = true;
+                  break;
+               }
+            }
+            if (!found) {
+               QTreeWidgetItem *newChan = new QTreeWidgetItem;
+               newChan->setText(0, connObj->channels.at(j)->getName());
+               networkTree->topLevelItem(i)->addChild(newChan);
+            }
+         }
       }
    }
+
+   // Then check if any Channel tree items need to be removed
+   QList<QTreeWidgetItem*> itemsToDelete;
+   found = false;
+   for (int i=0; i<networkTree->topLevelItemCount(); i++) {
+      if (connObj->getNetwork() == networkTree->topLevelItem(i)->text(0)) {
+         for (int j=0; j<networkTree->topLevelItem(i)->childCount(); j++) {
+            for (int k=0; k<connObj->channels.size(); k++) {
+               found = false;
+               if (networkTree->topLevelItem(i)->child(j)->text(0) ==
+               connObj->channels.at(k)->getName()) {
+                  found = true;
+                  break;
+               }
+            }
+            if (!found) {
+               itemsToDelete << networkTree->topLevelItem(i)->child(j);
+            }
+         }
+      }
+   }
+   for (int i=0; i<itemsToDelete.size(); i++) {
+      delete itemsToDelete.at(i);
+   }
+
+   updateTreeClick();
 }
 
 /*******************************************************************************
@@ -554,7 +604,7 @@ void MainWindow::updateOutputTE() {
       
       // Show messages
       for (int i=0; i<msgs.size(); i++) {
-         _outputTECursor.insertText(formatMsg(msgs.at(i)));
+         _outputTECursor.insertText(msgs.at(i));
       }
 
       // Set scrollbar to last set position (bottom by default)
@@ -588,16 +638,26 @@ QString MainWindow::formatMsg(const QString &msg) const {
    int tabStopWidth = tabStop * fontMetric.width(' ');
    outputTE->setTabStopWidth(tabStopWidth);
    int docWidth = outputTE->document()->size().width();
+   int docChars = docWidth / fontMetric.width(' ');
    int wrapWidth = docWidth - tabStopWidth;
    int wrapChars = wrapWidth / fontMetric.width(' ');
 
-   if (msgCopy.size() > wrapChars) {
+   if (msgCopy.size() > docChars) {
       QStringList temp;
 
       // Split msg into substrings of size equal to the number of chars to wrap
+      // The first line has a wrap width of the entire widget's width
+      int counter = 0;
       while (msgCopy.size() > 0) {
-         temp << msgCopy.left(wrapChars);
-         msgCopy.remove(0, wrapChars);
+         if (counter == 0) {
+            temp << msgCopy.left(docChars);
+            msgCopy.remove(0, docChars);
+         }
+         else {
+            temp << msgCopy.left(wrapChars);
+            msgCopy.remove(0, wrapChars);
+         }
+         counter++;
       }
 
       for (int i=0; i<temp.size(); i++) {

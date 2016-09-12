@@ -33,6 +33,7 @@ public:
 	int maxNickLength;
 
 	// Public functions
+	void sendCmd(const QByteArray&);
 	void connectionReady();
 	void disconnect();
 	void sendQuit();
@@ -114,7 +115,7 @@ signals:
 	void dataAvailable();
 	void topicChanged(Channel*);
 	void userListChanged(Channel*);
-	void newChannel(Connection*, Channel*);
+	void channelListChanged(Connection*);
 	void deleteMe(Connection*);
 };
 

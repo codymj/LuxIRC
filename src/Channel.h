@@ -54,7 +54,6 @@ private:
 signals:
 	void topicChanged(Channel*);
 	void userListChanged(Channel*);
-
 };
 
 #endif // _CHANNEL_H_

@@ -16,7 +16,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QTime>
 #include <QtGui/QFont>
- #include <QtGui/QFontMetrics>
+#include <QtGui/QFontMetrics>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QTextBlockFormat>
 #include <QtGui/QTextCursor>
@@ -68,7 +68,7 @@ private slots:
    void updateTreeClick();
    void storeOutputSliderPos(int);
    void deleteConnection(Connection*);
-   void createChannel(Connection*, Channel*);
+   void updateChannels(Connection*);
    void updateTopic(Channel*);
    void updateUserList(Channel*);
    void sendData();

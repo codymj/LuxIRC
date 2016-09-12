@@ -72,6 +72,8 @@ void Connection::partChannel(Channel *chan) {
 			break;
 		}
 	}
+
+	emit channelListChanged(this);
 }
 
 /*******************************************************************************
@@ -106,9 +108,11 @@ void Connection::run() {
 		socket->write(QString(
 			"USER %1 0 * :%2\r\n").arg(_username,_realName).toUtf8()
 		);
-		socket->write(QString(
-			"JOIN %1\r\n").arg(_chansStr).toUtf8()
-		);
+		if (!_chansStr.isEmpty()) {
+			socket->write(QString(
+				"JOIN %1\r\n").arg(_chansStr).toUtf8()
+			);
+		}
 
 		// Connection loop
 		while (true) {
@@ -275,13 +279,24 @@ void Connection::processData(const QStringList &data) {
 		this->pushNotice(QString(data.at(3) + "\n"));
 	}
 
-	// Command = 332 (Topic)
-	else if (data.at(1) == "332") {
-		for (int i=0; i<this->channels.size(); i++) {
-			if (data.at(3) == this->channels.at(i)->getName()) {
-				this->channels.at(i)->setTopic(data.at(4));
-				emit topicChanged(this->channels.at(i));
-				break;
+	// Command = 332 (TOPIC)
+	else if (data.at(1) == "332" || data.at(1) == "TOPIC") {
+		if (data.at(1) == "332") {
+			for (int i=0; i<this->channels.size(); i++) {
+				if (data.at(3) == this->channels.at(i)->getName()) {
+					this->channels.at(i)->setTopic(data.at(4));
+					emit topicChanged(this->channels.at(i));
+					break;
+				}
+			}
+		}
+		if (data.at(1) == "TOPIC") {
+			for (int i=0; i<this->channels.size(); i++) {
+				if (data.at(2) == this->channels.at(i)->getName()) {
+					this->channels.at(i)->setTopic(data.at(3));
+					emit topicChanged(this->channels.at(i));
+					break;
+				}
 			}
 		}
 	}
@@ -378,7 +393,7 @@ void Connection::processData(const QStringList &data) {
 			msg += '\n';
 			chan->pushMsg(msg);
 			this->channels.append(chan);
-			emit newChannel(this, chan);
+			emit channelListChanged(this);
 		}
 	}
 
@@ -403,8 +418,12 @@ void Connection::processData(const QStringList &data) {
 	// ----------0-----------  --1--   ----2----
 	else if (data.at(1) == "JOIN") {
 		QString nick = parseNick(data.at(0));
-		// Prevent double-adding ourself to the user/nick list
+		// We joined a channel
 		if (nick == this->_nick) {
+			Channel *chan = new Channel;
+			chan->setName(data.at(2));
+			this->channels.append(chan);
+			emit channelListChanged(this);
 			return;
 		}
 
@@ -483,6 +502,53 @@ void Connection::processData(const QStringList &data) {
 	}
 
 	// Otherwise ?
+	else {
+		return;
+	}
+}
+
+/*******************************************************************************
+Parses user-entered command entered from MainWindow and sends to server
+*******************************************************************************/
+void Connection::sendCmd(const QByteArray &data) {
+	QByteArray dataCpy = data;
+	QList<QByteArray> args;
+	args << dataCpy.split(' ');
+
+	// '/join [#channel0,#channel1,...,#channelX] [key0,key1,...,keyX]'
+	if (args.at(0).startsWith("/join")) {
+		QList<QByteArray> chans;
+		chans << args.at(1).split(',');
+		QByteArray cmd = "JOIN ";
+		for (int i=0; i<chans.size(); i++) {
+			if (chans.at(i).startsWith('#')) {
+				cmd += chans.at(i);
+				cmd += ',';
+			}
+			else {
+				continue;
+			}
+		}
+		cmd += "\r\n";
+		this->dataForWriting.enqueue(cmd);
+	}
+
+	// '/part' [#channel0,#channel1,...,#channelX]
+	else if (args.at(0).startsWith("/part")) {
+		QList<QByteArray> chans;
+		chans << args.at(1).split(',');
+		QByteArray cmd = "PART ";
+		for (int i=0; i<chans.size(); i++) {
+			for (int j=0; j<this->channels.size(); j++) {
+				if (QString::fromUtf8(chans.at(i)) ==
+				this->channels.at(j)->getName()) {
+					partChannel(this->channels.at(j));
+				}
+			}
+		}
+	}
+
+	//
 	else {
 		return;
 	}
