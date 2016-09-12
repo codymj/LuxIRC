@@ -8,6 +8,8 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/09/12 - Hanging indent is not going to work with QFontMetrics. I got it 'working' but disabled it as soon as I found out it doesn't actually work. I put that on the backburner and started working on the commands and improving the code a bit. I've only added /join and /part so far. I surely will not be adding every possible command in the near future as I'll be working on more immediate features. However, at this point I can say that this program should be more or less finished for basic use within the month. At least on Linux. I have to fix the Windows compatability.
+
 * 2016/09/09 - Still messing around with the hanging indent issue. I almost have it figured out.
 
 * 2016/09/07 - Today I edited the format of the QTextEdit outputTE. I have introduced left padding all nick names with spaces and set the font to the monospace family. The number of spaces is a function of the "NICKLEN" attribute given to clients upon connection from the IRC server and also the length of the nick itself. I want to implement a hanging indent for wrapped lines but that is going to take some creativity as I don't see how to do it immediately from the reference pages on QTextEdit or QTextBlockFormat classes.
