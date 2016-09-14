@@ -223,6 +223,7 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <addaction name="hideMenuBarAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -247,6 +248,11 @@ p, li { white-space: pre-wrap; }
   <action name="aboutAction">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="hideMenuBarAction">
+   <property name="text">
+    <string>Hide Menu Bar</string>
    </property>
   </action>
  </widget>

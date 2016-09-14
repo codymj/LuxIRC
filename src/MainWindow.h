@@ -72,6 +72,7 @@ private slots:
    void updateTopic(Channel*);
    void updateUserList(Channel*);
    void sendData();
+   void hideMenuBar();
 };
 
 #endif   /* _MAINWINDOW_H_ */

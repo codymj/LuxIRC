@@ -45,6 +45,10 @@ Create menu actions
 *******************************************************************************/
 void MainWindow::connectActions() {
    connect(
+      hideMenuBarAction, SIGNAL(triggered()),
+      this, SLOT(hideMenuBar())
+   );
+   connect(
       openNetworkDlgAction, SIGNAL(triggered()), 
       this, SLOT(openNetworkDlg())
    );
@@ -76,6 +80,13 @@ void MainWindow::connectActions() {
       inputLE, SIGNAL(textEdited(const QString&)),
       this, SLOT(updateCharsLeftLbl(const QString &))
    );
+}
+
+/*******************************************************************************
+SLOT - Hides the menu bar
+*******************************************************************************/
+void MainWindow::hideMenuBar() {
+   Ui_MainWindow::menuBar->setVisible(false);
 }
 
 /*******************************************************************************
@@ -695,6 +706,16 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
       }
       else {
          removeItemFromTree();
+      }
+   }
+
+   // Handle Alt
+   if (e->modifiers().testFlag(Qt::AltModifier)) {
+      if (Ui_MainWindow::menuBar->isHidden()) {
+         Ui_MainWindow::menuBar->setVisible(true);
+      }
+      else {
+         Ui_MainWindow::menuBar->setVisible(false);
       }
    }
 }
