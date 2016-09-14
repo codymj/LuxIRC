@@ -64,6 +64,7 @@ private:
    void removeItemFromTree();
    void changeNick(const QString&);
    QString formatMsg(const QString&) const;
+   void checkCmd(const QByteArray&);
 
 private slots:
    void updateCharsLeftLbl(const QString&);

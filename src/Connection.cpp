@@ -548,7 +548,9 @@ void Connection::sendCmd(const QByteArray &data) {
 		}
 	}
 
-	//
+	// '/server'
+
+	// Command doesn't exist
 	else {
 		return;
 	}

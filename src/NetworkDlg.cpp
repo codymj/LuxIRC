@@ -19,15 +19,34 @@ Constructor
 NetworkDlg::NetworkDlg(QWidget *MainWindow) {
    setupUi(this);
 
-   connect(addBtn, SIGNAL(clicked()), this, SLOT(openAddNetworkDlg()));
-   connect(editBtn, SIGNAL(clicked()), this, SLOT(openEditNetworkDlg()));
-   connect(removeBtn, SIGNAL(clicked()), this, SLOT(removeNetwork()));
    connect(
-      networkList, SIGNAL(itemSelectionChanged()), this, SLOT(selectNetwork())
+      addBtn, SIGNAL(clicked()),
+      this, SLOT(openAddNetworkDlg())
    );
-   connect(connectBtn, SIGNAL(clicked()), this, SLOT(buildConnection()));
-   connect(okBtn, SIGNAL(clicked()), this, SLOT(accept()));
-   connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
+   connect(
+      editBtn, SIGNAL(clicked()), 
+      this, SLOT(openEditNetworkDlg())
+   );
+   connect(
+      removeBtn, SIGNAL(clicked()),
+      this, SLOT(removeNetwork())
+   );
+   connect(
+      networkList, SIGNAL(itemSelectionChanged()), 
+      this, SLOT(selectNetwork())
+   );
+   connect(
+      connectBtn, SIGNAL(clicked()),
+      this, SLOT(buildConnection())
+   );
+   connect(
+      okBtn, SIGNAL(clicked()),
+      this, SLOT(accept())
+   );
+   connect(
+      cancelBtn, SIGNAL(clicked()),
+      this, SLOT(reject())
+   );
    connect(
       this, SIGNAL(connectionReady(Connection*)),
       MainWindow, SLOT(addConnectionObj(Connection*))

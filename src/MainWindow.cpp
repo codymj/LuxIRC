@@ -149,11 +149,6 @@ SLOT - When <enter> is pressed for inputLE, sends message to target Channel
 void MainWindow::sendData() {
    QByteArray data, localDisplay;
 
-   // Can't send data without a Connection
-   if (selectedConn == NULL) {
-      return;
-   }
-
    // If no text to send, return
    if (inputLE->text().isEmpty()) {
       return;
@@ -168,10 +163,15 @@ void MainWindow::sendData() {
 
    // If a command is typed, send to Connection object to parse and send
    if (data.startsWith('/')) {
-      selectedConn->sendCmd(data);
+      checkCmd(data);
       return;
    }
 
+   // Can't send data without a Connection
+   if (selectedConn == NULL) {
+      return;
+   }
+   
    // If a Channel is not selected, can't send data (PRIVMSG)
    if (selectedChan == NULL) {
       return;
@@ -196,6 +196,45 @@ void MainWindow::sendData() {
       }
       selectedChan->pushMsg(QString::fromUtf8(localDisplay));
       updateOutputTE();
+   }
+}
+
+/*******************************************************************************
+If command is local command, handle. If not, IRC command passed to Connection
+*******************************************************************************/
+void MainWindow::checkCmd(const QByteArray &data) {
+   QByteArray dataCpy = data;
+   QList<QByteArray> args;
+   args << dataCpy.split(' ');
+
+   // '/server <host> <port> <password>'
+   if (args.at(0).startsWith("/server")) {
+      // Check if <host> is already in our saved list of networks
+      NetworkDlg *networkDlg = new NetworkDlg(this);
+      networkDlg->setVisible(false);
+      bool found = false;
+      for (int i=0; i<networkDlg->networkList->count(); i++) {
+         if (networkDlg->networkList->item(i)->text() == args.at(1)) {
+            found = true;
+            networkDlg->networkList->setCurrentRow(i);
+            break;
+         }
+      }
+
+      if (found) {
+         networkDlg->buildConnection();
+      }
+      else {
+         QString errorStr = "The network " + args.at(1) + " doesn't exist.";
+         outputTE->append(errorStr);
+      }
+
+      delete networkDlg;
+   }
+
+   // Command doesn't exist or is an IRC command, pass to Connection object
+   else {
+      selectedConn->sendCmd(data);
    }
 }
 
