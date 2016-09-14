@@ -38,6 +38,11 @@ public:
    virtual ~MainWindow();
 
    // Public data
+   QList<int> splitterSizes;
+   int mainWindowSize;
+   int nickListSize;
+   int networkTreeSize;
+   int outputTESize;
    QFont font;
 
 public slots:
@@ -73,6 +78,9 @@ private slots:
    void updateUserList(Channel*);
    void sendData();
    void hideMenuBar();
+   void restoreSplitterRatios();
+   void storeSplitterSizes();
+
 };
 
 #endif   /* _MAINWINDOW_H_ */

@@ -26,10 +26,8 @@ MainWindow::MainWindow() {
    changeNickBtn->setText(_initialNick);
 
    // Resize the splitter so the widgets look more aesthetic.
-   // sizeList << chanView size << centralWidget size << nickView size;
-   QList<int> sizeList;
-   sizeList << 175 << 650 << 175;
-   splitter->setSizes(sizeList);
+   restoreSplitterRatios();
+   splitter->setStretchFactor(0, 0);
 
    updateCharsLeftLbl(inputLE->text());
 }
@@ -80,6 +78,34 @@ void MainWindow::connectActions() {
       inputLE, SIGNAL(textEdited(const QString&)),
       this, SLOT(updateCharsLeftLbl(const QString &))
    );
+   connect(
+      restoreSplitterRatiosAction, SIGNAL(triggered()),
+      this, SLOT(restoreSplitterRatios())
+   );
+}
+
+/*******************************************************************************
+SLOT - Restores the widgets to the default ratio of widths
+*******************************************************************************/
+void MainWindow::restoreSplitterRatios() {
+   mainWindowSize = this->size().width();
+   networkTreeSize = mainWindowSize * 7/40;
+   outputTESize = mainWindowSize * 26/40;
+   nickListSize = mainWindowSize * 7/40;
+   splitterSizes << networkTreeSize << outputTESize << nickListSize;
+   splitter->setSizes(splitterSizes);
+}
+
+/*******************************************************************************
+SLOT - Stores the splitter sizes manually
+*******************************************************************************/
+void MainWindow::storeSplitterSizes() {
+   nickListSize = nickList->size().width();
+   networkTreeSize = networkTree->size().width();
+   outputTESize = outputTE->size().width();
+
+   splitterSizes.clear();
+   splitterSizes << networkTreeSize << outputTESize << nickListSize;
 }
 
 /*******************************************************************************
@@ -531,6 +557,13 @@ void MainWindow::updateTreeClick() {
 
    // If Channel in tree is selected
    if (currItem->parent()) {
+      topicLE->setVisible(true);
+      nickList->setVisible(true);
+
+      splitterSizes.replace(2, nickListSize);
+      splitter->setSizes(splitterSizes);
+      storeSplitterSizes();
+
       network = currItem->parent()->text(0);
       chan = currItem->text(0);
       for (int i=0; i<_connectionList.size(); i++) {
@@ -555,10 +588,16 @@ void MainWindow::updateTreeClick() {
    else {
       // Clear MainWindow data for Channels
       topicLE->clear();
+      topicLE->setVisible(false);
       nickList->clearSelection();
       nickList->clearFocus();
       nickList->clear();
       userCountLbl->clear();
+
+      if (splitterSizes.at(2) != 0) {
+         splitterSizes.replace(2, 0);
+      }
+      splitter->setSizes(splitterSizes);
 
       // Update MainWindow data for selected Connection
       network = currItem->text(0);
@@ -709,13 +748,23 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
       }
    }
 
-   // Handle Alt
-   if (e->modifiers().testFlag(Qt::AltModifier)) {
+   // Handle Alt+M
+   if ((e->key() == Qt::Key_M) && (e->modifiers().testFlag(Qt::AltModifier))) {
       if (Ui_MainWindow::menuBar->isHidden()) {
          Ui_MainWindow::menuBar->setVisible(true);
       }
       else {
          Ui_MainWindow::menuBar->setVisible(false);
+      }
+   }
+
+   // Handle Alt+T
+   if ((e->key() == Qt::Key_T) && (e->modifiers().testFlag(Qt::AltModifier))) {
+      if (topicLE->isHidden()) {
+         topicLE->setVisible(true);
+      }
+      else {
+         topicLE->setVisible(false);
       }
    }
 }

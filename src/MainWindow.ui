@@ -224,6 +224,7 @@ p, li { white-space: pre-wrap; }
      <string>&amp;View</string>
     </property>
     <addaction name="hideMenuBarAction"/>
+    <addaction name="restoreSplitterRatiosAction"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -253,6 +254,11 @@ p, li { white-space: pre-wrap; }
   <action name="hideMenuBarAction">
    <property name="text">
     <string>Hide Menu Bar</string>
+   </property>
+  </action>
+  <action name="restoreSplitterRatiosAction">
+   <property name="text">
+    <string>Restore Splitter Ratios</string>
    </property>
   </action>
  </widget>
