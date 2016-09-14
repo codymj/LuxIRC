@@ -8,6 +8,8 @@ I have recently started working on the project again and I will try to finish th
 
 Current Progress:
 -----------------
+* 2016/09/14 - I implemented a few features such has hiding topic bar, menu bar while adding a few more commands. Segfaults have arisen again dealing with removing items from the networkTree. I also don't like how convoluted the code has started to become. I'll need to think of a way to separate local commands from IRC commands and get things out of MainWindow that should be in Connection or Channel classes.
+
 * 2016/09/12 - Hanging indent is not going to work with QFontMetrics. I got it 'working' but disabled it as soon as I found out it doesn't actually work. I put that on the backburner and started working on the commands and improving the code a bit. I've only added /join and /part so far. I surely will not be adding every possible command in the near future as I'll be working on more immediate features. However, at this point I can say that this program should be more or less finished for basic use within the month. At least on Linux. I have to fix the Windows compatability.
 
 * 2016/09/09 - Still messing around with the hanging indent issue. I almost have it figured out.
