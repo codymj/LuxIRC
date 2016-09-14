@@ -515,6 +515,10 @@ void Connection::sendCmd(const QByteArray &data) {
 	QList<QByteArray> args;
 	args << dataCpy.split(' ');
 
+	if (!connected) {
+		return;
+	}
+
 	// '/join [#channel0,#channel1,...,#channelX] [key0,key1,...,keyX]'
 	if (args.at(0).startsWith("/join")) {
 		QList<QByteArray> chans;
@@ -535,8 +539,14 @@ void Connection::sendCmd(const QByteArray &data) {
 
 	// '/part' [#channel0,#channel1,...,#channelX]
 	else if (args.at(0).startsWith("/part")) {
+		// If no list of Channels were given
+		if (args.size() <= 1) {
+			return;
+		}
+
 		QList<QByteArray> chans;
 		chans << args.at(1).split(',');
+
 		QByteArray cmd = "PART ";
 		for (int i=0; i<chans.size(); i++) {
 			for (int j=0; j<this->channels.size(); j++) {
@@ -547,8 +557,6 @@ void Connection::sendCmd(const QByteArray &data) {
 			}
 		}
 	}
-
-	// '/server'
 
 	// Command doesn't exist
 	else {

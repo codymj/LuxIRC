@@ -30,6 +30,9 @@ MainWindow::MainWindow() {
    splitter->setStretchFactor(0, 0);
 
    updateCharsLeftLbl(inputLE->text());
+
+   topicLEVisible = true;
+   inputLE->setFocus();
 }
 
 /*******************************************************************************
@@ -171,7 +174,7 @@ void MainWindow::sendData() {
    if (selectedConn == NULL) {
       return;
    }
-   
+
    // If a Channel is not selected, can't send data (PRIVMSG)
    if (selectedChan == NULL) {
       return;
@@ -207,8 +210,23 @@ void MainWindow::checkCmd(const QByteArray &data) {
    QList<QByteArray> args;
    args << dataCpy.split(' ');
 
+   // '/part'
+   if (args.at(0) == "/part") {
+      if (selectedConn == NULL) {
+         return;
+      }
+      // Only want to part from Channels
+      else if (networkTree->currentItem()->text(0).startsWith('#')) {
+         removeItemFromTree();
+         return;
+      }
+      else {
+         return;
+      }
+   }
+
    // '/server <host> <port> <password>'
-   if (args.at(0).startsWith("/server")) {
+   else if (args.at(0).startsWith("/server")) {
       // Check if <host> is already in our saved list of networks
       NetworkDlg *networkDlg = new NetworkDlg(this);
       networkDlg->setVisible(false);
@@ -234,7 +252,12 @@ void MainWindow::checkCmd(const QByteArray &data) {
 
    // Command doesn't exist or is an IRC command, pass to Connection object
    else {
-      selectedConn->sendCmd(data);
+      if (selectedConn == NULL) {
+         return;
+      }
+      else {
+         selectedConn->sendCmd(data);
+      }
    }
 }
 
@@ -596,7 +619,7 @@ void MainWindow::updateTreeClick() {
 
    // If Channel in tree is selected
    if (currItem->parent()) {
-      topicLE->setVisible(true);
+      topicLE->setVisible(topicLEVisible);
       nickList->setVisible(true);
 
       splitterSizes.replace(2, nickListSize);
@@ -627,7 +650,6 @@ void MainWindow::updateTreeClick() {
    else {
       // Clear MainWindow data for Channels
       topicLE->clear();
-      topicLE->setVisible(false);
       nickList->clearSelection();
       nickList->clearFocus();
       nickList->clear();
@@ -799,11 +821,13 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
 
    // Handle Alt+T
    if ((e->key() == Qt::Key_T) && (e->modifiers().testFlag(Qt::AltModifier))) {
-      if (topicLE->isHidden()) {
-         topicLE->setVisible(true);
+      if (topicLEVisible) {
+         topicLE->setVisible(false);
+         topicLEVisible = false;
       }
       else {
-         topicLE->setVisible(false);
+         topicLE->setVisible(true);
+         topicLEVisible = true;
       }
    }
 }

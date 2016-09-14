@@ -56,6 +56,7 @@ private:
    QTextCursor _outputTECursor;
    Connection *selectedConn = NULL;
    Channel *selectedChan = NULL;
+   bool topicLEVisible;
 
    // Private functions
    void connectActions();
