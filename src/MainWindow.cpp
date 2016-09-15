@@ -570,9 +570,6 @@ void MainWindow::removeItemFromTree() {
       if (chan.startsWith('#')) {
          selectedConn->partChannel(selectedChan);
       }
-
-      // And remove from networkTree's list of Channels
-      delete currItem;
    }
 
    // Otherwise, currItem is Connection item, delete all channels & Connection
