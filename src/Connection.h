@@ -24,6 +24,7 @@ class Connection : public QThread {
 
 public:
 	Connection();
+	Connection(const QString&, const int&, const QString&, const QString&);
 	~Connection();
 
 	// Public data
@@ -75,6 +76,7 @@ private:
 	// Data for network from networks.conf
 	QString _network;			// Name of network
 	QString _server;			// Ex: irc.freenode.net
+	QString _serverPass;		// Password to access network
 	QString _chansStr;			// Comma separated list of channels
 	int _port;					// Port of server to connect to
 	QString _nick;

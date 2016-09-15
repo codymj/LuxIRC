@@ -14,9 +14,34 @@ Connection::Connection() {
 	// Initialize private data members to defaults
 	this->_network = "Freenode";
 	this->_server = "irc.freenode.net";
-	this->_chansStr = "#LuxIRC,#qt";
+	this->_chansStr = "";
 	this->_port = 6667;
 	this->_nick = "LuxIRCUser";
+	this->_nick2 = "LuxIRCUser2";
+	this->_username = "LuxIRC";
+	this->_realName = "LuxIRC - A Qt/C++ IRC Client";
+	this->_loginMethod = 0;
+	this->_password = "";
+	this->_connectAtStart = false;
+	this->_useGlobalInfo = true;
+	this->_partMsg = "Leaving.";
+	this->_quitMsg = "Quitting.";
+	this->connected = false;
+}
+
+/*******************************************************************************
+Constructor
+*******************************************************************************/
+Connection::Connection(
+const QString &host, 
+const int &port, 
+const QString &pw,
+const QString &nick) {
+	this->_network = host.section('.', 1, 1);
+	this->_server = host;
+	this->_serverPass = pw;
+	this->_port = port;
+	this->_nick = nick;
 	this->_nick2 = "LuxIRCUser2";
 	this->_username = "LuxIRC";
 	this->_realName = "LuxIRC - A Qt/C++ IRC Client";

@@ -227,6 +227,12 @@ void MainWindow::checkCmd(const QByteArray &data) {
 
    // '/server <host> <port> <password>'
    else if (args.at(0).startsWith("/server")) {
+      // Make sure we have enough arguments
+      if (args.size() < 2) {
+         outputTE->append("Usage: /server <host> [<port>] [<password>]");
+         return;
+      }
+
       // Check if <host> is already in our saved list of networks
       NetworkDlg *networkDlg = new NetworkDlg(this);
       networkDlg->setVisible(false);
@@ -238,16 +244,32 @@ void MainWindow::checkCmd(const QByteArray &data) {
             break;
          }
       }
-
       if (found) {
          networkDlg->buildConnection();
+         delete networkDlg;
+         return;
       }
+      // If not, create a Connection object and connect
       else {
-         QString errorStr = "The network " + args.at(1) + " doesn't exist.";
-         outputTE->append(errorStr);
-      }
-
-      delete networkDlg;
+         QString host, pw = "";
+         QString nick = changeNickBtn->text();
+         int port = 6667;
+         for (int i=1; i<args.size(); i++) {
+            if (i == 1) {
+               host = args.at(i);
+            }
+            else if (i == 2) {
+               port = args.at(i).toInt();
+            }
+            else if (i == 3) {
+               pw = args.at(i);
+            }
+         }
+         qDebug() << host;
+         qDebug() << port;
+         Connection *connObj = new Connection(host, port, pw, nick);
+         addConnectionObj(connObj);
+      }  
    }
 
    // Command doesn't exist or is an IRC command, pass to Connection object
@@ -647,6 +669,7 @@ void MainWindow::updateTreeClick() {
    else {
       // Clear MainWindow data for Channels
       topicLE->clear();
+      topicLE->setVisible(false);
       nickList->clearSelection();
       nickList->clearFocus();
       nickList->clear();
