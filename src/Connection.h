@@ -16,6 +16,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QThread>
+#include <QtCore/QTime>
 #include <QtNetwork/QTcpSocket>
 #include "Channel.h"
 

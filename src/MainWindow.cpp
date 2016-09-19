@@ -228,8 +228,9 @@ void MainWindow::checkCmd(const QByteArray &data) {
    // '/server <host> <port> <password>'
    else if (args.at(0).startsWith("/server")) {
       // Make sure we have enough arguments
-      if (args.size() < 2) {
+      if (args.size() < 2 || args.size() > 4) {
          outputTE->append("Usage: /server <host> [<port>] [<password>]");
+         outputTE->append("Example: /server irc.freenode.com 6667");
          return;
       }
 
@@ -251,6 +252,7 @@ void MainWindow::checkCmd(const QByteArray &data) {
       }
       // If not, create a Connection object and connect
       else {
+         delete networkDlg;
          QString host, pw = "";
          QString nick = changeNickBtn->text();
          int port = 6667;
@@ -265,8 +267,6 @@ void MainWindow::checkCmd(const QByteArray &data) {
                pw = args.at(i);
             }
          }
-         qDebug() << host;
-         qDebug() << port;
          Connection *connObj = new Connection(host, port, pw, nick);
          addConnectionObj(connObj);
       }  
@@ -572,6 +572,7 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
    networkTree->addTopLevelItem(connItem);
    connItem->setExpanded(true);
    networkTree->setCurrentItem(connItem);
+   selectedConn = connObj;
 
    // Make sure nick name from connObj updates changeNickBtn
    changeNick(selectedConn->getNick());
@@ -582,7 +583,6 @@ Removes a connection from the QTreeWidget
 *******************************************************************************/
 void MainWindow::removeItemFromTree() {
    QTreeWidgetItem *currItem = networkTree->currentItem();
-   QString conn = selectedConn->getNetwork();
 
    // If currItem is Channel item, find channel to remove from networkTree
    if (currItem->parent()) {
@@ -600,7 +600,9 @@ void MainWindow::removeItemFromTree() {
       int childCount = currItem->childCount();
 
       // Quit from the network
-      selectedConn->sendQuit();
+      if (selectedConn->connected) {
+         selectedConn->sendQuit();
+      }
 
       // Delete all Channel items belonging to the parent Connection item
       if (childCount > 0) {

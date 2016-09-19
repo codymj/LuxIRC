@@ -11,12 +11,21 @@
 Constructor
 *******************************************************************************/
 Connection::Connection() {
+	// Initialize nickname
+	QTime time = QTime::currentTime();
+	qsrand((uint)time.msec());
+	int low = 10000;
+	int high = 99999;
+	QString prefix = "LuxIRC-";
+	QString suffix = QString::number(qrand() % ((high + 1) - low) + low);
+	QString _initialNick = prefix + suffix;
+	this->_nick = _initialNick;
+
 	// Initialize private data members to defaults
 	this->_network = "Freenode";
 	this->_server = "irc.freenode.net";
 	this->_chansStr = "";
 	this->_port = 6667;
-	this->_nick = "LuxIRCUser";
 	this->_nick2 = "LuxIRCUser2";
 	this->_username = "LuxIRC";
 	this->_realName = "LuxIRC - A Qt/C++ IRC Client";
@@ -37,7 +46,7 @@ const QString &host,
 const int &port, 
 const QString &pw,
 const QString &nick) {
-	this->_network = host.section('.', 1, 1);
+	this->_network = host;
 	this->_server = host;
 	this->_serverPass = pw;
 	this->_port = port;
@@ -203,7 +212,7 @@ void Connection::run() {
 		}
 	}
 	else {
-		// Handle unable to connect
+		qDebug() << "Unable to connect... check server address.";
 	}
 
 	delete socket;
