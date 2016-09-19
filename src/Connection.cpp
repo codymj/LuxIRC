@@ -132,7 +132,7 @@ void Connection::run() {
 	// Attempt to connect to network
 	socket->connectToHost(_server, _port);	
 	if (socket->waitForConnected()) {
-		// Mark this as connected
+		// Mark as connected
 		this->connected = true;
 
 		// Send initial IRC information
