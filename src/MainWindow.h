@@ -48,6 +48,7 @@ public:
 public slots:
 	void updateOutputTE();
    void addConnectionObj(Connection*);
+   void displayToOutputTE(QString&);
 
 private:
    QString _initialNick;

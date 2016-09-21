@@ -206,6 +206,7 @@ void MainWindow::sendData() {
 If command is local command, handle. If not, IRC command passed to Connection
 *******************************************************************************/
 void MainWindow::checkCmd(const QByteArray &data) {
+   // Separate command and args
    QByteArray dataCpy = data;
    QList<QByteArray> args;
    args << dataCpy.split(' ');
@@ -215,7 +216,6 @@ void MainWindow::checkCmd(const QByteArray &data) {
       if (selectedConn == NULL) {
          return;
       }
-      // Only want to part from Channels
       else if (networkTree->currentItem()->text(0).startsWith('#')) {
          removeItemFromTree();
          return;
@@ -275,6 +275,7 @@ void MainWindow::checkCmd(const QByteArray &data) {
    // Command doesn't exist or is an IRC command, pass to Connection object
    else {
       if (selectedConn == NULL) {
+         outputTE->append("Error: Not connected to any networks.");
          return;
       }
       else {
@@ -447,6 +448,10 @@ void MainWindow::addConnectionObj(Connection *connObj) {
          connObj, SIGNAL(userListChanged(Channel*)),
          this, SLOT(updateUserList(Channel*))
       );
+      connect(
+         connObj, SIGNAL(sendToOutputTE(QString&)),
+         this, SLOT(displayToOutputTE(QString&))
+      );
       _connectionList << connObj;
    }
 
@@ -455,6 +460,13 @@ void MainWindow::addConnectionObj(Connection *connObj) {
 
    // Ready to connect to network
    connObj->connectionReady();
+}
+
+/*******************************************************************************
+SLOT - Displays messages from Connection objects to the main QTextEdit
+*******************************************************************************/
+void MainWindow::displayToOutputTE(QString &data) {
+   outputTE->append(data);
 }
 
 /*******************************************************************************

@@ -572,9 +572,14 @@ void Connection::sendCmd(const QByteArray &data) {
 	}
 
 	// '/part' [#channel0,#channel1,...,#channelX]
-	else if (args.at(0).startsWith("/part")) {
+	else if (args.at(0).startsWith("/part ")) {
 		// If no list of Channels were given
-		if (args.size() <= 1) {
+		if (args.size() < 2) {
+			QString msg = "Usage: /part\n" \
+				"Usage: /part [<#chan01>,<#chan02>,...,<#chanXX>]\n" \
+				"Example (leaves current channel only): /part\n" \
+				"Example: /part ##math,#qt,#archlinux";
+			emit sendToOutputTE(msg);
 			return;
 		}
 
@@ -592,8 +597,29 @@ void Connection::sendCmd(const QByteArray &data) {
 		}
 	}
 
+	// '/msg' <nick> <message>
+	else if (args.at(0).startsWith("/msg")) {
+		// Check to see if we have enough arguments
+		if (args.size() < 3) {
+			QString msg = "Usage: /msg <target_nick> <message>\n" \
+				"Example: /msg user1234 What's up?";
+			emit sendToOutputTE(msg);
+			return;
+		}
+		else {
+			QByteArray cmd = "PRIVMSG ";
+			cmd += args.at(1);
+			cmd += ' ';
+			cmd += args.at(2);
+			cmd += "\r\n";
+			this->dataForWriting.enqueue(cmd);
+		}
+	}
+
 	// Command doesn't exist
 	else {
+		QString msg = "No such command: " + QString::fromUtf8(args.at(0));
+		emit sendToOutputTE(msg);
 		return;
 	}
 }

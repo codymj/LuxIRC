@@ -120,6 +120,7 @@ signals:
 	void userListChanged(Channel*);
 	void channelListChanged(Connection*);
 	void deleteMe(Connection*);
+	void sendToOutputTE(QString&);
 };
 
 #endif // _CONNECTION_H_
