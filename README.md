@@ -1,7 +1,5 @@
 LuxIRC:
 =======
-Lux is the SI symbol for illuminance. IRC is an old and vast social gathering which gives the potential to illuminate your mind.
-
 LuxIRC is intended to be a basic IRC client without too much bloat (I hope). It is a self-project of mine to learn the basics of GUI and network programming while making something useful. I am testing and developing the program in Arch Linux only (for now).
 
 Libraries and modules used so far:
