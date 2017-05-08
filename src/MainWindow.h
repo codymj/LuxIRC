@@ -46,7 +46,7 @@ public:
    QFont font;
 
 public slots:
-	void updateOutputTE();
+   void updateOutputTE();
    void addConnectionObj(Connection*);
    void displayToOutputTE(QString&);
 
