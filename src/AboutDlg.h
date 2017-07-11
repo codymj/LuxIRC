@@ -11,11 +11,11 @@
 #include "ui_AboutDlg.h"
 
 class AboutDlg : public QDialog, public Ui::AboutDlg {
-   Q_OBJECT
+    Q_OBJECT
    
 public:
-   AboutDlg();
-   virtual ~AboutDlg();
+    AboutDlg();
+    virtual ~AboutDlg();
    
 public slots:
 

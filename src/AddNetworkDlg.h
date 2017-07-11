@@ -12,22 +12,22 @@
 #include "ui_AddNetworkDlg.h"
 
 class AddNetworkDlg : public QDialog, public Ui::AddNetworkDlg {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   AddNetworkDlg();
-   virtual ~AddNetworkDlg();
+    AddNetworkDlg();
+    virtual ~AddNetworkDlg();
 
 public slots:
 
 
 private:
-   void writeData();
-   void streamDataIntoFile(QTextStream &);
+    void writeData();
+    void streamDataIntoFile(QTextStream &);
 
 private slots:
-   void toggleUserInfo();
-   void accept();
+    void toggleUserInfo();
+    void accept();
 
 };
 

@@ -20,25 +20,25 @@ class NetworkDlg : public QDialog, public Ui::NetworkDlg {
     Q_OBJECT
 
 public:
-   NetworkDlg(QWidget *MainWindow);
-   virtual ~NetworkDlg();
+    NetworkDlg(QWidget *MainWindow);
+    virtual ~NetworkDlg();
 
 public slots:
-   void buildConnection();
+    void buildConnection();
 
 private:
-   QString selectedNetwork;
+    QString selectedNetwork;
 
 private slots:
-   void openAddNetworkDlg();
-   void openEditNetworkDlg();
-   void selectNetwork();
-   void readData();
-   void removeNetwork();
-   void accept();
+    void openAddNetworkDlg();
+    void openEditNetworkDlg();
+    void selectNetwork();
+    void readData();
+    void removeNetwork();
+    void accept();
 
 signals:
-   void connectionReady(Connection*);
+    void connectionReady(Connection*);
 
 };
 

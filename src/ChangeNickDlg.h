@@ -11,11 +11,11 @@
 #include "ui_ChangeNickDlg.h"
 
 class ChangeNickDlg : public QDialog, public Ui::ChangeNickDlg {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   ChangeNickDlg();
-   virtual ~ChangeNickDlg();
+    ChangeNickDlg();
+    virtual ~ChangeNickDlg();
 
 public slots:
 

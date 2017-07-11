@@ -31,58 +31,58 @@
 #include "ui_MainWindow.h"
 
 class MainWindow : public QMainWindow, public Ui::MainWindow {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   MainWindow();
-   virtual ~MainWindow();
+    MainWindow();
+    virtual ~MainWindow();
 
-   // Public data
-   QList<int> splitterSizes;
-   int mainWindowSize;
-   int nickListSize;
-   int networkTreeSize;
-   int outputTESize;
-   QFont font;
+    // Public data
+    QList<int> splitterSizes;
+    int mainWindowSize;
+    int nickListSize;
+    int networkTreeSize;
+    int outputTESize;
+    QFont font;
 
 public slots:
-   void updateOutputTE();
-   void addConnectionObj(Connection*);
-   void displayToOutputTE(QString&);
+    void updateOutputTE();
+    void addConnectionObj(Connection*);
+    void displayToOutputTE(QString&);
 
 private:
-   QString _initialNick;
-   QList<Connection*> _connectionList;
-   QTextBlockFormat _outputTEFormat;
-   QTextCursor _outputTECursor;
-   Connection *selectedConn = NULL;
-   Channel *selectedChan = NULL;
-   bool topicLEVisible;
+    QString _initialNick;
+    QList<Connection*> _connectionList;
+    QTextBlockFormat _outputTEFormat;
+    QTextCursor _outputTECursor;
+    Connection *selectedConn = NULL;
+    Channel *selectedChan = NULL;
+    bool topicLEVisible;
 
-   // Private functions
-   void connectActions();
-   void keyPressEvent(QKeyEvent *e);
-   void addConnectionToTree(Connection*);
-   void removeItemFromTree();
-   void changeNick(const QString&);
-   QString formatMsg(const QString&) const;
-   void checkCmd(const QByteArray&);
+    // Private functions
+    void connectActions();
+    void keyPressEvent(QKeyEvent *e);
+    void addConnectionToTree(Connection*);
+    void removeItemFromTree();
+    void changeNick(const QString&);
+    QString formatMsg(const QString&) const;
+    void checkCmd(const QByteArray&);
 
 private slots:
-   void updateCharsLeftLbl(const QString&);
-   void changeNick();
-   void openNetworkDlg();
-   void openAboutDlg();
-   void updateTreeClick();
-   void storeOutputSliderPos(int);
-   void deleteConnection(Connection*);
-   void updateChannels(Connection*);
-   void updateTopic(Channel*);
-   void updateUserList(Channel*);
-   void sendData();
-   void hideMenuBar();
-   void restoreSplitterRatios();
-   void storeSplitterSizes();
+    void updateCharsLeftLbl(const QString&);
+    void changeNick();
+    void openNetworkDlg();
+    void openAboutDlg();
+    void updateTreeClick();
+    void storeOutputSliderPos(int);
+    void deleteConnection(Connection*);
+    void updateChannels(Connection*);
+    void updateTopic(Channel*);
+    void updateUserList(Channel*);
+    void sendData();
+    void hideMenuBar();
+    void restoreSplitterRatios();
+    void storeSplitterSizes();
 
 };
 
