@@ -1,15 +1,14 @@
-/***************************************************************************************************
- * MainWindow.cpp                                                                                  *
- *                                                                                                 *
- * Created on Mar 15, 2015                                                                         *
- * Author: Cody Johnson <codyj@protonmail.com>                                                     *
- **************************************************************************************************/
-
+// =============================================================================
+// MainWindow.cpp
+//
+// Created on: Mar 15, 2015
+// Author: Cody Johnson <codyj@protonmail.com>
+// =============================================================================
 #include "MainWindow.h"
 
-/***************************************************************************************************
-Constructor
-***************************************************************************************************/
+
+// Constructor
+// -----------------------------------------------------------------------------
 MainWindow::MainWindow() {
     setupUi(this);
 
@@ -35,15 +34,15 @@ MainWindow::MainWindow() {
     inputLE->setFocus();
 }
 
-/***************************************************************************************************
-Destructor
-***************************************************************************************************/
+
+// Destructor
+// -----------------------------------------------------------------------------
 MainWindow::~MainWindow() {
 }
 
-/***************************************************************************************************
-Create menu actions
-***************************************************************************************************/
+
+// Create menu actions
+// -----------------------------------------------------------------------------
 void MainWindow::connectActions() {
     connect(
         hideMenuBarAction, SIGNAL(triggered()),
@@ -87,9 +86,9 @@ void MainWindow::connectActions() {
     );
 }
 
-/***************************************************************************************************
-SLOT - Restores the widgets to the default ratio of widths
-***************************************************************************************************/
+
+// SLOT - Restores the widgets to the default ratio of widths
+// -----------------------------------------------------------------------------
 void MainWindow::restoreSplitterRatios() {
     mainWindowSize = this->size().width();
     networkTreeSize = mainWindowSize * 7/40;
@@ -99,9 +98,9 @@ void MainWindow::restoreSplitterRatios() {
     splitter->setSizes(splitterSizes);
 }
 
-/***************************************************************************************************
-SLOT - Stores the splitter sizes manually
-***************************************************************************************************/
+
+// SLOT - Stores the splitter sizes manually
+// -----------------------------------------------------------------------------
 void MainWindow::storeSplitterSizes() {
     nickListSize = nickList->size().width();
     networkTreeSize = networkTree->size().width();
@@ -111,16 +110,16 @@ void MainWindow::storeSplitterSizes() {
     splitterSizes << networkTreeSize << outputTESize << nickListSize;
 }
 
-/***************************************************************************************************
-SLOT - Hides the menu bar
-***************************************************************************************************/
+
+// SLOT - Hides the menu bar
+// -----------------------------------------------------------------------------
 void MainWindow::hideMenuBar() {
     Ui_MainWindow::menuBar->setVisible(false);
 }
 
-/***************************************************************************************************
-SLOT - Updates the amount of characters left for typing a message
-***************************************************************************************************/
+
+// SLOT - Updates the amount of characters left for typing a message
+// -----------------------------------------------------------------------------
 void MainWindow::updateCharsLeftLbl(const QString &msg) {
     // If msg begins with '/', command is being typed
     if (msg.startsWith('/')) {
@@ -146,9 +145,9 @@ void MainWindow::updateCharsLeftLbl(const QString &msg) {
     charsLeftLbl->setText("Characters left: " + charsLeftStr);
 }
 
-/***************************************************************************************************
-SLOT - When <enter> is pressed for inputLE, sends message to target Channel
-***************************************************************************************************/
+
+// SLOT - When <enter> is pressed for inputLE, sends message to target Channel
+// -----------------------------------------------------------------------------
 void MainWindow::sendData() {
     QByteArray data, localDisplay;
 
@@ -192,7 +191,8 @@ void MainWindow::sendData() {
         localDisplay.append("\n");
         localDisplay.prepend("| ");
         localDisplay.prepend(selectedConn->getNick().toUtf8());
-        int spaces = selectedConn->getMaxNickLength() - selectedConn->getNick().size();
+        int spaces = selectedConn->getMaxNickLength()
+            - selectedConn->getNick().size();
         for (int i=0; i<spaces; i++) {
             localDisplay.prepend(' ');
         }
@@ -201,9 +201,9 @@ void MainWindow::sendData() {
     }
 }
 
-/***************************************************************************************************
-If command is local command, handle. If not, IRC command passed to Connection
-***************************************************************************************************/
+
+// If command is local command, handle. If not, IRC command passed to Connection
+// -----------------------------------------------------------------------------
 void MainWindow::checkCmd(const QByteArray &data) {
     // Separate command and args
     QByteArray dataCpy = data;
@@ -283,9 +283,9 @@ void MainWindow::checkCmd(const QByteArray &data) {
     }
 }
 
-/***************************************************************************************************
-SLOT - Store the vertical slider position to prevent auto sliding
-***************************************************************************************************/
+
+// SLOT - Store the vertical slider position to prevent auto sliding
+// -----------------------------------------------------------------------------
 void MainWindow::storeOutputSliderPos(int pos) {
     // Handle empty networkTree
     if (selectedConn == NULL) {
@@ -318,9 +318,9 @@ void MainWindow::storeOutputSliderPos(int pos) {
     }
 }
 
-/***************************************************************************************************
-Change nick name
-***************************************************************************************************/
+
+// Change nick name
+// -----------------------------------------------------------------------------
 void MainWindow::changeNick(const QString &nick) {
     // Set nick name text for changeNickBtn
     changeNickBtn->setText(nick);
@@ -339,9 +339,9 @@ void MainWindow::changeNick(const QString &nick) {
     }
 }
 
-/***************************************************************************************************
-SLOT - Change nick name
-***************************************************************************************************/
+
+// SLOT - Change nick name
+// -----------------------------------------------------------------------------
 void MainWindow::changeNick() {
     ChangeNickDlg *changeNickDlg = new ChangeNickDlg();
     QString nickName;
@@ -379,9 +379,9 @@ void MainWindow::changeNick() {
     delete changeNickDlg;
 }
 
-/***************************************************************************************************
-SLOT - Open the Network Dialog
-***************************************************************************************************/
+
+// SLOT - Open the Network Dialog
+// -----------------------------------------------------------------------------
 void MainWindow::openNetworkDlg() {
     NetworkDlg *networkDlg = new NetworkDlg(this);
     networkDlg->exec();
@@ -389,9 +389,9 @@ void MainWindow::openNetworkDlg() {
     delete networkDlg;
 }
 
-/***************************************************************************************************
-SLOT - Open the About Dialog
-***************************************************************************************************/
+
+// SLOT - Open the About Dialog
+// -----------------------------------------------------------------------------
 void MainWindow::openAboutDlg() {
     AboutDlg *aboutDlg = new AboutDlg();
     aboutDlg->exec();
@@ -399,9 +399,9 @@ void MainWindow::openAboutDlg() {
     delete aboutDlg;
 }
 
-/***************************************************************************************************
-SLOT - Receive Connection object from NetworkDlg
-***************************************************************************************************/
+
+// SLOT - Receive Connection object from NetworkDlg
+// -----------------------------------------------------------------------------
 void MainWindow::addConnectionObj(Connection *connObj) {
     // Check if connObj is NULL (initial value), return to prevent segfault
     if (connObj == NULL) {
@@ -461,16 +461,16 @@ void MainWindow::addConnectionObj(Connection *connObj) {
     connObj->connectionReady();
 }
 
-/***************************************************************************************************
-SLOT - Displays messages from Connection objects to the main QTextEdit
-***************************************************************************************************/
+
+// SLOT - Displays messages from Connection objects to the main QTextEdit
+// -----------------------------------------------------------------------------
 void MainWindow::displayToOutputTE(QString &data) {
     outputTE->append(data);
 }
 
-/***************************************************************************************************
-SLOT - Updates topic in topicLE for Channel
-***************************************************************************************************/
+
+// SLOT - Updates topic in topicLE for Channel
+// -----------------------------------------------------------------------------
 void MainWindow::updateUserList(Channel *chan) {
     if (selectedChan == chan) {
         // Get user list from Channel
@@ -492,9 +492,9 @@ void MainWindow::updateUserList(Channel *chan) {
     }
 }
 
-/***************************************************************************************************
-SLOT - Updates topic in topicLE for Channel
-***************************************************************************************************/
+
+// SLOT - Updates topic in topicLE for Channel
+// -----------------------------------------------------------------------------
 void MainWindow::updateTopic(Channel *chan) {
     if (selectedChan == chan) {
         topicLE->setText(chan->getTopic());
@@ -502,16 +502,18 @@ void MainWindow::updateTopic(Channel *chan) {
     }
 }
 
-/***************************************************************************************************
-SLOT - Creates a new channel when user sends a message
-***************************************************************************************************/
+
+// SLOT - Creates a new channel when user sends a message
+// -----------------------------------------------------------------------------
 void MainWindow::updateChannels(Connection *connObj) {
     // First check if any Channels in Connection need to be added to tree
     bool found = false;
     for (int i=0; i<networkTree->topLevelItemCount(); i++) {
         if (connObj->getNetwork() == networkTree->topLevelItem(i)->text(0)) {
             for (int j=0; j<connObj->channels.size(); j++) {
-                for (int k=0; k<networkTree->topLevelItem(i)->childCount(); k++) {
+                for (int k=0;
+                k<networkTree->topLevelItem(i)->childCount();
+                k++) {
                     found = false;
                     if (networkTree->topLevelItem(i)->child(k)->text(0) ==
                     connObj->channels.at(j)->getName()) {
@@ -555,9 +557,9 @@ void MainWindow::updateChannels(Connection *connObj) {
     updateTreeClick();
 }
 
-/***************************************************************************************************
-SLOT - Must wait for thread to finish, then delete object from connection list
-***************************************************************************************************/
+
+// SLOT - Must wait for thread to finish, then delete object from connectionList
+// -----------------------------------------------------------------------------
 void MainWindow::deleteConnection(Connection *connObj) {
     for (int i=0; i<_connectionList.size(); i++) {
         if (_connectionList.at(i) == connObj) {
@@ -566,9 +568,9 @@ void MainWindow::deleteConnection(Connection *connObj) {
     }
 }
 
-/***************************************************************************************************
-Adds a connection to the QTreeWidget
-***************************************************************************************************/
+
+// Adds a connection to the QTreeWidget
+// -----------------------------------------------------------------------------
 void MainWindow::addConnectionToTree(Connection *connObj) {
     // Build top-level item for tree
     QTreeWidgetItem *connItem = new QTreeWidgetItem;
@@ -589,9 +591,9 @@ void MainWindow::addConnectionToTree(Connection *connObj) {
     changeNick(selectedConn->getNick());
 }
 
-/***************************************************************************************************
-Removes a connection from the QTreeWidget
-***************************************************************************************************/
+
+// Removes a connection from the QTreeWidget
+// -----------------------------------------------------------------------------
 void MainWindow::removeItemFromTree() {
     QTreeWidgetItem *currItem = networkTree->currentItem();
 
@@ -626,7 +628,7 @@ void MainWindow::removeItemFromTree() {
         delete networkTree->takeTopLevelItem(index);
         outputTE->clear();
 
-        // If any more Connections exist in tree, update currentItem to the first
+        // If any more Connections exist in tree, update currentItem
         if (networkTree->topLevelItemCount() > 0) {
             networkTree->setCurrentItem(networkTree->topLevelItem(0));
         }
@@ -636,9 +638,9 @@ void MainWindow::removeItemFromTree() {
     }
 }
 
-/***************************************************************************************************
-Updates widgets when different channel is clicked in tree
-***************************************************************************************************/
+
+// Updates widgets when different channel is clicked in tree
+// -----------------------------------------------------------------------------
 void MainWindow::updateTreeClick() {
     QTreeWidgetItem *currItem = networkTree->currentItem();
     QString network;
@@ -663,7 +665,8 @@ void MainWindow::updateTreeClick() {
         for (int i=0; i<_connectionList.size(); i++) {
             if (_connectionList.at(i)->getNetwork() == network) {
                 for (int j=0; j<_connectionList.at(i)->channels.size(); j++) {
-                    if (_connectionList.at(i)->channels.at(j)->getName() == chan) {
+                    if (
+                    _connectionList.at(i)->channels.at(j)->getName() == chan) {
                         // Update selected Channel and Channel's info
                         selectedChan = _connectionList.at(i)->channels.at(j);
                         updateTopic(selectedChan);
@@ -706,9 +709,9 @@ void MainWindow::updateTreeClick() {
     updateOutputTE();
 }
 
-/***************************************************************************************************
-SLOT - Updates the TextEdit with new data
-***************************************************************************************************/
+
+// SLOT - Updates the TextEdit with new data
+// -----------------------------------------------------------------------------
 void MainWindow::updateOutputTE() {
     QTextCursor _outputTECursor(outputTE->textCursor());
     outputTE->setCursorWidth(0);
@@ -758,9 +761,9 @@ void MainWindow::updateOutputTE() {
     // Update all other widgets in MainWindow (nickname, userlist, etc)
 }
 
-/***************************************************************************************************
-Format messages to indent wrapped lines
-***************************************************************************************************/
+
+// Format messages to indent wrapped lines
+// -----------------------------------------------------------------------------
 QString MainWindow::formatMsg(const QString &msg) const {
     QString msgCopy = msg;
     msgCopy.remove('\n');
@@ -784,8 +787,6 @@ QString MainWindow::formatMsg(const QString &msg) const {
     if (msgCopy.size() > docChars) {
         QStringList temp;
 
-        // Split msg into substrings of size equal to the number of chars to wrap
-        // The first line has a wrap width of the entire widget's width
         int counter = 0;
         while (msgCopy.size() > 0) {
             if (counter == 0) {
@@ -821,12 +822,14 @@ QString MainWindow::formatMsg(const QString &msg) const {
     }
 }
 
-/***************************************************************************************************
-Handles keyboard commands
-***************************************************************************************************/
+
+// Handles keyboard commands
+// -----------------------------------------------------------------------------
 void MainWindow::keyPressEvent(QKeyEvent *e) {
     // Handle Ctrl+W
-    if ((e->key() == Qt::Key_W) && (e->modifiers().testFlag(Qt::ControlModifier))) {
+    if (
+    (e->key() == Qt::Key_W)
+    && (e->modifiers().testFlag(Qt::ControlModifier))) {
         // Handle empty tree widget
         if (networkTree->topLevelItemCount() == 0) {
             return;
@@ -837,7 +840,9 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
     }
 
     // Handle Alt+M
-    if ((e->key() == Qt::Key_M) && (e->modifiers().testFlag(Qt::AltModifier))) {
+    if (
+    (e->key() == Qt::Key_M)
+    && (e->modifiers().testFlag(Qt::AltModifier))) {
         if (Ui_MainWindow::menuBar->isHidden()) {
             Ui_MainWindow::menuBar->setVisible(true);
         }
@@ -847,7 +852,9 @@ void MainWindow::keyPressEvent(QKeyEvent *e) {
     }
 
     // Handle Alt+T
-    if ((e->key() == Qt::Key_T) && (e->modifiers().testFlag(Qt::AltModifier))) {
+    if (
+    (e->key() == Qt::Key_T)
+    && (e->modifiers().testFlag(Qt::AltModifier))) {
         if (topicLEVisible) {
             topicLE->setVisible(false);
             topicLEVisible = false;

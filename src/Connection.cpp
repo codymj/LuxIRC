@@ -1,15 +1,14 @@
-/***************************************************************************************************
- * Connection.cpp                                                                                  *
- *                                                                                                 *
- * Created on Jul 25, 2016                                                                         *
- * Author: Cody Johnson <codyj@protonmail.com>                                                     *
- **************************************************************************************************/
-
+// =============================================================================
+// Connection.cpp
+//
+// Created on: Jul 25, 2016
+// Author: Cody Johnson <codyj@protonmail.com>
+// =============================================================================
 #include "Connection.h"
 
-/***************************************************************************************************
-Constructor
-***************************************************************************************************/
+
+// Constructor
+// -----------------------------------------------------------------------------
 Connection::Connection() {
     // Initialize nickname
     QTime time = QTime::currentTime();
@@ -38,9 +37,9 @@ Connection::Connection() {
     this->connected = false;
 }
 
-/***************************************************************************************************
-Constructor
-***************************************************************************************************/
+
+// Constructor
+// -----------------------------------------------------------------------------
 Connection::Connection(const QString &host, const int &port, 
 const QString &pw, const QString &nick) {
     this->_network = host;
@@ -60,15 +59,15 @@ const QString &pw, const QString &nick) {
     this->connected = false;
 }
 
-/***************************************************************************************************
-Destructor
-***************************************************************************************************/
+
+// Destructor
+// -----------------------------------------------------------------------------
 Connection::~Connection() {
 }
 
-/***************************************************************************************************
-Connection is ready, start thread
-***************************************************************************************************/
+
+// Connection is ready, start thread
+// -----------------------------------------------------------------------------
 void Connection::connectionReady() {
     // Start thread for this Connection
     if (!this->connected) {
@@ -76,9 +75,9 @@ void Connection::connectionReady() {
     }
 }
 
-/***************************************************************************************************
-Delete all Channels for this Connection
-***************************************************************************************************/
+
+// Delete all Channels for this Connection
+// -----------------------------------------------------------------------------
 void Connection::sendQuit() {
     QByteArray data = (QString(
         "QUIT %1\r\n").arg(_partMsg).toUtf8()
@@ -87,9 +86,9 @@ void Connection::sendQuit() {
     disconnect();
 }
 
-/***************************************************************************************************
-Leaves a Channel
-***************************************************************************************************/
+
+// Leaves a Channel
+// -----------------------------------------------------------------------------
 void Connection::partChannel(Channel *chan) {
     QByteArray data = (QString(
         "PART %1 %2\r\n").arg(chan->getName(),_partMsg).toUtf8()
@@ -107,9 +106,9 @@ void Connection::partChannel(Channel *chan) {
     emit channelListChanged(this);
 }
 
-/***************************************************************************************************
-Delete all Channels for this Connection
-***************************************************************************************************/
+
+// Delete all Channels for this Connection
+// -----------------------------------------------------------------------------
 void Connection::deleteAllChannels() {
     for (int i=0; i<channels.size(); i++) {
         QByteArray data = (QString(
@@ -120,9 +119,9 @@ void Connection::deleteAllChannels() {
     }
 }
 
-/***************************************************************************************************
-Connects to network. This function is ran in a new thread
-***************************************************************************************************/
+
+// Connects to network. This function is ran in a new thread
+// -----------------------------------------------------------------------------
 void Connection::run() {
     socket = new QTcpSocket;
 
@@ -217,11 +216,11 @@ void Connection::run() {
     emit deleteMe(this);
 }
 
-/***************************************************************************************************
-Parse data into prefix, command and args for processing
-":test!~test@test.com PRIVMSG #channel :Hi!"
- -------prefix------- command ----args-----
-***************************************************************************************************/
+
+// Parse data into prefix, command and args for processing
+// ":test!~test@test.com PRIVMSG #channel :Hi!"
+//  -------prefix------- command ----args-----
+// -----------------------------------------------------------------------------
 void Connection::parseData(const QString &data) {
     qDebug() << data;
     QString prefix;
@@ -289,19 +288,19 @@ void Connection::parseData(const QString &data) {
     processData(parsedData);
 }
 
-/***************************************************************************************************
-Parses user's nick name from source string:
-test!~testing@tested.com -> test
-***************************************************************************************************/
+
+// Parses user's nick name from source string:
+// test!~testing@tested.com -> test
+// -----------------------------------------------------------------------------
 QString Connection::parseNick(const QString &user) const {
     QString nick = user.section('!', 0, 0);
     return nick;
 }
 
-/***************************************************************************************************
-Processes the data that has been parsed
-data = ["test!~test@test.com", "PRIVMSG", "#channel", "Hi!", ...]
-***************************************************************************************************/
+
+// Processes the data that has been parsed
+// data = ["test!~test@test.com", "PRIVMSG", "#channel", "Hi!", ...]
+// -----------------------------------------------------------------------------
 void Connection::processData(const QStringList &data) {
     // Command = 375 (Start of MOTD)
     // Command = 376 (End of MOTD)
@@ -538,9 +537,9 @@ void Connection::processData(const QStringList &data) {
     }
 }
 
-/***************************************************************************************************
-Parses user-entered command entered from MainWindow and sends to server
-***************************************************************************************************/
+
+// Parses user-entered command entered from MainWindow and sends to server
+// -----------------------------------------------------------------------------
 void Connection::sendCmd(const QByteArray &data) {
     QByteArray dataCpy = data;
     QList<QByteArray> args;
@@ -621,16 +620,16 @@ void Connection::sendCmd(const QByteArray &data) {
     }
 }
 
-/***************************************************************************************************
-Sets the Connection to disconnected status
-***************************************************************************************************/
+
+// Sets the Connection to disconnected status
+// -----------------------------------------------------------------------------
 void Connection::disconnect() {
     this->connected = false;
 }
 
-/***************************************************************************************************
-Get'ers & set'ers
-***************************************************************************************************/
+
+// Get'ers & set'ers
+// -----------------------------------------------------------------------------
 void Connection::setNetwork(QString &network) {
     this->_network = network;
 }

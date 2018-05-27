@@ -1,10 +1,9 @@
-/***************************************************************************************************
- * NetworkDlg.cpp                                                                                  *
- *                                                                                                 *
- * Created on: Mar 19, 2015                                                                        *
- * Author: Cody Johnson <codyj@protonmail.com>                                                     *
- **************************************************************************************************/
-
+// =============================================================================
+// NetworkDlg.cpp
+//
+// Created on: Mar 19, 2015
+// Author: Cody Johnson <codyj@protonmail.com>
+// =============================================================================
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -13,9 +12,9 @@
 #include <QtWidgets/QListWidgetItem>
 #include "NetworkDlg.h"
 
-/***************************************************************************************************
-Constructor
-***************************************************************************************************/
+
+// Constructor
+// -----------------------------------------------------------------------------
 NetworkDlg::NetworkDlg(QWidget *MainWindow) {
     setupUi(this);
 
@@ -55,15 +54,15 @@ NetworkDlg::NetworkDlg(QWidget *MainWindow) {
     readData();
 }
 
-/***************************************************************************************************
-Destructor
-***************************************************************************************************/
+
+// Destructor
+// -----------------------------------------------------------------------------
 NetworkDlg::~NetworkDlg() {
 }
 
-/***************************************************************************************************
-SLOT - Open the AddNetworkDlg
-***************************************************************************************************/
+
+// SLOT - Open the AddNetworkDlg
+// -----------------------------------------------------------------------------
 void NetworkDlg::openAddNetworkDlg() {
     AddNetworkDlg *addNetworkDlg = new AddNetworkDlg();
     connect(addNetworkDlg->saveBtn, SIGNAL(clicked()), this, SLOT(readData()));
@@ -73,9 +72,9 @@ void NetworkDlg::openAddNetworkDlg() {
     delete addNetworkDlg;
 }
 
-/***************************************************************************************************
-SLOT - Open the EditNetworkDlg
-***************************************************************************************************/
+
+// SLOT - Open the EditNetworkDlg
+// -----------------------------------------------------------------------------
 void NetworkDlg::openEditNetworkDlg() {
     EditNetworkDlg *editNetworkDlg = new EditNetworkDlg(selectedNetwork);
 
@@ -85,18 +84,16 @@ void NetworkDlg::openEditNetworkDlg() {
     delete editNetworkDlg;
 }
 
-/***  ***/
-/***************************************************************************************************
-SLOT - Selects network from emitted networkList indexChanged signal
-***************************************************************************************************/
+// SLOT - Selects network from emitted networkList indexChanged signal
+// -----------------------------------------------------------------------------
 void NetworkDlg::selectNetwork() {
     selectedNetwork = networkList->currentItem()->text();
     selectedNetwork = selectedNetwork.trimmed();
 }
 
-/***************************************************************************************************
-SLOT - Populates networkList with networks from 'networks.conf' file
-***************************************************************************************************/
+
+// SLOT - Populates networkList with networks from 'networks.conf' file
+// -----------------------------------------------------------------------------
 void NetworkDlg::readData() {
     QDir config("./config");
     if (!config.exists()) {
@@ -155,9 +152,9 @@ void NetworkDlg::readData() {
     networkList->setCurrentRow(0);
 }
 
-/***************************************************************************************************
-SLOT - Removes a network from the network list
-***************************************************************************************************/
+
+// SLOT - Removes a network from the network list
+// -----------------------------------------------------------------------------
 void NetworkDlg::removeNetwork() {
     // Open networks.conf for reading
     QFile networks("./config/networks.conf");
@@ -198,9 +195,9 @@ void NetworkDlg::removeNetwork() {
     readData();
 }
 
-/***************************************************************************************************
-SLOT - Accept override to save global user info into file luxirc.conf
-***************************************************************************************************/
+
+// SLOT - Accept override to save global user info into file luxirc.conf
+// -----------------------------------------------------------------------------
 void NetworkDlg::accept() {
     // Open luxirc.conf for reading
     QFile luxirc("./config/luxirc.conf");
@@ -229,9 +226,8 @@ void NetworkDlg::accept() {
     this->close();
 }
 
-/***************************************************************************************************
-SLOT - Builds Connection object from data file for selected network
-***************************************************************************************************/
+// SLOT - Builds Connection object from data file for selected network
+// -----------------------------------------------------------------------------
 void NetworkDlg::buildConnection() {
     Connection *connection = new Connection;
 
