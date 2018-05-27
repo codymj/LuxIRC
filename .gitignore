@@ -1,0 +1,9 @@
+.qmake.stash
+LuxIRC
+LuxIRC_Headers
+LuxIRC_Sources
+Makefile
+config/
+moc/
+obj/
+ui_*
